@@ -1,0 +1,91 @@
+
+import React from 'react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { motion } from "framer-motion";
+
+const faqs = [
+  {
+    question: "How long does a typical project take?",
+    answer: "Project timelines vary depending on scope and complexity. A basic website typically takes 2-4 weeks, while complex web applications can take 2-3 months. We'll provide a detailed timeline during our initial consultation."
+  },
+  {
+    question: "Do you provide ongoing support after launch?",
+    answer: "Yes! We offer comprehensive maintenance packages including security updates, content updates, performance monitoring, and technical support. We're here to ensure your digital presence continues to thrive."
+  },
+  {
+    question: "What's included in your SEO services?",
+    answer: "Our SEO services include keyword research, on-page optimization, technical SEO audits, content strategy, link building, and monthly performance reports. We focus on sustainable, white-hat practices that deliver long-term results."
+  },
+  {
+    question: "Can you work with our existing brand guidelines?",
+    answer: "Absolutely! We can work within your existing brand guidelines or help you develop new ones. Our design team is experienced in maintaining brand consistency across all digital touchpoints."
+  },
+  {
+    question: "What platforms do you develop on?",
+    answer: "We specialize in modern web technologies including React, Next.js, and other cutting-edge frameworks. We also work with popular CMS platforms like WordPress and custom solutions tailored to your needs."
+  },
+  {
+    question: "How do you handle project communication?",
+    answer: "We believe in transparent communication. You'll have a dedicated project manager, regular check-ins, access to our project portal, and we're always available via email or phone for urgent matters."
+  }
+];
+
+const FAQ = () => {
+  return (
+    <section className="py-20 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+      <div className="container mx-auto px-6">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 transition-colors">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto transition-colors">
+            Got questions? We've got answers. Here are some of the most common questions we receive.
+          </p>
+        </motion.div>
+
+        <div className="max-w-4xl mx-auto">
+          <Accordion type="single" collapsible className="space-y-6">
+            {faqs.map((faq, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <AccordionItem 
+                  value={`item-${index}`}
+                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
+                           rounded-xl shadow-sm hover:shadow-md transition-all duration-300 px-6 py-2"
+                >
+                  <AccordionTrigger 
+                    className="text-left text-lg font-semibold text-gray-900 dark:text-white 
+                              hover:text-purple-600 dark:hover:text-purple-400 transition-colors py-4"
+                  >
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 dark:text-gray-300 leading-relaxed pb-6 transition-colors">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              </motion.div>
+            ))}
+          </Accordion>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default FAQ;
