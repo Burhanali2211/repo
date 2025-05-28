@@ -37,9 +37,9 @@ const faqs = [
 
 const FAQ = () => {
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <section className="transition-colors duration-300">
       <div className="container mx-auto px-6">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -64,20 +64,23 @@ const FAQ = () => {
                 transition={{ duration: 0.3, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <AccordionItem 
+                <AccordionItem
                   value={`item-${index}`}
-                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
-                           rounded-xl shadow-sm hover:shadow-md transition-all duration-300 px-6 py-2"
+                  className="bg-gray-100 dark:bg-white/10 backdrop-blur-sm rounded-xl shadow-md dark:shadow-none
+                           hover:bg-gray-200 dark:hover:bg-white/20 transition-all duration-500 px-6 py-2 group relative overflow-hidden"
                 >
-                  <AccordionTrigger 
-                    className="text-left text-lg font-semibold text-gray-900 dark:text-white 
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="relative z-10">
+                    <AccordionTrigger
+                      className="text-left text-lg font-semibold text-gray-900 dark:text-white
                               hover:text-purple-600 dark:hover:text-purple-400 transition-colors py-4"
-                  >
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 dark:text-gray-300 leading-relaxed pb-6 transition-colors">
-                    {faq.answer}
-                  </AccordionContent>
+                    >
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-gray-600 dark:text-gray-300 leading-relaxed pb-6 transition-colors group-hover:text-gray-900 dark:group-hover:text-white">
+                      {faq.answer}
+                    </AccordionContent>
+                  </div>
                 </AccordionItem>
               </motion.div>
             ))}

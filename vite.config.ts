@@ -50,6 +50,14 @@ export default defineConfig(({ mode }) => {
       sourcemap: mode === 'development',
       // Split chunks for better caching
       chunkSizeWarningLimit: 1000,
-    }
+      // Copy additional files for hosting configuration
+      rollupOptions: {
+        input: {
+          main: path.resolve(__dirname, 'index.html')
+        }
+      }
+    },
+    // Ensure hosting configuration files are included in build
+    publicDir: 'public'
   };
 });

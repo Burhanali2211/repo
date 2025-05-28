@@ -31,15 +31,15 @@ export const testimonials = [
 
 const Testimonials = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  
+
   const handlePrevious = () => {
     setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
   };
-  
+
   const handleNext = () => {
     setActiveIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
   };
-  
+
   const handleDotClick = (index: number) => {
     setActiveIndex(index);
   };
@@ -48,10 +48,10 @@ const Testimonials = () => {
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden opacity-10 dark:opacity-30 pointer-events-none">
         <div className="absolute top-0 left-0 w-full h-full">
-          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500 rounded-full blur-3xl animate-pulse" 
-               style={{ animationDuration: '8s' }}></div>
-          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500 rounded-full blur-3xl animate-pulse" 
-               style={{ animationDuration: '10s', animationDelay: '1s' }}></div>
+          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500 rounded-full blur-3xl animate-pulse"
+            style={{ animationDuration: '8s' }}></div>
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500 rounded-full blur-3xl animate-pulse"
+            style={{ animationDuration: '10s', animationDelay: '1s' }}></div>
         </div>
       </div>
       <div className="container mx-auto px-6">
@@ -71,7 +71,7 @@ const Testimonials = () => {
         <div className="hidden lg:grid lg:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
             <AnimatedSection key={index} delay={index * 200} threshold={0.1}>
-              <div 
+              <div
                 className="bg-gray-100 dark:bg-white/10 backdrop-blur-sm rounded-xl p-8 hover:bg-gray-200 dark:hover:bg-white/20 transition-all duration-500 group relative overflow-hidden h-full shadow-md dark:shadow-none"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -83,16 +83,16 @@ const Testimonials = () => {
                       </FloatingElement>
                     ))}
                   </div>
-                  
+
                   <Quote className="h-8 w-8 text-yellow-400 mb-4 transform group-hover:scale-110 transition-transform duration-300" />
-                  
+
                   <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-300">
                     "{testimonial.content}"
                   </p>
-                  
+
                   <div className="flex items-center space-x-4">
                     <div className="relative overflow-hidden rounded-full w-12 h-12 group-hover:ring-2 group-hover:ring-yellow-400 transition-all duration-300">
-                      <img 
+                      <img
                         src={testimonial.image}
                         alt={testimonial.name}
                         className="w-12 h-12 rounded-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -108,7 +108,7 @@ const Testimonials = () => {
             </AnimatedSection>
           ))}
         </div>
-        
+
         {/* Mobile view: Carousel */}
         <div className="lg:hidden relative">
           <AnimatedSection threshold={0.1}>
@@ -122,16 +122,16 @@ const Testimonials = () => {
                     </FloatingElement>
                   ))}
                 </div>
-                
+
                 <Quote className="h-8 w-8 text-yellow-400 mb-4" />
-                
+
                 <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
                   "{testimonials[activeIndex].content}"
                 </p>
-                
+
                 <div className="flex items-center space-x-4">
                   <div className="relative overflow-hidden rounded-full w-12 h-12 ring-2 ring-yellow-400/50">
-                    <img 
+                    <img
                       src={testimonials[activeIndex].image}
                       alt={testimonials[activeIndex].name}
                       className="w-12 h-12 rounded-full object-cover"
@@ -144,18 +144,18 @@ const Testimonials = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex justify-between items-center">
-              <Button 
-                variant="outline" 
-                size="icon" 
+              <Button
+                variant="outline"
+                size="icon"
                 className="rounded-full border-white/20 text-white hover:bg-white/10 hover:text-white"
                 onClick={handlePrevious}
                 aria-label="Previous testimonial"
               >
                 <ChevronLeft className="h-5 w-5" />
               </Button>
-              
+
               <div className="flex space-x-2">
                 {testimonials.map((_, index) => (
                   <button
@@ -166,10 +166,10 @@ const Testimonials = () => {
                   />
                 ))}
               </div>
-              
-              <Button 
-                variant="outline" 
-                size="icon" 
+
+              <Button
+                variant="outline"
+                size="icon"
                 className="rounded-full border-white/20 text-white hover:bg-white/10 hover:text-white"
                 onClick={handleNext}
                 aria-label="Next testimonial"
@@ -180,7 +180,7 @@ const Testimonials = () => {
           </AnimatedSection>
         </div>
       </div>
-      
+
       {/* Decorative elements */}
       <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-yellow-500/20 rounded-full blur-3xl"></div>
       <div className="absolute -top-10 -left-10 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl"></div>

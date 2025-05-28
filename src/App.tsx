@@ -46,6 +46,14 @@ const TermsPage = lazy(() => import("./pages/Terms"));
 const CookiesPage = lazy(() => import("./pages/Cookies"));
 const SetupSettingsPage = lazy(() => import("./pages/SetupSettings"));
 
+// Service Pages
+const WebDevelopmentPage = lazy(() => import("./pages/services/WebDevelopment"));
+const SEOPage = lazy(() => import("./pages/services/SEO"));
+const DigitalMarketingPage = lazy(() => import("./pages/services/DigitalMarketing"));
+const BrandDesignPage = lazy(() => import("./pages/services/BrandDesign"));
+const CloudServicesPage = lazy(() => import("./pages/services/CloudServices"));
+const AppDevelopmentPage = lazy(() => import("./pages/services/AppDevelopment"));
+
 // No longer needed - Dashboard now handles its own routing
 
 // Animation and common components
@@ -72,108 +80,114 @@ const queryClient = new QueryClient({
 
 const App = () => {
   const [isLoaded, setIsLoaded] = useState(false);
-  
+
   // Set loaded state after initial render to enable animations
   useEffect(() => {
     // Small delay to ensure smooth animations
     const timer = setTimeout(() => {
       setIsLoaded(true);
     }, 100);
-    
+
     return () => clearTimeout(timer);
   }, []);
-  
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <ThemeProvider defaultTheme="dark">
+        <ThemeProvider defaultTheme="light">
           <SupabaseProvider>
             <SupabaseInitializer>
               <AuthProvider>
                 <AdminAuthProvider>
                   <SettingsProvider>
-                  <SettingsStyleProvider />
-                  <SettingsScriptInjector />
-                  <FaviconInjector />
-                  <MaintenanceMode>
-                    <DataProvider>
-                      {/* Toast notifications */}
-                      <Toaster />
-                      <Sonner />
-                      
-                      {/* Animation and interactive components */}
-                      <CustomCursor 
-                        size={16} 
-                        color="rgba(138, 43, 226, 0.6)" 
-                        trailColor="rgba(138, 43, 226, 0.2)" 
-                        showOnMobile={false}
-                        trailLength={3}
-                      />
-                      
-                      <ScrollProgress 
-                        color="bg-gradient-to-r from-yellow-400 to-purple-600" 
-                        height={3} 
-                        position="top" 
-                      />
-                      
-                      <ParticleBackground
-                        particleCount={30}
-                        connectParticles={true}
-                        connectDistance={100}
-                        particleSpeed={0.3}
-                        maxFPS={30}
-                      />
-                      
-                      {/* Main content with transition */}
-                      <div className={`transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
-                        <BrowserRouter>
-                          <Suspense fallback={<PageLoader />}>
-                            <Routes>
-                              {/* Main Layout Routes */}
-                              <Route element={<MainLayout />}>
-                                <Route path="/" element={<HomePage />} />
-                                <Route path="/about" element={<AboutPage />} />
-                                <Route path="/services" element={<ServicesPage />} />
-                                <Route path="/portfolio" element={<PortfolioPage />} />
-                                <Route path="/contact" element={<ContactPage />} />
-                                <Route path="/blog" element={<BlogPage />} />
-                                <Route path="/blog/:id" element={<BlogPostPage />} />
-                                <Route path="/careers" element={<CareersPage />} />
-                                <Route path="/privacy" element={<PrivacyPage />} />
-                                <Route path="/terms" element={<TermsPage />} />
-                                <Route path="/cookies" element={<CookiesPage />} />
-                                <Route path="/login" element={<LoginPage />} />
-                                <Route path="/register" element={<RegisterPage />} />
-                                <Route path="/admin/login" element={<AdminLoginPage />} />
-                                <Route path="/admin/signup" element={<AdminSignupPage />} />
-                              </Route>
-                              
-                              {/* Dashboard Route */}
-                              <Route path="/dashboard" element={
-                                <ProtectedRoute>
-                                  <DashboardLayout />
-                                </ProtectedRoute>
-                              } />
-                              
-                              {/* Setup Settings Route */}
-                              <Route path="/setup-settings" element={
-                                <ProtectedRoute>
-                                  <SetupSettingsPage />
-                                </ProtectedRoute>
-                              } />
-                              
-                              {/* Redirect legacy Index to Home */}
-                              <Route path="/index" element={<Navigate to="/" replace />} />
-                              
-                              {/* 404 Route */}
-                              <Route path="*" element={<NotFoundPage />} />
-                            </Routes>
-                          </Suspense>
-                        </BrowserRouter>
-                      </div>
-                    </DataProvider>
-                  </MaintenanceMode>
-                </SettingsProvider>
+                    <SettingsStyleProvider />
+                    <SettingsScriptInjector />
+                    <FaviconInjector />
+                    <MaintenanceMode>
+                      <DataProvider>
+                        {/* Toast notifications */}
+                        <Toaster />
+                        <Sonner />
+
+                        {/* Animation and interactive components */}
+                        <CustomCursor
+                          size={16}
+                          color="rgba(138, 43, 226, 0.6)"
+                          trailColor="rgba(138, 43, 226, 0.2)"
+                          showOnMobile={false}
+                          trailLength={3}
+                        />
+
+                        <ScrollProgress
+                          color="bg-gradient-to-r from-yellow-400 to-purple-600"
+                          height={3}
+                          position="top"
+                        />
+
+                        <ParticleBackground
+                          particleCount={30}
+                          connectParticles={true}
+                          connectDistance={100}
+                          particleSpeed={0.3}
+                          maxFPS={30}
+                        />
+
+                        {/* Main content with transition */}
+                        <div className={`transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+                          <BrowserRouter>
+                            <Suspense fallback={<PageLoader />}>
+                              <Routes>
+                                {/* Main Layout Routes */}
+                                <Route element={<MainLayout />}>
+                                  <Route path="/" element={<HomePage />} />
+                                  <Route path="/about" element={<AboutPage />} />
+                                  <Route path="/services" element={<ServicesPage />} />
+                                  <Route path="/services/web-development" element={<WebDevelopmentPage />} />
+                                  <Route path="/services/seo" element={<SEOPage />} />
+                                  <Route path="/services/digital-marketing" element={<DigitalMarketingPage />} />
+                                  <Route path="/services/brand-design" element={<BrandDesignPage />} />
+                                  <Route path="/services/cloud-services" element={<CloudServicesPage />} />
+                                  <Route path="/services/app-development" element={<AppDevelopmentPage />} />
+                                  <Route path="/portfolio" element={<PortfolioPage />} />
+                                  <Route path="/contact" element={<ContactPage />} />
+                                  <Route path="/blog" element={<BlogPage />} />
+                                  <Route path="/blog/:id" element={<BlogPostPage />} />
+                                  <Route path="/careers" element={<CareersPage />} />
+                                  <Route path="/privacy" element={<PrivacyPage />} />
+                                  <Route path="/terms" element={<TermsPage />} />
+                                  <Route path="/cookies" element={<CookiesPage />} />
+                                  <Route path="/login" element={<LoginPage />} />
+                                  <Route path="/register" element={<RegisterPage />} />
+                                  <Route path="/admin/login" element={<AdminLoginPage />} />
+                                  <Route path="/admin/signup" element={<AdminSignupPage />} />
+                                </Route>
+
+                                {/* Dashboard Route */}
+                                <Route path="/dashboard" element={
+                                  <ProtectedRoute>
+                                    <DashboardLayout />
+                                  </ProtectedRoute>
+                                } />
+
+                                {/* Setup Settings Route */}
+                                <Route path="/setup-settings" element={
+                                  <ProtectedRoute>
+                                    <SetupSettingsPage />
+                                  </ProtectedRoute>
+                                } />
+
+                                {/* Redirect legacy Index to Home */}
+                                <Route path="/index" element={<Navigate to="/" replace />} />
+
+                                {/* 404 Route */}
+                                <Route path="*" element={<NotFoundPage />} />
+                              </Routes>
+                            </Suspense>
+                          </BrowserRouter>
+                        </div>
+                      </DataProvider>
+                    </MaintenanceMode>
+                  </SettingsProvider>
                 </AdminAuthProvider>
               </AuthProvider>
             </SupabaseInitializer>

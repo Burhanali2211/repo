@@ -38,8 +38,15 @@ export const useSettings = (): UseSettingsReturn => {
       }
 
       if (data) {
-        setSettings(data);
-        return data;
+        // Validate and sanitize the data before setting
+        const sanitizedData = {
+          ...data,
+          // Ensure script fields are strings or null
+          header_scripts: typeof data.header_scripts === 'string' ? data.header_scripts : null,
+          footer_scripts: typeof data.footer_scripts === 'string' ? data.footer_scripts : null,
+        };
+        setSettings(sanitizedData);
+        return sanitizedData;
       } else {
         console.log('No settings found, will try to create default settings');
         // Try to initialize settings if none exist
@@ -106,16 +113,28 @@ export const useSettings = (): UseSettingsReturn => {
         }
       }
 
-      // Format social_links if it's provided as an object
-      let formattedData = {...data};
-      
+      // Format and sanitize the data
+      const formattedData = { ...data };
+
       // Make sure social_links is in the right format for JSONB
       if (formattedData.social_links && typeof formattedData.social_links === 'object') {
-        formattedData.social_links = formattedData.social_links;
+        // social_links is already an object, no need to reassign
+      }
+
+      // Sanitize script fields to prevent injection issues
+      if (formattedData.header_scripts !== undefined) {
+        formattedData.header_scripts = typeof formattedData.header_scripts === 'string'
+          ? formattedData.header_scripts.trim() || null
+          : null;
+      }
+      if (formattedData.footer_scripts !== undefined) {
+        formattedData.footer_scripts = typeof formattedData.footer_scripts === 'string'
+          ? formattedData.footer_scripts.trim() || null
+          : null;
       }
 
       console.log('Updating settings with ID:', settings.id, formattedData);
-      
+
       const { data: updatedData, error: updateError } = await supabase
         .from('site_settings')
         .update(formattedData)
@@ -128,8 +147,15 @@ export const useSettings = (): UseSettingsReturn => {
         throw new Error(updateError.message);
       }
 
-      console.log('Settings updated successfully:', updatedData);
-      setSettings(updatedData);
+      // Sanitize the returned data as well
+      const sanitizedUpdatedData = {
+        ...updatedData,
+        header_scripts: typeof updatedData.header_scripts === 'string' ? updatedData.header_scripts : null,
+        footer_scripts: typeof updatedData.footer_scripts === 'string' ? updatedData.footer_scripts : null,
+      };
+
+      console.log('Settings updated successfully:', sanitizedUpdatedData);
+      setSettings(sanitizedUpdatedData);
       return { success: true, error: null };
     } catch (err) {
       console.error('Error updating site settings:', err);

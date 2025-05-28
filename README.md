@@ -1,6 +1,6 @@
-# Easyio Technologies
+# EasyIo.tech - Simplifying Technology
 
-A modern authentication and identity management solution with robust fallback mechanisms and standardized error handling.
+A modern technology platform dedicated to making innovation accessible, sustainable, and meaningful for everyone. From IoT and automation to student empowerment and business solutions.
 
 ## Recent Improvements
 

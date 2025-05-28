@@ -1,38 +1,45 @@
 
 import React from 'react';
-import { Code, Search, Megaphone, Palette, ArrowRight } from 'lucide-react';
+import { Code, Search, Megaphone, Palette, ArrowRight, Leaf, GraduationCap, Building2, Users, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Footer from '../components/Footer';
 
 const Services = () => {
   const services = [
     {
-      icon: Code,
-      title: 'Web Development',
-      description: 'Custom websites and web applications built with modern technologies',
-      features: ['Responsive Design', 'E-commerce Solutions', 'Progressive Web Apps', 'API Integration'],
-      color: 'bg-blue-500'
-    },
-    {
-      icon: Search,
-      title: 'SEO Optimization',
-      description: 'Boost your search rankings and organic traffic',
-      features: ['Technical SEO', 'Content Optimization', 'Local SEO', 'Analytics & Reporting'],
+      icon: Leaf,
+      title: 'Sustainable Agriculture Technology',
+      description: 'Smart farming systems and eco-friendly agricultural solutions',
+      features: ['Smart Farming Systems', 'Automated Farms', 'Eco-Farming Integration', 'IoT Sensors & Monitoring'],
       color: 'bg-green-500'
     },
     {
-      icon: Megaphone,
-      title: 'Digital Marketing',
-      description: 'Data-driven marketing campaigns that deliver results',
-      features: ['Social Media Marketing', 'PPC Advertising', 'Email Marketing', 'Content Strategy'],
-      color: 'bg-red-500'
+      icon: GraduationCap,
+      title: 'School Management Systems',
+      description: 'Comprehensive educational technology solutions',
+      features: ['School Websites & Apps', 'Administrative Systems', 'Admission & Fee Management', 'Live Bus Tracking Systems'],
+      color: 'bg-blue-500'
     },
     {
-      icon: Palette,
-      title: 'Branding & Design',
-      description: 'Complete brand identity and visual design solutions',
-      features: ['Logo Design', 'Brand Guidelines', 'UI/UX Design', 'Print Design'],
+      icon: Building2,
+      title: 'Business Solutions',
+      description: 'Custom business software and process optimization',
+      features: ['Business Process Solutions', 'Inventory Management', 'Custom ERP Systems', 'Market Analysis Insights'],
       color: 'bg-purple-500'
+    },
+    {
+      icon: Users,
+      title: 'Student Programs',
+      description: 'Educational programs and skill development initiatives',
+      features: ['Student Upskill Programs', 'Workshops & Training', 'Hackathons & Ideathons', 'Research Support'],
+      color: 'bg-amber-500'
+    },
+    {
+      icon: Wrench,
+      title: 'Technical Services',
+      description: 'Prototyping and technical design services',
+      features: ['3D Designing Solutions', '3D Printing Services', 'PCB Designing & Printing', 'Rapid Prototyping'],
+      color: 'bg-pink-500'
     }
   ];
 
@@ -45,8 +52,8 @@ const Services = () => {
             Our <span className="text-amber-300 dark:text-amber-300">Services</span>
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Comprehensive digital solutions tailored to your business needs, 
-            from strategy to execution.
+            From sustainable agriculture to student empowerment, we create solutions that are
+            easy to use, powerful in impact, and kind to the planet.
           </p>
         </div>
       </section>
@@ -62,7 +69,7 @@ const Services = () => {
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{service.title}</h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">{service.description}</p>
-                
+
                 <div className="mb-8">
                   <h4 className="font-semibold text-gray-900 dark:text-white mb-3">What's Included:</h4>
                   <ul className="space-y-2">
@@ -88,12 +95,12 @@ const Services = () => {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-b from-blue-500 to-indigo-600 dark:from-indigo-700 dark:to-indigo-800 text-white">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-6">Ready to Get Started?</h2>
+          <h2 className="text-4xl font-bold mb-6">Ready to Simplify Your Technology?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Let's discuss your project and find the perfect solution for your business needs.
+            Let's transform your bold ideas into reality with solutions that are accessible, sustainable, and meaningful.
           </p>
           <Button className="bg-amber-300 text-gray-800 hover:bg-amber-400 dark:bg-amber-400 dark:hover:bg-amber-500 dark:text-gray-900 px-8 py-4 text-lg">
-            Get Free Consultation
+            Start Your Project
           </Button>
         </div>
       </section>

@@ -1,72 +1,72 @@
 
 import React, { useState } from 'react';
-import { Search, Palette, TrendingUp, Code, Megaphone, Shield, ArrowRight, Globe, Cloud, Smartphone } from 'lucide-react';
+import { Search, Palette, TrendingUp, Code, Megaphone, Shield, ArrowRight, Globe, Cloud, Smartphone, Leaf, GraduationCap, Building2, Users, Wrench } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
 export const services = [
   {
-    icon: Globe,
-    title: 'Web Design & Development',
-    description: 'Our websites are user-friendly, engaging, and optimized for a great user experience.',
-    link: '/services/web-development',
-    color: 'bg-purple-500',
-    gradient: 'from-purple-600 to-indigo-600'
+    icon: Leaf,
+    title: 'Sustainable Agriculture Technology',
+    description: 'Smart farming systems, automated farms, and eco-farming integration for sustainable agriculture.',
+    link: '/services/agriculture-tech',
+    color: 'bg-green-500',
+    gradient: 'from-green-600 to-emerald-600'
   },
   {
-    icon: Search,
-    title: 'SEO Services',
-    description: 'Achieve Google\'s #1 ranking. Ensure top rankings for different businesses.',
-    link: '/services/seo',
+    icon: GraduationCap,
+    title: 'School Management Systems',
+    description: 'Complete school solutions including websites, apps, administrative systems, and live bus tracking.',
+    link: '/services/school-management',
     color: 'bg-blue-500',
     gradient: 'from-blue-600 to-cyan-600'
   },
   {
-    icon: TrendingUp,
-    title: 'Digital Marketing',
-    description: 'Connect, engage, and grow your brand\'s presence using marketing.',
-    link: '/services/digital-marketing',
-    color: 'bg-pink-500',
-    gradient: 'from-pink-600 to-rose-600'
+    icon: Building2,
+    title: 'Business Solutions',
+    description: 'Custom business software, ERP systems, inventory management, and scalable product design.',
+    link: '/services/business-solutions',
+    color: 'bg-purple-500',
+    gradient: 'from-purple-600 to-indigo-600'
   },
   {
-    icon: Palette,
-    title: 'Brand Design',
-    description: 'Develop and position your brand, Logos, Banners, Cards, Business Profiles.',
-    link: '/services/brand-design',
+    icon: Users,
+    title: 'Student Programs',
+    description: 'Student upskill programs, workshops, hackathons, research support, and idea development.',
+    link: '/services/student-programs',
     color: 'bg-amber-500',
     gradient: 'from-amber-600 to-orange-600'
   },
   {
-    icon: Cloud,
-    title: 'Cloud Services',
-    description: 'Top-rated reliable hosting services including business mail, cloud support.',
-    link: '/services/cloud',
-    color: 'bg-sky-500',
-    gradient: 'from-sky-600 to-blue-600'
+    icon: Wrench,
+    title: 'Technical Services',
+    description: '3D designing, 3D printing, PCB designing/printing, and rapid prototyping solutions.',
+    link: '/services/technical-services',
+    color: 'bg-pink-500',
+    gradient: 'from-pink-600 to-rose-600'
   },
   {
-    icon: Smartphone,
-    title: 'Mobile Application',
-    description: 'We are specialized in creating Mobile apps that fascinate users.',
-    link: '/services/app-development',
-    color: 'bg-green-500',
-    gradient: 'from-green-600 to-emerald-600'
+    icon: Globe,
+    title: 'Digital Transformation',
+    description: 'Complete digital transformation solutions including web development and cloud integration.',
+    link: '/services/digital-transformation',
+    color: 'bg-sky-500',
+    gradient: 'from-sky-600 to-blue-600'
   }
 ];
 
 const Services = () => {
   const [activeService, setActiveService] = useState<number | null>(null);
-  
+
   const handleServiceHover = (index: number) => {
     setActiveService(index);
   };
-  
+
   const handleServiceLeave = () => {
     setActiveService(null);
   };
-  
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -77,7 +77,7 @@ const Services = () => {
       }
     }
   };
-  
+
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -88,13 +88,7 @@ const Services = () => {
   };
   return (
     <section id="services" className="w-full relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-5 dark:opacity-10 pointer-events-none">
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-purple-500/30 dark:bg-purple-500/50 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/3 -right-24 w-80 h-80 bg-blue-500/30 dark:bg-blue-500/50 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-24 left-1/3 w-72 h-72 bg-pink-500/30 dark:bg-pink-500/50 rounded-full blur-3xl"></div>
-      </div>
-      
+
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -112,27 +106,30 @@ const Services = () => {
             onFocus={() => handleServiceHover(index)}
             onBlur={handleServiceLeave}
           >
-            <div className="bg-white dark:bg-gray-900/50 backdrop-blur-sm border border-gray-200 dark:border-gray-800 hover:border-purple-500/50 shadow-md dark:shadow-none p-8 rounded-xl transition-all duration-300 h-full flex flex-col">
-              <div className={`w-16 h-16 rounded-xl flex items-center justify-center mb-6 bg-gradient-to-r ${service.gradient} transform transition-all duration-300 ${activeService === index ? 'scale-110' : 'group-hover:scale-110'}`}>
-                <service.icon className="h-8 w-8 text-white" />
+            <div className="bg-gray-100 dark:bg-white/10 backdrop-blur-sm rounded-xl p-8 hover:bg-gray-200 dark:hover:bg-white/20 transition-all duration-500 group relative overflow-hidden h-full shadow-md dark:shadow-none flex flex-col">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10 flex flex-col h-full">
+                <div className={`w-16 h-16 rounded-xl flex items-center justify-center mb-6 bg-gradient-to-r ${service.gradient} transform transition-all duration-300 ${activeService === index ? 'scale-110' : 'group-hover:scale-110'}`}>
+                  <service.icon className="h-8 w-8 text-white" />
+                </div>
+
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">{service.title}</h3>
+
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6 flex-grow group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-300">{service.description}</p>
+
+                <Link
+                  to={service.link}
+                  className="inline-flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300 mt-auto"
+                >
+                  <span>Know More</span>
+                  <ArrowRight className="h-4 w-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
+                </Link>
               </div>
-              
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">{service.title}</h3>
-              
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6 flex-grow">{service.description}</p>
-              
-              <Link 
-                to={service.link} 
-                className="inline-flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300 mt-auto"
-              >
-                <span>Know More</span>
-                <ArrowRight className="h-4 w-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
-              </Link>
             </div>
           </motion.div>
         ))}
       </motion.div>
-      
+
       <div className="mt-12 text-center">
         <Link to="/services">
           <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 rounded-lg text-base font-medium shadow-lg hover:shadow-xl transition-all duration-300 group">

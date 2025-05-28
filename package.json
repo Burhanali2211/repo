@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
+    "build:deploy": "vite build && npm run copy-hosting-files",
+    "copy-hosting-files": "copy public\\_redirects dist\\ && copy public\\.htaccess dist\\",
     "lint": "eslint .",
     "preview": "vite preview"
   },

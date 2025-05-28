@@ -1,12 +1,11 @@
 
-import React from 'react';
-import { Linkedin, Twitter, Github } from 'lucide-react';
+// Icons temporarily removed to fix import issues
 
 const team = [
   {
     name: 'Sarah Johnson',
     role: 'CEO & Founder',
-    image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=300&fit=crop&crop=face',
+    image: 'https://unsplash.com/photos/beautiful-smiling-asian-businesswoman-standing-with-arms-crossed-in-office-looking-out-of-the-window-jlznomVUeZk',
     bio: '10+ years in digital strategy with expertise in scaling tech companies.',
     social: {
       linkedin: '#',
@@ -62,33 +61,33 @@ const Team = () => {
           {team.map((member, index) => (
             <div key={index} className="bg-white rounded-xl shadow-lg overflow-hidden group hover:shadow-xl transition-shadow duration-300">
               <div className="relative overflow-hidden">
-                <img 
+                <img
                   src={member.image}
                   alt={member.name}
                   className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
-              
+
               <div className="p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
                 <p className="text-purple-600 font-medium mb-3">{member.role}</p>
                 <p className="text-gray-600 text-sm mb-4">{member.bio}</p>
-                
+
                 <div className="flex space-x-3">
                   {member.social.linkedin && (
-                    <a href={member.social.linkedin} className="text-gray-400 hover:text-blue-600 transition-colors">
-                      <Linkedin className="h-5 w-5" />
+                    <a href={member.social.linkedin} className="text-gray-400 hover:text-blue-600 transition-colors text-sm">
+                      LinkedIn
                     </a>
                   )}
                   {member.social.twitter && (
-                    <a href={member.social.twitter} className="text-gray-400 hover:text-blue-400 transition-colors">
-                      <Twitter className="h-5 w-5" />
+                    <a href={member.social.twitter} className="text-gray-400 hover:text-blue-400 transition-colors text-sm">
+                      Twitter
                     </a>
                   )}
                   {member.social.github && (
-                    <a href={member.social.github} className="text-gray-400 hover:text-gray-900 transition-colors">
-                      <Github className="h-5 w-5" />
+                    <a href={member.social.github} className="text-gray-400 hover:text-gray-900 transition-colors text-sm">
+                      GitHub
                     </a>
                   )}
                 </div>

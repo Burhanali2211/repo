@@ -29,20 +29,20 @@ const SettingsManager = () => {
     if (settings) {
       console.log('Settings loaded:', settings);
       // Ensure we have a clean copy of the settings
-      const cleanedSettings = {...settings};
-      
+      const cleanedSettings = { ...settings };
+
       // Set default social links object if not present
       if (!cleanedSettings.social_links) {
         cleanedSettings.social_links = {};
       }
-      
+
       setFormData(cleanedSettings);
-      
+
       // Set logo preview if available
       if (settings.site_logo) {
         setLogoPreview(settings.site_logo);
       }
-      
+
       // Set favicon preview if available
       if (settings.site_favicon) {
         setFaviconPreview(settings.site_favicon);
@@ -68,31 +68,31 @@ const SettingsManager = () => {
 
   const handleSocialLinksChange = (platform: string, value: string) => {
     if (!formData) return;
-    
+
     // Ensure we have a proper object to work with
-    const currentLinks = formData.social_links ? 
-      (typeof formData.social_links === 'object' ? 
-        formData.social_links as Record<string, string> : 
-        {}) : 
+    const currentLinks = formData.social_links ?
+      (typeof formData.social_links === 'object' ?
+        formData.social_links as Record<string, string> :
+        {}) :
       {};
-      
+
     // Create a new object with the updated value
     const updatedLinks = { ...currentLinks, [platform]: value };
-    
+
     console.log(`Updating social links for ${platform}:`, updatedLinks);
-    
-    setFormData(prev => prev ? { 
-      ...prev, 
-      social_links: updatedLinks 
+
+    setFormData(prev => prev ? {
+      ...prev,
+      social_links: updatedLinks
     } : null);
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
     if (!uploadType) return;
-    
+
     const file = e.target.files[0];
-    
+
     // Validate file type
     const validTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/webp', 'image/gif', 'image/x-icon', 'image/vnd.microsoft.icon'];
     if (!validTypes.includes(file.type)) {
@@ -103,23 +103,23 @@ const SettingsManager = () => {
       });
       return;
     }
-    
+
     try {
       setIsUploading(true);
-      
+
       // Create a temporary preview
       const objectUrl = URL.createObjectURL(file);
-      
+
       if (uploadType === 'logo') {
         setLogoPreview(objectUrl);
       } else {
         setFaviconPreview(objectUrl);
       }
-      
+
       // Upload to Supabase storage with a folder based on type
       const folderName = uploadType === 'logo' ? 'logos' : 'favicons';
       const uploadPath = await uploadFile(file, folderName);
-      
+
       // Update form data with the new URL
       if (uploadType === 'logo') {
         setFormData(prev => prev ? { ...prev, site_logo: uploadPath } : null);
@@ -134,7 +134,7 @@ const SettingsManager = () => {
           description: "Favicon has been uploaded successfully. Don't forget to save your changes."
         });
       }
-      
+
     } catch (err) {
       toast({
         title: "Upload Failed",
@@ -142,7 +142,7 @@ const SettingsManager = () => {
         variant: "destructive"
       });
       console.error(`${uploadType} upload error:`, err);
-      
+
       // Revert to the original image if upload fails
       if (uploadType === 'logo') {
         setLogoPreview(formData?.site_logo || null);
@@ -152,7 +152,7 @@ const SettingsManager = () => {
     } finally {
       setIsUploading(false);
       setUploadType(null);
-      
+
       // Reset the file input
       if (logoInputRef.current) {
         logoInputRef.current.value = '';
@@ -162,33 +162,33 @@ const SettingsManager = () => {
       }
     }
   };
-  
+
   const handleLogoUpload = () => {
     setUploadType('logo');
     logoInputRef.current?.click();
   };
-  
+
   const handleFaviconUpload = () => {
     setUploadType('favicon');
     faviconInputRef.current?.click();
   };
-  
+
   const handleRemoveLogo = () => {
     // Update form data to remove the logo
     setFormData(prev => prev ? { ...prev, site_logo: null } : null);
     setLogoPreview(null);
-    
+
     toast({
       title: "Logo Removed",
       description: "Logo has been removed. Don't forget to save your changes."
     });
   };
-  
+
   const handleRemoveFavicon = () => {
     // Update form data to remove the favicon
     setFormData(prev => prev ? { ...prev, site_favicon: null } : null);
     setFaviconPreview(null);
-    
+
     toast({
       title: "Favicon Removed",
       description: "Favicon has been removed. Don't forget to save your changes."
@@ -202,16 +202,16 @@ const SettingsManager = () => {
     try {
       setIsSaving(true);
       console.log('Submitting settings update:', formData);
-      
+
       // Create a clean copy of the data to submit
       const dataToSubmit = {
         ...formData,
         // Ensure social_links is properly formatted
         social_links: formData.social_links || {}
       };
-      
+
       const result = await updateSettings(dataToSubmit);
-      
+
       if (result.success) {
         toast({
           title: "Success",
@@ -244,7 +244,7 @@ const SettingsManager = () => {
       try {
         setIsResetting(true);
         const result = await resetSettings();
-        
+
         if (result.success) {
           toast({
             title: "Success",
@@ -350,7 +350,7 @@ const SettingsManager = () => {
                       placeholder="Enter website name"
                     />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="site_logo">Logo URL</Label>
                     <Input
@@ -364,7 +364,7 @@ const SettingsManager = () => {
                       Path to your logo file (recommended size: 200x50px)
                     </p>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="site_favicon">Favicon URL</Label>
                     <Input
@@ -375,7 +375,7 @@ const SettingsManager = () => {
                       placeholder="/favicon.ico"
                     />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="meta_title">Meta Title</Label>
                     <Input
@@ -386,7 +386,7 @@ const SettingsManager = () => {
                       placeholder="Meta title for SEO"
                     />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="meta_description">Meta Description</Label>
                     <Textarea
@@ -398,7 +398,7 @@ const SettingsManager = () => {
                       rows={3}
                     />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="footer_text">Footer Text</Label>
                     <Input
@@ -433,7 +433,7 @@ const SettingsManager = () => {
                     onChange={handleFileUpload}
                     aria-label="Upload favicon"
                   />
-                  
+
                   {/* Logo Upload Section */}
                   <div className="mb-6">
                     <Label htmlFor="site_logo" className="block mb-2">Site Logo</Label>
@@ -441,9 +441,9 @@ const SettingsManager = () => {
                       {/* Logo Preview */}
                       {logoPreview ? (
                         <div className="relative w-64 h-24 border rounded-md overflow-hidden flex items-center justify-center bg-gray-50">
-                          <img 
-                            src={logoPreview} 
-                            alt="Site Logo" 
+                          <img
+                            src={logoPreview}
+                            alt="Site Logo"
                             className="max-w-full max-h-full object-contain"
                           />
                           <button
@@ -463,12 +463,12 @@ const SettingsManager = () => {
                           </div>
                         </div>
                       )}
-                      
+
                       {/* Upload Button */}
                       <div>
-                        <Button 
-                          type="button" 
-                          variant="outline" 
+                        <Button
+                          type="button"
+                          variant="outline"
                           onClick={handleLogoUpload}
                           disabled={isUploading}
                           className="mr-2"
@@ -491,7 +491,7 @@ const SettingsManager = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Favicon Upload Section */}
                   <div className="mb-6">
                     <Label htmlFor="site_favicon" className="block mb-2">Favicon</Label>
@@ -499,9 +499,9 @@ const SettingsManager = () => {
                       {/* Favicon Preview */}
                       {faviconPreview ? (
                         <div className="relative w-16 h-16 border rounded-md overflow-hidden flex items-center justify-center bg-gray-50">
-                          <img 
-                            src={faviconPreview} 
-                            alt="Favicon" 
+                          <img
+                            src={faviconPreview}
+                            alt="Favicon"
                             className="w-full h-full object-contain"
                           />
                           <button
@@ -520,12 +520,12 @@ const SettingsManager = () => {
                           </div>
                         </div>
                       )}
-                      
+
                       {/* Upload Button */}
                       <div>
-                        <Button 
-                          type="button" 
-                          variant="outline" 
+                        <Button
+                          type="button"
+                          variant="outline"
                           onClick={handleFaviconUpload}
                           disabled={isUploading}
                           className="mr-2"
@@ -548,7 +548,7 @@ const SettingsManager = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="primary_color">Primary Color</Label>
@@ -605,7 +605,7 @@ const SettingsManager = () => {
                       type="email"
                     />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="contact_phone">Contact Phone</Label>
                     <Input
@@ -616,10 +616,10 @@ const SettingsManager = () => {
                       placeholder="+1 (555) 123-4567"
                     />
                   </div>
-                  
+
                   <div className="space-y-3">
                     <Label>Social Media Links</Label>
-                    
+
                     {['facebook', 'twitter', 'linkedin', 'instagram', 'github'].map(platform => {
                       const socialLinks = formData.social_links as Record<string, string> || {};
                       return (
@@ -640,37 +640,65 @@ const SettingsManager = () => {
               <TabsContent value="advanced" className="space-y-4">
                 <div className="grid gap-4">
                   <div>
-                    <Label htmlFor="header_scripts">Header Scripts</Label>
+                    <div className="flex items-center justify-between mb-2">
+                      <Label htmlFor="header_scripts">Header Scripts</Label>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setFormData(prev => ({ ...prev, header_scripts: '' }));
+                          toast.success('Header scripts cleared');
+                        }}
+                        className="text-xs"
+                      >
+                        Clear
+                      </Button>
+                    </div>
                     <Textarea
                       id="header_scripts"
                       name="header_scripts"
                       value={formData.header_scripts || ''}
                       onChange={handleInputChange}
-                      placeholder="<!-- Add scripts to be included in the <head> tag -->"
+                      placeholder="console.log('Header script example');"
                       rows={4}
                       className="font-mono text-sm"
                     />
                     <p className="text-sm text-gray-500 mt-1">
-                      Custom code to be inserted in the &lt;head&gt; tag (analytics, etc.)
+                      JavaScript code only (no HTML tags). Will be inserted in the &lt;head&gt; tag.
                     </p>
                   </div>
-                  
+
                   <div>
-                    <Label htmlFor="footer_scripts">Footer Scripts</Label>
+                    <div className="flex items-center justify-between mb-2">
+                      <Label htmlFor="footer_scripts">Footer Scripts</Label>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setFormData(prev => ({ ...prev, footer_scripts: '' }));
+                          toast.success('Footer scripts cleared');
+                        }}
+                        className="text-xs"
+                      >
+                        Clear
+                      </Button>
+                    </div>
                     <Textarea
                       id="footer_scripts"
                       name="footer_scripts"
                       value={formData.footer_scripts || ''}
                       onChange={handleInputChange}
-                      placeholder="<!-- Add scripts to be included before </body> -->"
+                      placeholder="console.log('Footer script example');"
                       rows={4}
                       className="font-mono text-sm"
                     />
                     <p className="text-sm text-gray-500 mt-1">
-                      Custom code to be inserted before the closing &lt;/body&gt; tag
+                      JavaScript code only (no HTML tags). Will be inserted before the closing &lt;/body&gt; tag.
                     </p>
                   </div>
-                  
+
                   <div className="flex items-center space-x-2 pt-2">
                     <Switch
                       id="is_maintenance_mode"
@@ -679,7 +707,7 @@ const SettingsManager = () => {
                     />
                     <Label htmlFor="is_maintenance_mode">Maintenance Mode</Label>
                   </div>
-                  
+
                   {formData.is_maintenance_mode && (
                     <div>
                       <Label htmlFor="maintenance_message">Maintenance Message</Label>
@@ -696,11 +724,11 @@ const SettingsManager = () => {
                 </div>
               </TabsContent>
             </CardContent>
-            
+
             <CardFooter className="flex justify-between">
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 onClick={handleReset}
                 disabled={isResetting || isSaving}
               >
@@ -716,9 +744,9 @@ const SettingsManager = () => {
                   </>
                 )}
               </Button>
-              
-              <Button 
-                type="submit" 
+
+              <Button
+                type="submit"
                 disabled={isSaving || isResetting}
               >
                 {isSaving ? (

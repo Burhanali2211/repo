@@ -4,18 +4,18 @@ import { Target, Users, Award, Clock } from 'lucide-react';
 
 const About = () => {
   const timeline = [
-    { year: '2020', title: 'Company Founded', description: 'Started with a vision to transform digital experiences' },
-    { year: '2021', title: 'First Major Client', description: 'Landed our first enterprise client and scaled the team' },
-    { year: '2022', title: 'Award Recognition', description: 'Won Digital Agency of the Year award' },
-    { year: '2023', title: 'Global Expansion', description: 'Opened offices in 3 new countries' },
-    { year: '2024', title: 'AI Integration', description: 'Pioneered AI-driven design and development solutions' }
+    { year: '2023', title: 'EasyIo.tech Founded', description: 'Started with a vision to simplify technology and make it accessible to everyone' },
+    { year: '2023', title: 'First IoT Solutions', description: 'Launched our first smart agriculture and automation projects' },
+    { year: '2024', title: 'Student Programs Launch', description: 'Introduced comprehensive student upskill programs and workshops' },
+    { year: '2024', title: 'Business Solutions Expansion', description: 'Expanded into comprehensive business process solutions and ERP systems' },
+    { year: '2024', title: 'Sustainability Focus', description: 'Committed to sustainable technology solutions that are kind to the planet' }
   ];
 
   const values = [
-    { icon: Target, title: 'Mission-Driven', description: 'We believe in creating digital solutions that make a real impact' },
-    { icon: Users, title: 'Client-Focused', description: 'Your success is our success. We build lasting partnerships' },
-    { icon: Award, title: 'Excellence', description: 'We strive for perfection in every project we undertake' },
-    { icon: Clock, title: 'Innovation', description: 'Always pushing boundaries with cutting-edge technology' }
+    { icon: Target, title: 'Simplicity Driven', description: 'We believe simplicity drives innovation and makes technology accessible' },
+    { icon: Users, title: 'Partnership Focused', description: 'Your creative tech partner in shaping the future together' },
+    { icon: Award, title: 'Sustainability', description: 'Technology solutions that are kind to the planet and meaningful' },
+    { icon: Clock, title: 'Innovation', description: 'Cutting through complexity to build tools that work beautifully' }
   ];
 
   return (
@@ -24,11 +24,12 @@ const About = () => {
       <section className="py-20 bg-gradient-to-b from-blue-600 to-indigo-700 text-white dark:from-indigo-800 dark:to-gray-900">
         <div className="container mx-auto px-6 text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-6">
-            About <span className="text-amber-300 dark:text-amber-300">easyio</span>
+            About <span className="text-amber-300 dark:text-amber-300">EasyIo.tech</span>
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            We're a team of passionate digital creators dedicated to helping businesses 
-            transform their digital presence and achieve extraordinary results.
+            Founded in 2023, we're dedicated to simplifying technology and making it more accessible,
+            sustainable, and meaningful for everyone. From bold ideas to business transformation,
+            we're your creative tech partner.
           </p>
         </div>
       </section>
@@ -38,19 +39,17 @@ const About = () => {
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">Our Mission</h2>
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">Our Mission & Vision</h2>
               <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
-                To easyio businesses of all sizes to thrive in the digital age by providing 
-                innovative, scalable, and results-driven solutions that exceed expectations.
+                At EasyIo.tech, we envision a world where technology meets sustainability—driving progress that's both innovative and responsible. Our mission is to transform your ideas into reality, whether you're a start-up shaping the future or a student building your first prototype.
               </p>
               <p className="text-lg text-gray-600 dark:text-gray-300">
-                We believe that great design and technology should be accessible to everyone, 
-                and we're committed to making that vision a reality.
+                We empower businesses to streamline their technology and stay ahead, while nurturing a new generation of thinkers and innovators. Through smart solutions and a commitment to impact, EasyIo.tech is making innovation accessible, meaningful, and enduring.
               </p>
             </div>
             <div className="relative">
-              <img 
-                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=400&fit=crop" 
+              <img
+                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=400&fit=crop"
                 alt="Team collaboration"
                 className="rounded-lg shadow-2xl dark:border dark:border-gray-700"
               />
@@ -59,8 +58,26 @@ const About = () => {
         </div>
       </section>
 
+      {/* Company Story Section */}
+      <section className="py-20 bg-gradient-to-b from-gray-100 to-white dark:from-black dark:to-gray-900">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">Our Story</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
+              Founded in 2023, EasyIo.tech is built on the belief that simplicity drives innovation. We believe technology should empower, not overwhelm. That's why we're dedicated to simplifying technology—making it more accessible, sustainable, and meaningful for everyone.
+            </p>
+            <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
+              From turning your bold ideas into reality to helping businesses run smarter and students think like innovators, we create solutions that are easy to use, powerful in impact, and kind to the planet. Whether it's IoT, Automation, or Digital transformation, we're your creative tech partner—cutting through complexity to build tools that work beautifully and simply.
+            </p>
+            <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+              At EasyIo.tech, we don't just keep up with the future. We help you shape it.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Values Section */}
-      <section className="py-20 bg-gradient-to-b from-gray-100 to-gray-200 dark:from-black dark:to-gray-900">
+      <section className="py-20 bg-gradient-to-b from-white to-gray-200 dark:from-gray-900 dark:to-black">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">Our Values</h2>
