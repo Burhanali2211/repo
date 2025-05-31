@@ -1,17 +1,6 @@
-import { createClient } from '@supabase/supabase-js';
-
-// Supabase client configuration
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-
-// Create a single supabase client for interacting with your database
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true
-  }
-});
+// Re-export the singleton Supabase client from the main integration file
+// This prevents multiple client instances
+export { supabase } from '@/integrations/supabase/client';
 
 // Helper to check if user is authenticated with fallback to localStorage
 export const isAuthenticated = async () => {

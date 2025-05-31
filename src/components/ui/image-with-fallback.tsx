@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { ImageIcon, AlertCircle } from 'lucide-react';
+import { useProxiedImage } from '@/lib/image-proxy';
 
 interface ImageWithFallbackProps {
   src: string;
   alt: string;
   className?: string;
   fallbackClassName?: string;
+  fallbackSrc?: string;
 }
 
 /**
- * A component that displays an image with fallback
+ * A component that displays an image with fallback, CORS handling,
  * and provides useful debugging information when images fail to load
  */
 const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
@@ -17,10 +19,15 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   alt,
   className = '',
   fallbackClassName = '',
+  fallbackSrc,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [showDebugInfo, setShowDebugInfo] = useState(false);
+  const [currentSrc, setCurrentSrc] = useState(src);
+
+  // Use the image proxy for external images
+  const proxiedSrc = useProxiedImage(currentSrc);
 
   const handleLoad = () => {
     setIsLoaded(true);
@@ -28,26 +35,40 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   };
 
   const handleError = () => {
-    console.error(`Failed to load image: ${src}`);
+    // Only log in development to avoid console spam in production
+    if (import.meta.env.DEV) {
+      console.error(`Failed to load image: ${currentSrc}`);
+    }
+
+    // Try fallback image if available and we haven't tried it yet
+    if (fallbackSrc && currentSrc !== fallbackSrc) {
+      setCurrentSrc(fallbackSrc);
+      setIsLoaded(false);
+      setHasError(false);
+      return;
+    }
+
     setIsLoaded(false);
     setHasError(true);
   };
 
   return (
     <div className="relative w-full h-full">
-      {src ? (
+      {currentSrc ? (
         <>
           <img
-            src={src}
+            src={proxiedSrc}
             alt={alt}
             className={`${className} ${!isLoaded && 'opacity-0'}`}
             onLoad={handleLoad}
             onError={handleError}
+            crossOrigin="anonymous"
+            loading="lazy"
           />
 
           {/* Loading or error state */}
           {!isLoaded && (
-            <div 
+            <div
               className={`absolute inset-0 flex flex-col items-center justify-center bg-gray-200 dark:bg-gray-800 ${fallbackClassName}`}
               onClick={() => setShowDebugInfo(!showDebugInfo)}
             >
@@ -61,11 +82,14 @@ const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
               ) : (
                 <ImageIcon className="h-10 w-10 text-gray-400 animate-pulse" />
               )}
-              
+
               {/* Debug information */}
               {showDebugInfo && hasError && (
                 <div className="mt-2 p-2 bg-black/70 text-white text-xs rounded max-w-full overflow-hidden">
-                  <p className="truncate">URL: {src}</p>
+                  <p className="truncate">Original: {src}</p>
+                  {fallbackSrc && <p className="truncate">Fallback: {fallbackSrc}</p>}
+                  <p className="truncate">Current: {currentSrc}</p>
+                  <p className="truncate">Proxied: {proxiedSrc}</p>
                 </div>
               )}
             </div>

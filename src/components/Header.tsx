@@ -8,7 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 const Header = () => {
   const location = useLocation();
   const { user } = useAuth();
-  
+
   // Don't show header on dashboard
   if (location.pathname === '/dashboard') {
     return null;
@@ -16,9 +16,8 @@ const Header = () => {
 
   const navItems = [
     { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
     { href: "/services", label: "Services" },
-    { href: "/portfolio", label: "Portfolio" },
+    { href: "/our-work", label: "Our Work" },
     { href: "/contact", label: "Contact" }
   ];
 
@@ -29,15 +28,14 @@ const Header = () => {
           <Link to="/" className="text-2xl font-bold text-white">
             easyio <span className="text-yellow-400">✨</span>
           </Link>
-          
+
           <div className="hidden md:flex space-x-8">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 to={item.href}
-                className={`hover:text-yellow-400 transition-colors ${
-                  location.pathname === item.href ? 'text-yellow-400' : 'text-white'
-                }`}
+                className={`hover:text-yellow-400 transition-colors ${location.pathname === item.href ? 'text-yellow-400' : 'text-white'
+                  }`}
               >
                 {item.label}
               </Link>

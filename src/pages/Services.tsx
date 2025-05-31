@@ -46,7 +46,7 @@ const Services = () => {
   return (
     <div className="min-h-screen pt-20">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-b from-blue-600 to-indigo-700 text-white dark:from-indigo-800 dark:to-gray-900">
+      <section className="relative py-20 bg-gradient-to-b from-blue-600 to-indigo-700 text-white dark:from-indigo-800 dark:to-gray-900 overflow-hidden">
         <div className="container mx-auto px-6 text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-6">
             Our <span className="text-amber-300 dark:text-amber-300">Services</span>
@@ -56,10 +56,13 @@ const Services = () => {
             easy to use, powerful in impact, and kind to the planet.
           </p>
         </div>
+
+        {/* Gradient transition to Services Grid section */}
+        <div className="section-transition-overlay gradient-transition-to-light dark:gradient-transition-to-dark"></div>
       </section>
 
       {/* Services Grid */}
-      <section className="py-20 bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-black">
+      <section className="relative py-20 bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-black overflow-hidden">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12">
             {services.map((service, index) => (
@@ -90,10 +93,13 @@ const Services = () => {
             ))}
           </div>
         </div>
+
+        {/* Gradient transition to CTA section */}
+        <div className="section-transition-overlay gradient-transition-purple-to-blue"></div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-b from-blue-500 to-indigo-600 dark:from-indigo-700 dark:to-indigo-800 text-white">
+      <section className="relative py-20 bg-gradient-to-b from-blue-500 to-indigo-600 dark:from-indigo-700 dark:to-indigo-800 text-white overflow-hidden">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold mb-6">Ready to Simplify Your Technology?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">

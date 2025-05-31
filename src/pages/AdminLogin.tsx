@@ -18,40 +18,32 @@ const AdminLogin = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       setIsLoading(true);
-      
+
       // Sign in with Supabase auth
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password
       });
-      
+
       if (error) throw error;
-      
+
       if (!data.user) {
         throw new Error('No user returned from login');
       }
-      
-      // Check if this user is an admin by checking the profiles table
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', data.user.id)
-        .single();
-      
-      if (profileError) {
-        throw new Error('Could not verify admin status');
-      }
-      
+
+      // Check if this user is an admin by checking user metadata
+      const userRole = data.user.user_metadata?.role;
+
       // Verify this is an admin user
-      if (profileData?.role !== 'admin') {
+      if (userRole !== 'admin') {
         // Sign out if not an admin
         await supabase.auth.signOut();
         throw new Error('User is not authorized as an admin');
       }
-      
+
       toast({
         title: "Admin Login Successful",
         description: "Welcome back! Redirecting to dashboard...",
@@ -100,7 +92,7 @@ const AdminLogin = () => {
                   type="email"
                   required
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="pl-10"
                   placeholder="Enter your admin email"
                 />
@@ -119,7 +111,7 @@ const AdminLogin = () => {
                   type={showPassword ? 'text' : 'password'}
                   required
                   value={formData.password}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="pl-10 pr-10"
                   placeholder="Enter your password"
                 />

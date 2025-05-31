@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/components/ui/use-toast';
 
 export interface Project {
   id: string;
@@ -9,19 +10,30 @@ export interface Project {
   category: string;
   image?: string;
   technologies: string[];
-  // Renamed client to client_name to match database schema
   client_name?: string;
   testimonial_text?: string;
   featured: boolean;
   order_index: number;
+  // Enhanced fields
+  year: number;
+  results?: string;
+  project_link?: string;
+  status: 'draft' | 'published' | 'archived';
+  gallery_images?: string[];
+  project_duration?: string;
+  budget_range?: string;
+  team_size?: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     try {
       console.log('Fetching projects...');
       setLoading(true);
@@ -37,6 +49,11 @@ export const useProjects = () => {
       if (fetchError) {
         console.error('Error fetching projects:', fetchError);
         setError(fetchError.message);
+        toast({
+          title: "Error fetching projects",
+          description: fetchError.message,
+          variant: "destructive"
+        });
         return;
       }
 
@@ -51,21 +68,60 @@ export const useProjects = () => {
         client_name: project.client_name,
         testimonial_text: project.testimonial_text,
         featured: project.featured,
-        order_index: project.order_index
+        order_index: project.order_index,
+        year: project.year || new Date().getFullYear(),
+        results: project.results,
+        project_link: project.project_link,
+        status: project.status || 'published',
+        gallery_images: project.gallery_images || [],
+        project_duration: project.project_duration,
+        budget_range: project.budget_range,
+        team_size: project.team_size,
+        created_at: project.created_at,
+        updated_at: project.updated_at
       }));
 
       setProjects(mappedProjects);
     } catch (error) {
       console.error('Exception in fetchProjects:', error);
-      setError('Failed to fetch projects');
+      const errorMessage = 'Failed to fetch projects';
+      setError(errorMessage);
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive"
+      });
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
 
+  // Set up real-time subscription
   useEffect(() => {
     fetchProjects();
-  }, []);
+
+    // Subscribe to real-time changes
+    const subscription = supabase
+      .channel('projects-changes')
+      .on('postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'projects'
+        },
+        (payload) => {
+          console.log('Real-time project change:', payload);
+          // Refetch projects when changes occur
+          fetchProjects();
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [fetchProjects]);
 
   const createProject = async (projectData: Omit<Project, 'id'>) => {
     // Create a new object with the correct field names for the database
@@ -79,10 +135,21 @@ export const useProjects = () => {
       client_name: projectData.client_name,
       testimonial_text: projectData.testimonial_text,
       featured: projectData.featured,
-      order_index: projectData.order_index
+      order_index: projectData.order_index,
+      year: projectData.year,
+      results: projectData.results,
+      project_link: projectData.project_link,
+      status: projectData.status,
+      gallery_images: projectData.gallery_images,
+      project_duration: projectData.project_duration,
+      budget_range: projectData.budget_range,
+      team_size: projectData.team_size
     };
+
     try {
       console.log('Creating project:', projectData);
+      setLoading(true);
+
       const { data, error } = await supabase
         .from('projects')
         .insert([dbProjectData])
@@ -91,22 +158,34 @@ export const useProjects = () => {
 
       if (error) {
         console.error('Error creating project:', error);
+        toast({
+          title: "Error creating project",
+          description: error.message,
+          variant: "destructive"
+        });
         throw error;
       }
 
       console.log('Project created:', data);
-      await fetchProjects();
+      toast({
+        title: "Success",
+        description: "Project created successfully",
+      });
+
+      // Don't refetch here as real-time subscription will handle it
       return data;
     } catch (error) {
       console.error('Exception in createProject:', error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   const updateProject = async (id: string, projectData: Partial<Project>) => {
     // Create a new object with the correct field names for the database
     const dbProjectData: any = {};
-    
+
     // Map the fields to the correct database column names
     if (projectData.title !== undefined) dbProjectData.title = projectData.title;
     if (projectData.slug !== undefined) dbProjectData.slug = projectData.slug;
@@ -118,88 +197,58 @@ export const useProjects = () => {
     if (projectData.testimonial_text !== undefined) dbProjectData.testimonial_text = projectData.testimonial_text;
     if (projectData.featured !== undefined) dbProjectData.featured = projectData.featured;
     if (projectData.order_index !== undefined) dbProjectData.order_index = projectData.order_index;
-    
+    if (projectData.year !== undefined) dbProjectData.year = projectData.year;
+    if (projectData.results !== undefined) dbProjectData.results = projectData.results;
+    if (projectData.project_link !== undefined) dbProjectData.project_link = projectData.project_link;
+    if (projectData.status !== undefined) dbProjectData.status = projectData.status;
+    if (projectData.gallery_images !== undefined) dbProjectData.gallery_images = projectData.gallery_images;
+    if (projectData.project_duration !== undefined) dbProjectData.project_duration = projectData.project_duration;
+    if (projectData.budget_range !== undefined) dbProjectData.budget_range = projectData.budget_range;
+    if (projectData.team_size !== undefined) dbProjectData.team_size = projectData.team_size;
+
     try {
       console.log('Updating project with ID:', id);
-      
-      // IMPORTANT: Don't use .single() when checking existence
-      // This causes the error when no rows are found
-      const { data: existingProjects, error: checkError } = await supabase
+      setLoading(true);
+
+      // Simply update the project - if it doesn't exist, Supabase will return an error
+      const { data, error } = await supabase
         .from('projects')
-        .select('id')
-        .eq('id', id);
-      
-      // Properly handle check errors
-      if (checkError) {
-        console.error('Error checking project existence:', checkError);
-        throw checkError;
-      }
-      
-      // Check if project exists based on array length
-      const projectExists = existingProjects && existingProjects.length > 0;
-      console.log('Project exists?', projectExists);
-      
-      let result;
-      
-      // If project doesn't exist, create it with the specified ID
-      if (!projectExists) {
-        console.log('Project not found, creating a new one with ID:', id);
-        
-        // Create full project data with all required fields
-        const fullProjectData = {
-          id, // Use the specified ID
-          title: projectData.title || 'New Project',
-          slug: projectData.slug || `project-${Date.now()}`,
-          description: projectData.description || '',
-          category: projectData.category || 'Other',
-          technologies: projectData.technologies || [],
-          featured: projectData.featured !== undefined ? projectData.featured : false,
-          order_index: projectData.order_index !== undefined ? projectData.order_index : 0,
-          client_name: projectData.client_name || '',
-          testimonial_text: projectData.testimonial_text || ''
-        };
-        
-        console.log('Creating project with data:', fullProjectData);
-        
-        // Insert the new project
-        result = await supabase
-          .from('projects')
-          .insert([fullProjectData])
-          .select();
-          
-        console.log('Insert result:', result);
-      } else {
-        // Project exists, update it
-        console.log('Project exists, updating with data:', dbProjectData);
-        
-        result = await supabase
-          .from('projects')
-          .update(dbProjectData)
-          .eq('id', id)
-          .select();
-          
-        console.log('Update result:', result);
-      }
-      
-      // Handle errors from either insert or update
-      if (result.error) {
-        console.error('Error with project operation:', result.error);
-        throw result.error;
+        .update(dbProjectData)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error updating project:', error);
+        toast({
+          title: "Error updating project",
+          description: error.message,
+          variant: "destructive"
+        });
+        throw error;
       }
 
-      // Use result.data instead of data
-      console.log('Project updated:', result.data);
-      await fetchProjects();
-      return result.data;
+      console.log('Project updated:', data);
+      toast({
+        title: "Success",
+        description: "Project updated successfully",
+      });
+
+      // Don't refetch here as real-time subscription will handle it
+      return data;
     } catch (error) {
       console.error('Exception in updateProject:', error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
   const deleteProject = async (id: string) => {
     try {
       console.log('Deleting project:', id);
+      setLoading(true);
+
       const { error } = await supabase
         .from('projects')
         .delete()
@@ -207,14 +256,26 @@ export const useProjects = () => {
 
       if (error) {
         console.error('Error deleting project:', error);
+        toast({
+          title: "Error deleting project",
+          description: error.message,
+          variant: "destructive"
+        });
         throw error;
       }
 
       console.log('Project deleted:', id);
-      await fetchProjects();
+      toast({
+        title: "Success",
+        description: "Project deleted successfully",
+      });
+
+      // Don't refetch here as real-time subscription will handle it
     } catch (error) {
       console.error('Exception in deleteProject:', error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 

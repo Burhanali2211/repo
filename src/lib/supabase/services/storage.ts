@@ -1,4 +1,4 @@
-import { supabase } from '../client';
+import { supabase } from '@/integrations/supabase/client';
 import { v4 as uuidv4 } from 'uuid';
 
 // Constants
@@ -10,13 +10,13 @@ const BUCKET_NAME = 'images'; // Use the default bucket name
 export const checkBucketAccess = async () => {
   try {
     // Try to list files in the bucket to see if we have access
-    const { data, error } = await supabase.storage.from(BUCKET_NAME).list();
-    
+    const { error } = await supabase.storage.from(BUCKET_NAME).list();
+
     if (error) {
       console.warn('Storage bucket access check failed:', error);
       return false;
     }
-    
+
     return true;
   } catch (error) {
     console.warn('Error checking bucket access:', error);
@@ -38,41 +38,41 @@ export const uploadFile = async (file: File, path = ''): Promise<string> => {
     if (!hasAccess) {
       console.warn('No access to storage bucket, but proceeding with upload attempt anyway');
     }
-    
+
     // Generate a unique filename to prevent collisions
     const fileExt = file.name.split('.').pop();
     const fileName = `${uuidv4()}.${fileExt}`;
     const filePath = path ? `${path}/${fileName}` : fileName;
-    
+
     console.log(`Uploading file to path: ${filePath}`);
-    
+
     // Upload the file
-    const { error, data: uploadData } = await supabase.storage
+    const { error } = await supabase.storage
       .from(BUCKET_NAME)
       .upload(filePath, file, {
         cacheControl: '3600',
         upsert: true,
         contentType: file.type // Explicitly set content type
       });
-    
+
     if (error) {
       console.error('Supabase storage upload error:', error);
       throw error;
     }
-    
+
     console.log('File uploaded successfully, getting public URL...');
-    
+
     // Get the public URL
     const { data } = supabase.storage
       .from(BUCKET_NAME)
       .getPublicUrl(filePath);
-    
+
     if (!data || !data.publicUrl) {
       throw new Error('Failed to get public URL for uploaded file');
     }
-    
+
     console.log(`Generated public URL: ${data.publicUrl}`);
-    
+
     // Test if the URL is accessible
     try {
       const testRequest = await fetch(data.publicUrl, { method: 'HEAD' });
@@ -80,7 +80,7 @@ export const uploadFile = async (file: File, path = ''): Promise<string> => {
     } catch (testError) {
       console.warn('Could not verify URL accessibility, but continuing:', testError);
     }
-    
+
     return data.publicUrl;
   } catch (error) {
     console.error('Error in uploadFile function:', error);
@@ -98,16 +98,16 @@ export const deleteFile = async (fileUrl: string): Promise<void> => {
     const urlObj = new URL(fileUrl);
     const pathSegments = urlObj.pathname.split('/');
     const filePath = pathSegments.slice(pathSegments.indexOf(BUCKET_NAME) + 1).join('/');
-    
+
     if (!filePath) {
       throw new Error('Invalid file URL');
     }
-    
+
     // Delete the file
     const { error } = await supabase.storage
       .from(BUCKET_NAME)
       .remove([filePath]);
-    
+
     if (error) {
       throw error;
     }

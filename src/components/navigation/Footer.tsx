@@ -13,9 +13,7 @@ export const Footer = () => {
     {
       title: 'Company',
       links: [
-        { label: 'About Us', path: '/about' },
-        { label: 'Our Team', path: '/about#team' },
-        { label: 'Our Work', path: '/portfolio' },
+        { label: 'Our Work', path: '/our-work' },
         { label: 'Industries We Serve', path: '/industries' },
         { label: 'Careers', path: '/careers' },
       ],
@@ -57,7 +55,7 @@ export const Footer = () => {
     { icon: 'linkedin', label: 'LinkedIn', url: 'https://linkedin.com' },
     { icon: 'youtube', label: 'YouTube', url: 'https://youtube.com' },
   ];
-  
+
   const contactInfo = [
     { icon: Phone, label: '+1 (234) 567-8901', url: 'tel:+12345678901' },
     { icon: Mail, label: 'info@easyio.tech', url: 'mailto:info@easyio.tech' },
@@ -71,36 +69,36 @@ export const Footer = () => {
         <div className="bg-white dark:bg-gray-900/50 backdrop-blur-sm border border-gray-200 dark:border-gray-800 rounded-2xl p-8 md:p-12 shadow-md">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
-              <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">Subscribe to our newsletter</h3>
-              <p className="text-gray-600 dark:text-gray-400 max-w-md">Stay updated with the latest digital trends, industry insights, and exclusive offers.</p>
+              <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">Stay in the Loop</h3>
+              <p className="text-gray-600 dark:text-gray-400 max-w-md">Get notified about our latest projects, company updates, and special announcements. No spam, just the good stuff.</p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-grow">
-                <input 
-                  type="email" 
-                  placeholder="Enter your email" 
+                <input
+                  type="email"
+                  placeholder="Enter your email"
                   className="w-full px-4 py-3 bg-gray-100 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 dark:text-white"
                   aria-label="Email for newsletter"
                 />
               </div>
               <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg whitespace-nowrap">
-                Subscribe
+                Join Updates
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           </div>
         </div>
       </div>
-      
+
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
           <div className="lg:col-span-4">
             <Logo size="lg" />
-            
+
             <p className="mt-4 text-gray-600 dark:text-gray-400 max-w-md">
               Secure, seamless identity solutions for the digital age. Connect, protect, and manage your digital presence with confidence.
             </p>
-            
+
             <div className="mt-6 space-y-4">
               {contactInfo.map((item, index) => (
                 <a
@@ -116,7 +114,7 @@ export const Footer = () => {
                 </a>
               ))}
             </div>
-            
+
             <div className="mt-8 flex space-x-4">
               {socialLinks.map((social) => (
                 <a
@@ -162,11 +160,11 @@ export const Footer = () => {
         </div>
 
         <div className="mt-16 pt-8 border-t border-gray-300 dark:border-gray-800">
-          <div className="border-t border-gray-200 dark:border-gray-800 pt-8 mt-12">
-            <p className="text-gray-600 dark:text-gray-400 text-center text-sm">
-              {settings?.footer_text || ` ${currentYear} ${settings?.site_name || 'Easyio.tech'}. All rights reserved.`}
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-600 dark:text-gray-400 text-center md:text-left text-sm">
+              {settings?.footer_text || `© ${currentYear} ${settings?.site_name || 'Easyio.tech'}. All rights reserved.`}
             </p>
-            <div className="mt-4 md:mt-0 flex flex-wrap gap-6">
+            <div className="mt-4 md:mt-0 flex flex-wrap justify-center md:justify-end gap-6">
               <Link to="/privacy" className="text-gray-500 hover:text-gray-900 dark:hover:text-white text-sm transition-colors">
                 Privacy Policy
               </Link>

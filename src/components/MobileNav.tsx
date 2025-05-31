@@ -10,9 +10,8 @@ const MobileNav = () => {
 
   const menuItems = [
     { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
     { href: "/services", label: "Services" },
-    { href: "/portfolio", label: "Portfolio" },
+    { href: "/our-work", label: "Our Work" },
     { href: "/contact", label: "Contact" }
   ];
 
@@ -50,9 +49,8 @@ const MobileNav = () => {
                     <Link
                       to={item.href}
                       onClick={() => setIsOpen(false)}
-                      className={`block text-xl transition-colors w-full text-left ${
-                        location.pathname === item.href ? 'text-yellow-400' : 'text-white hover:text-yellow-400'
-                      }`}
+                      className={`block text-xl transition-colors w-full text-left ${location.pathname === item.href ? 'text-yellow-400' : 'text-white hover:text-yellow-400'
+                        }`}
                     >
                       {item.label}
                     </Link>

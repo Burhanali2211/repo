@@ -1,17 +1,27 @@
-import { supabase } from '../client';
+import { supabase } from '@/integrations/supabase/client';
 import type { PostgrestError } from '@supabase/supabase-js';
 
-// Project type definition
+// Enhanced Project type definition to match database schema
 export type Project = {
   id: string;
   title: string;
+  slug: string;
   category: string;
-  image: string;
+  image?: string;
   description: string;
   technologies: string[];
+  client_name?: string;
+  testimonial_text?: string;
+  featured: boolean;
+  order_index: number;
   year: number;
-  results: string;
-  link: string;
+  results?: string;
+  project_link?: string;
+  status: 'draft' | 'published' | 'archived';
+  gallery_images?: string[];
+  project_duration?: string;
+  budget_range?: string;
+  team_size?: number;
   created_at?: string;
   updated_at?: string;
 };

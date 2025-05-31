@@ -4,7 +4,6 @@ import Services from '@/components/sections/Services';
 import About from '@/components/sections/About';
 import Testimonials from '@/components/sections/Testimonials';
 import FAQ from '@/components/sections/FAQ';
-import Newsletter from '@/components/sections/Newsletter';
 import Portfolio from '@/components/sections/Portfolio';
 import Industries from '@/components/sections/Industries';
 import CallToAction from '@/components/sections/CallToAction';
@@ -145,10 +144,6 @@ const Home = () => {
         </div>
 
         <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Frequently Asked Questions</h2>
-            <div className="h-1 w-24 bg-gradient-to-r from-purple-500 to-blue-500 mx-auto"></div>
-          </div>
           <FAQ />
         </div>
 
@@ -179,27 +174,6 @@ const Home = () => {
         {/* Decorative elements */}
         <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-orange-500/10 dark:bg-orange-500/20 rounded-full blur-3xl"></div>
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-red-500/10 dark:bg-red-500/20 rounded-full blur-3xl"></div>
-
-        {/* Gradient transition to Newsletter section */}
-        <div className="section-transition-overlay gradient-transition-to-light dark:gradient-transition-to-dark"></div>
-      </section>
-
-      {/* Newsletter Section */}
-      <section className="relative py-24 bg-white dark:bg-black overflow-hidden">
-        {/* Final section with subtle background */}
-        <div className="absolute inset-0 overflow-hidden opacity-5 dark:opacity-20 pointer-events-none">
-          <div className="absolute top-0 left-0 w-full h-full">
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-500 rounded-full blur-3xl animate-pulse"
-              style={{ animationDuration: '16s' }}></div>
-          </div>
-        </div>
-
-        <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <Newsletter />
-        </div>
-
-        {/* Final decorative element */}
-        <div className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 w-40 h-40 bg-purple-500/10 dark:bg-purple-500/20 rounded-full blur-3xl"></div>
       </section>
     </div>
   );

@@ -1,6 +1,17 @@
-import { supabase } from './client';
-import { isAuthenticated } from './client';
+import { supabase } from '@/integrations/supabase/client';
 import React from 'react';
+
+// Helper to check if user is authenticated
+const checkAuth = async () => {
+  try {
+    const { data, error } = await supabase.auth.getSession();
+    if (error) throw error;
+    return !!data.session;
+  } catch (error) {
+    console.warn('Authentication check failed:', error);
+    return false;
+  }
+};
 
 // Type definition for Testimonial in Supabase
 export type Testimonial = {
@@ -109,24 +120,7 @@ export type ExtendedService = Service & {
   icon: React.ElementType;
 };
 
-/**
- * Check authentication before accessing services
- * @throws Error if not authenticated
- */
-async function checkAuth() {
-  const authenticated = await isAuthenticated();
-  if (!authenticated) {
-    const error = new Error('Authentication required');
-    error.name = 'auth_required';
-    // Add additional properties for better error handling
-    Object.assign(error, {
-      details: 'User must be logged in to access services',
-      hint: 'Please log in and try again',
-      code: '42501'
-    });
-    throw error;
-  }
-}
+
 
 /**
  * Get all services from Supabase
@@ -140,7 +134,7 @@ export const getAllServices = async () => {
     } catch (authError) {
       console.warn('Authentication check failed, trying to continue with fallback:', authError);
     }
-    
+
     // If authenticated, proceed with the query
     return supabase
       .from('services')
@@ -163,7 +157,7 @@ export const getServiceById = async (id: string) => {
     } catch (authError) {
       console.warn('Authentication check failed, trying to continue with fallback:', authError);
     }
-    
+
     return supabase
       .from('services')
       .select('*')
@@ -184,19 +178,19 @@ export const createService = async (serviceData: Omit<Service, 'id' | 'created_a
     // We need to be authenticated for RLS policies to work
     // Get current session and ensure we're authenticated
     const { data: { session } } = await supabase.auth.getSession();
-    
+
     // If we don't have a session, we need to sign in
     if (!session) {
       console.error('No active session found - user must be logged in');
       throw new Error('Authentication required to add services. Please log in.');
     }
-    
+
     console.log('Creating service with data:', serviceData);
-    
+
     // Prepare service data to match database schema
     // Extract iconName but keep other data
     const { iconName, ...otherData } = serviceData;
-    
+
     // Prepare the data object with only fields that exist in your database
     const dataToInsert = {
       ...otherData,
@@ -206,9 +200,9 @@ export const createService = async (serviceData: Omit<Service, 'id' | 'created_a
       // Include auth.uid() which is required for RLS policies
       // auth.uid() will be automatically handled by Supabase
     };
-    
+
     console.log('Submitting to database:', dataToInsert);
-    
+
     // Ensure we're using the authenticated client
     return supabase
       .from('services')
@@ -235,7 +229,7 @@ export const updateService = async (
     } catch (authError) {
       console.warn('Authentication check failed, trying to continue with fallback:', authError);
     }
-    
+
     return supabase
       .from('services')
       .update({
@@ -262,7 +256,7 @@ export const deleteService = async (id: string) => {
     } catch (authError) {
       console.warn('Authentication check failed, trying to continue with fallback:', authError);
     }
-    
+
     return supabase
       .from('services')
       .delete()
@@ -305,7 +299,7 @@ export const getAllProjects = async () => {
     } catch (authError) {
       console.warn('Authentication check failed, trying to continue with fallback:', authError);
     }
-    
+
     // If authenticated, proceed with the query
     return supabase
       .from('projects')
@@ -328,7 +322,7 @@ export const getProjectsByCategory = async (category: string) => {
     } catch (authError) {
       console.warn('Authentication check failed, trying to continue with fallback:', authError);
     }
-    
+
     return supabase
       .from('projects')
       .select('*')
@@ -351,7 +345,7 @@ export const getProjectById = async (id: string) => {
     } catch (authError) {
       console.warn('Authentication check failed, trying to continue with fallback:', authError);
     }
-    
+
     return supabase
       .from('projects')
       .select('*')
@@ -375,11 +369,11 @@ export const createProject = async (projectData: Omit<Project, 'id' | 'created_a
     } catch (authError) {
       console.warn('Authentication check failed, trying to continue with fallback:', authError);
     }
-    
+
     // Get the current user ID
     const { data: userData } = await supabase.auth.getUser();
     let userId = userData?.user?.id;
-    
+
     // If no user ID from Supabase auth, try getting it from localStorage
     if (!userId) {
       console.log('No user ID from Supabase auth, checking localStorage');
@@ -396,13 +390,13 @@ export const createProject = async (projectData: Omit<Project, 'id' | 'created_a
         }
       }
     }
-    
+
     // If still no user ID, try a generic ID for development purposes
     if (!userId) {
       console.warn('No user ID available, using development fallback');
       userId = '00000000-0000-0000-0000-000000000000'; // Development fallback ID
     }
-    
+
     return supabase
       .from('projects')
       .insert({
@@ -432,7 +426,7 @@ export const updateProject = async (
     } catch (authError) {
       console.warn('Authentication check failed, trying to continue with fallback:', authError);
     }
-    
+
     return supabase
       .from('projects')
       .update({
@@ -459,7 +453,7 @@ export const deleteProject = async (id: string) => {
     } catch (authError) {
       console.warn('Authentication check failed, trying to continue with fallback:', authError);
     }
-    
+
     return supabase
       .from('projects')
       .delete()
@@ -481,7 +475,7 @@ export const uploadFile = async (bucket: string, path: string, file: File) => {
     } catch (authError) {
       console.warn('Authentication check failed, trying to continue with fallback:', authError);
     }
-    
+
     // Upload file to Supabase storage
     const { data, error } = await supabase.storage
       .from(bucket)
@@ -489,14 +483,14 @@ export const uploadFile = async (bucket: string, path: string, file: File) => {
         cacheControl: '3600',
         upsert: true
       });
-    
+
     if (error) throw error;
-    
+
     // Get the public URL
     const { data: urlData } = supabase.storage
       .from(bucket)
       .getPublicUrl(path);
-    
+
     return { data, publicUrl: urlData.publicUrl };
   } catch (error) {
     console.error('Error uploading file:', error);

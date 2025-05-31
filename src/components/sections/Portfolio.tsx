@@ -69,6 +69,7 @@ const Portfolio = () => {
               <div className="h-80 w-full bg-gray-200 dark:bg-gray-800 overflow-hidden relative">
                 <ImageWithFallback
                   src={project.image || ''}
+                  fallbackSrc={`https://via.placeholder.com/800x600/6366f1/ffffff?text=${encodeURIComponent(project.title)}`}
                   alt={project.title}
                   className="w-full h-full object-cover"
                 />

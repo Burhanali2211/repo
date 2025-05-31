@@ -1,4 +1,4 @@
-import { supabase } from '../client';
+import { supabase } from '@/integrations/supabase/client';
 import type { PostgrestError } from '@supabase/supabase-js';
 
 // Testimonial type definition

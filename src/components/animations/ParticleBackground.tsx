@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 // Performance-optimized interactive particle background with configurable parameters
 
 interface ParticleBackgroundProps {
@@ -35,17 +35,17 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
   // Initialize particles
   const initParticles = () => {
     if (!canvasRef.current) return;
-    
+
     const canvas = canvasRef.current;
     const width = window.innerWidth;
     const height = window.innerHeight;
-    
+
     setDimensions({ width, height });
     canvas.width = width;
     canvas.height = height;
-    
+
     const newParticles: Particle[] = [];
-    
+
     for (let i = 0; i < particleCount; i++) {
       const size = Math.random() * 3 + 1;
       const x = Math.random() * width;
@@ -53,7 +53,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
       const directionX = (Math.random() * 2 - 1) * particleSpeed;
       const directionY = (Math.random() * 2 - 1) * particleSpeed;
       const color = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.2})`;
-      
+
       newParticles.push({
         x,
         y,
@@ -63,7 +63,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
         color
       });
     }
-    
+
     setParticles(newParticles);
   };
 
@@ -71,59 +71,65 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
   const updateParticles = () => {
     return particles.map(particle => {
       let { x, y, directionX, directionY, size, color } = particle;
-      
+
       // Bounce off edges
       if (x + size > dimensions.width || x - size < 0) {
         directionX = -directionX;
       }
-      
+
       if (y + size > dimensions.height || y - size < 0) {
         directionY = -directionY;
       }
-      
+
       // Update position
       x += directionX;
       y += directionY;
-      
+
       return { ...particle, x, y, directionX, directionY };
     });
   };
 
   // Draw particles and connections
-  const draw = (timestamp: number) => {
+  const draw = useCallback((timestamp: number) => {
     if (!canvasRef.current) return;
-    
+
     // Limit frame rate
     if (timestamp - lastUpdateTime.current < frameInterval) {
       animationFrameId.current = requestAnimationFrame(draw);
       return;
     }
-    
+
     lastUpdateTime.current = timestamp;
-    
+
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    
+
     if (!ctx) return;
-    
+
+    // Check if canvas is still in DOM to prevent memory leaks
+    if (!document.contains(canvas)) {
+      cancelAnimationFrame(animationFrameId.current);
+      return;
+    }
+
     ctx.clearRect(0, 0, dimensions.width, dimensions.height);
-    
+
     // Update and draw particles
     const updatedParticles = updateParticles();
-    
+
     updatedParticles.forEach(particle => {
       ctx.beginPath();
       ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
       ctx.fillStyle = particle.color;
       ctx.fill();
-      
+
       // Draw connections
       if (connectParticles) {
         updatedParticles.forEach(otherParticle => {
           const dx = particle.x - otherParticle.x;
           const dy = particle.y - otherParticle.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
-          
+
           if (distance < connectDistance) {
             ctx.beginPath();
             ctx.strokeStyle = `rgba(255, 255, 255, ${1 - distance / connectDistance})`;
@@ -135,24 +141,24 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
         });
       }
     });
-    
+
     setParticles(updatedParticles);
     animationFrameId.current = requestAnimationFrame(draw);
-  };
+  }, [updateParticles, connectParticles, connectDistance, frameInterval]);
 
   // Handle window resize
   useEffect(() => {
     const handleResize = () => {
       if (!canvasRef.current) return;
-      
+
       const width = window.innerWidth;
       const height = window.innerHeight;
-      
+
       setDimensions({ width, height });
       canvasRef.current.width = width;
       canvasRef.current.height = height;
     };
-    
+
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -160,9 +166,9 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
   // Initialize and start animation
   useEffect(() => {
     initParticles();
-    
+
     animationFrameId.current = requestAnimationFrame(draw);
-    
+
     return () => {
       cancelAnimationFrame(animationFrameId.current);
     };

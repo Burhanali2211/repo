@@ -3,9 +3,47 @@ const { useState, useEffect, useCallback } = React;
 import { supabase } from '../integrations/supabase/client';
 import type { Tables, TablesInsert, TablesUpdate } from '../integrations/supabase/types';
 
-export type SiteSettings = Tables<'site_settings'>;
-export type SiteSettingsInsert = TablesInsert<'site_settings'>;
-export type SiteSettingsUpdate = TablesUpdate<'site_settings'>;
+// Business hours type definition
+export interface BusinessHours {
+  monday: { open: string; close: string; closed: boolean };
+  tuesday: { open: string; close: string; closed: boolean };
+  wednesday: { open: string; close: string; closed: boolean };
+  thursday: { open: string; close: string; closed: boolean };
+  friday: { open: string; close: string; closed: boolean };
+  saturday: { open: string; close: string; closed: boolean };
+  sunday: { open: string; close: string; closed: boolean };
+}
+
+// Extended site settings type with additional fields
+export interface ExtendedSiteSettings extends Tables<'site_settings'> {
+  site_tagline?: string;
+  site_description?: string;
+  site_logo_light?: string;
+  site_logo_dark?: string;
+  accent_color?: string;
+  background_color?: string;
+  background_color_dark?: string;
+  text_color?: string;
+  text_color_dark?: string;
+  border_color?: string;
+  border_color_dark?: string;
+  font_family?: string;
+  font_size?: string;
+  line_height?: string;
+  font_weight?: string;
+  contact_phone_secondary?: string;
+  address?: string;
+  business_hours?: BusinessHours;
+  meta_keywords?: string;
+  google_analytics_id?: string;
+  google_tag_manager_id?: string;
+  facebook_pixel_id?: string;
+  custom_css?: string;
+}
+
+export type SiteSettings = ExtendedSiteSettings;
+export type SiteSettingsInsert = TablesInsert<'site_settings'> & Partial<ExtendedSiteSettings>;
+export type SiteSettingsUpdate = TablesUpdate<'site_settings'> & Partial<ExtendedSiteSettings>;
 
 interface UseSettingsReturn {
   settings: SiteSettings | null;
@@ -65,14 +103,46 @@ export const useSettings = (): UseSettingsReturn => {
   const createDefaultSettings = async () => {
     try {
       const defaultSettings = {
-        site_name: 'Easyio Technologies',
+        site_name: 'EasyIo.tech',
+        site_tagline: 'Simplifying Technology',
+        site_description: 'Founded in 2023, EasyIo.tech simplifies technology to make it more accessible, sustainable, and meaningful. From IoT to Digital transformation, we\'re your creative tech partner.',
         site_logo: '/logo.svg',
+        site_logo_light: '',
+        site_logo_dark: '',
         primary_color: '#2563EB',
         secondary_color: '#4F46E5',
-        contact_email: 'contact@example.com',
-        meta_title: 'Easyio Technologies - Digital Identity Solutions',
-        meta_description: 'Providing cutting-edge digital identity solutions for modern businesses',
-        footer_text: '© 2023-2024 Easyio Technologies. All rights reserved.',
+        accent_color: '#10B981',
+        background_color: '#FFFFFF',
+        background_color_dark: '#1F2937',
+        text_color: '#1F2937',
+        text_color_dark: '#F9FAFB',
+        border_color: '#E5E7EB',
+        border_color_dark: '#374151',
+        font_family: 'Inter',
+        font_size: '16',
+        line_height: '1.6',
+        font_weight: '400',
+        contact_email: 'hello@easyio.tech',
+        contact_phone: '+1 (555) 123-4567',
+        contact_phone_secondary: '',
+        address: '123 Tech Street, Innovation City, IC 12345',
+        business_hours: {
+          monday: { open: '09:00', close: '17:00', closed: false },
+          tuesday: { open: '09:00', close: '17:00', closed: false },
+          wednesday: { open: '09:00', close: '17:00', closed: false },
+          thursday: { open: '09:00', close: '17:00', closed: false },
+          friday: { open: '09:00', close: '17:00', closed: false },
+          saturday: { open: '10:00', close: '14:00', closed: false },
+          sunday: { open: '10:00', close: '14:00', closed: true }
+        },
+        meta_title: 'EasyIo.tech - Simplifying Technology',
+        meta_description: 'Founded in 2023, EasyIo.tech simplifies technology to make it more accessible, sustainable, and meaningful. From IoT to Digital transformation, we\'re your creative tech partner.',
+        meta_keywords: 'technology, IoT, digital transformation, sustainable tech, business solutions',
+        google_analytics_id: '',
+        google_tag_manager_id: '',
+        facebook_pixel_id: '',
+        custom_css: '',
+        footer_text: '© 2024 EasyIo.tech. All rights reserved.',
         social_links: {},
         is_maintenance_mode: false
       };
@@ -172,14 +242,47 @@ export const useSettings = (): UseSettingsReturn => {
       setError(null);
 
       const defaultSettings: SiteSettingsUpdate = {
-        site_name: 'Easyio Technologies',
+        site_name: 'EasyIo.tech',
+        site_tagline: 'Simplifying Technology',
+        site_description: 'Founded in 2023, EasyIo.tech simplifies technology to make it more accessible, sustainable, and meaningful. From IoT to Digital transformation, we\'re your creative tech partner.',
         site_logo: '/logo.svg',
+        site_logo_light: '',
+        site_logo_dark: '',
         primary_color: '#2563EB',
         secondary_color: '#4F46E5',
-        contact_email: 'contact@example.com',
-        meta_title: 'Easyio Technologies - Digital Identity Solutions',
-        meta_description: 'Providing cutting-edge digital identity solutions for modern businesses',
-        footer_text: '© 2023-2024 Easyio Technologies. All rights reserved.',
+        accent_color: '#10B981',
+        background_color: '#FFFFFF',
+        background_color_dark: '#1F2937',
+        text_color: '#1F2937',
+        text_color_dark: '#F9FAFB',
+        border_color: '#E5E7EB',
+        border_color_dark: '#374151',
+        font_family: 'Inter',
+        font_size: '16',
+        line_height: '1.6',
+        font_weight: '400',
+        contact_email: 'hello@easyio.tech',
+        contact_phone: '+1 (555) 123-4567',
+        contact_phone_secondary: '',
+        address: '123 Tech Street, Innovation City, IC 12345',
+        business_hours: {
+          monday: { open: '09:00', close: '17:00', closed: false },
+          tuesday: { open: '09:00', close: '17:00', closed: false },
+          wednesday: { open: '09:00', close: '17:00', closed: false },
+          thursday: { open: '09:00', close: '17:00', closed: false },
+          friday: { open: '09:00', close: '17:00', closed: false },
+          saturday: { open: '10:00', close: '14:00', closed: false },
+          sunday: { open: '10:00', close: '14:00', closed: true }
+        },
+        meta_title: 'EasyIo.tech - Simplifying Technology',
+        meta_description: 'Founded in 2023, EasyIo.tech simplifies technology to make it more accessible, sustainable, and meaningful. From IoT to Digital transformation, we\'re your creative tech partner.',
+        meta_keywords: 'technology, IoT, digital transformation, sustainable tech, business solutions',
+        google_analytics_id: '',
+        google_tag_manager_id: '',
+        facebook_pixel_id: '',
+        custom_css: '',
+        footer_text: '© 2024 EasyIo.tech. All rights reserved.',
+        social_links: {},
         is_maintenance_mode: false
       };
 

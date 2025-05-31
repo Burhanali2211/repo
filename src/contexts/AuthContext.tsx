@@ -44,38 +44,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         // Get the current session and user from Supabase
         const { data: { session } } = await supabase.auth.getSession();
-        const supabaseUser = await getCurrentUser();
 
-        if (session && supabaseUser) {
-          // Create a user object from Supabase auth data
+        if (session?.user) {
+          // Create a user object from Supabase auth data only
+          // Don't depend on profiles table to avoid 406 errors
           const basicUser: User = {
-            id: supabaseUser.id,
-            email: supabaseUser.email || '',
-            firstName: supabaseUser.user_metadata?.first_name || 'User',
-            lastName: supabaseUser.user_metadata?.last_name || '',
-            role: supabaseUser.user_metadata?.role || 'client',
-            company: supabaseUser.user_metadata?.company
+            id: session.user.id,
+            email: session.user.email || '',
+            firstName: session.user.user_metadata?.first_name || 'User',
+            lastName: session.user.user_metadata?.last_name || '',
+            role: session.user.user_metadata?.role || 'client',
+            company: session.user.user_metadata?.company
           };
           setUser(basicUser);
           localStorage.setItem('user', JSON.stringify(basicUser));
         } else {
-          // No session, check if we have a stored user as fallback
-          const storedUser = localStorage.getItem('user');
-          if (storedUser) {
-            setUser(JSON.parse(storedUser));
-          } else {
-            setUser(null);
-            localStorage.removeItem('user');
-          }
+          // No session, clear everything
+          setUser(null);
+          localStorage.removeItem('user');
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
-        toast({
-          title: "Authentication Error",
-          description: "There was a problem loading your profile. Some features may be limited.",
-          variant: "destructive"
-        });
-        // Clear user state if we can't authenticate properly
+        // Don't show error toast for auth initialization issues
+        // Just clear the user state
         setUser(null);
         localStorage.removeItem('user');
       } finally {

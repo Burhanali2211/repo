@@ -47,27 +47,30 @@ const Portfolio = () => {
     }
   ];
 
-  const filteredProjects = filter === 'All' 
-    ? projects 
+  const filteredProjects = filter === 'All'
+    ? projects
     : projects.filter(project => project.category === filter);
 
   return (
     <div className="min-h-screen pt-20">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-b from-blue-600 to-indigo-700 text-white dark:from-indigo-800 dark:to-gray-900">
+      <section className="relative py-20 bg-gradient-to-b from-blue-600 to-indigo-700 text-white dark:from-indigo-800 dark:to-gray-900 overflow-hidden">
         <div className="container mx-auto px-6 text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-6">
             Our <span className="text-amber-300 dark:text-amber-300">Portfolio</span>
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Explore our latest work and see how we've helped businesses 
+            Explore our latest work and see how we've helped businesses
             achieve their digital goals.
           </p>
         </div>
+
+        {/* Gradient transition to Filter Tabs section */}
+        <div className="section-transition-overlay gradient-transition-to-gray-light dark:gradient-transition-to-gray-dark"></div>
       </section>
 
       {/* Filter Tabs */}
-      <section className="py-12 bg-gradient-to-b from-gray-100 to-white dark:from-gray-800 dark:to-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <section className="relative py-12 bg-gradient-to-b from-gray-100 to-white dark:from-gray-800 dark:to-gray-900 border-b border-gray-200 dark:border-gray-800 overflow-hidden">
         <div className="container mx-auto px-6">
           <div className="flex flex-wrap justify-center gap-4">
             {categories.map((category) => (
@@ -82,16 +85,19 @@ const Portfolio = () => {
             ))}
           </div>
         </div>
+
+        {/* Gradient transition to Projects Grid section */}
+        <div className="section-transition-overlay gradient-transition-to-light dark:gradient-transition-to-dark"></div>
       </section>
 
       {/* Projects Grid */}
-      <section className="py-20 bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-black">
+      <section className="relative py-20 bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-black overflow-hidden">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-12">
             {filteredProjects.map((project, index) => (
               <div key={index} className="group cursor-pointer">
                 <div className="relative overflow-hidden rounded-xl mb-6">
-                  <img 
+                  <img
                     src={project.image}
                     alt={project.title}
                     className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
@@ -107,18 +113,18 @@ const Portfolio = () => {
                     </Button>
                   </div>
                 </div>
-                
+
                 <div className="mb-2">
                   <span className="text-sm text-purple-600 dark:text-purple-400 font-medium">{project.category}</span>
                 </div>
-                
+
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">{project.title}</h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-4">{project.description}</p>
-                
+
                 <div className="mb-4">
                   <div className="flex flex-wrap gap-2">
                     {project.technologies.map((tech, techIndex) => (
-                      <span 
+                      <span
                         key={techIndex}
                         className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm rounded-full"
                       >

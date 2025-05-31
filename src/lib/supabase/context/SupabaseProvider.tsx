@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Session } from '@supabase/supabase-js';
-import { supabase } from '../client';
+import { supabase } from '@/integrations/supabase/client';
 
 // Define types for our context
 type SupabaseContextType = {
@@ -19,7 +19,7 @@ const SupabaseContext = createContext<SupabaseContextType>({
   session: null,
   isLoading: true,
   signIn: async () => ({ error: null, success: false }),
-  signOut: async () => {},
+  signOut: async () => { },
   user: null,
 });
 
@@ -66,7 +66,7 @@ export const SupabaseProvider: React.FC<SupabaseProviderProps> = ({ children }) 
         email,
         password,
       });
-      
+
       return {
         error,
         success: !error,

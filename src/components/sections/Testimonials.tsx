@@ -184,6 +184,9 @@ const Testimonials = () => {
       {/* Decorative elements */}
       <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-yellow-500/20 rounded-full blur-3xl"></div>
       <div className="absolute -top-10 -left-10 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl"></div>
+
+      {/* Gradient transition to FAQ section */}
+      <div className="section-transition-overlay gradient-transition-to-light dark:gradient-transition-to-dark"></div>
     </section>
   );
 };

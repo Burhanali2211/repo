@@ -8,16 +8,19 @@ const Contact = () => {
   return (
     <div className="min-h-screen pt-20">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-b from-blue-600 to-indigo-700 text-white dark:from-indigo-800 dark:to-gray-900">
+      <section className="relative py-20 bg-gradient-to-b from-blue-600 to-indigo-700 text-white dark:from-indigo-800 dark:to-gray-900 overflow-hidden">
         <div className="container mx-auto px-6 text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-6">
             Get In <span className="text-amber-300 dark:text-amber-300">Touch</span>
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Ready to start your next project? We'd love to hear from you. 
+            Ready to start your next project? We'd love to hear from you.
             Let's create something amazing together.
           </p>
         </div>
+
+        {/* Gradient transition to Contact Info section */}
+        <div className="section-transition-overlay gradient-transition-to-light dark:gradient-transition-to-dark"></div>
       </section>
 
       {/* Contact Info & Form */}
@@ -27,7 +30,7 @@ const Contact = () => {
             {/* Contact Information */}
             <div>
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Let's Start a Conversation</h2>
-              
+
               <div className="space-y-6 mb-8">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
@@ -38,7 +41,7 @@ const Contact = () => {
                     <p className="text-gray-600 dark:text-gray-400">hello@easyio.tech</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
                     <Phone className="h-6 w-6 text-blue-600" />
@@ -48,7 +51,7 @@ const Contact = () => {
                     <p className="text-gray-600 dark:text-gray-400">+1 (555) 123-4567</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
                     <MapPin className="h-6 w-6 text-green-600" />
@@ -72,13 +75,13 @@ const Contact = () => {
 
               {/* Google Maps Embed */}
               <div className="h-64 rounded-lg overflow-hidden shadow-md">
-                <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.215573174316!2d-73.98784542426508!3d40.75751157138396!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6480299%3A0x55194ec5a1ae072e!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1657867372607!5m2!1sen!2sus" 
-                  width="100%" 
-                  height="100%" 
-                  style={{ border: 0 }} 
-                  allowFullScreen={true} 
-                  loading="lazy" 
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.215573174316!2d-73.98784542426508!3d40.75751157138396!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6480299%3A0x55194ec5a1ae072e!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1657867372607!5m2!1sen!2sus"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen={true}
+                  loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   title="Google Maps Location"
                   className="grayscale dark:invert-[0.85] dark:contrast-125 dark:brightness-90"

@@ -9,8 +9,16 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Switch } from '../ui/switch';
 import { toast } from '@/hooks/use-toast';
-import { Settings, Upload as UploadIcon, X, Image as ImageIcon } from 'lucide-react';
-import { uploadFile } from '@/lib/supabase/services/storage';
+import { Settings } from 'lucide-react';
+
+// Import new settings components
+import DualLogoUpload from './settings/DualLogoUpload';
+import FaviconUpload from './settings/FaviconUpload';
+import ThemeColorPicker from './settings/ThemeColorPicker';
+import TypographySettings from './settings/TypographySettings';
+import BusinessHours from './settings/BusinessHours';
+import SEOSettings from './settings/SEOSettings';
+import ContactSettings from './settings/ContactSettings';
 
 const SettingsManager = () => {
   const { settings, loading, error, updateSettings, resetSettings, fetchSettings } = useSettings();
@@ -19,11 +27,6 @@ const SettingsManager = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadType, setUploadType] = useState<'logo' | 'favicon' | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
-  const [faviconPreview, setFaviconPreview] = useState<string | null>(null);
-  const logoInputRef = React.useRef<HTMLInputElement>(null);
-  const faviconInputRef = React.useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (settings) {
@@ -36,270 +39,139 @@ const SettingsManager = () => {
         cleanedSettings.social_links = {};
       }
 
+      // Set default business hours if not present
+      if (!cleanedSettings.business_hours) {
+        cleanedSettings.business_hours = {
+          monday: { open: '09:00', close: '17:00', closed: false },
+          tuesday: { open: '09:00', close: '17:00', closed: false },
+          wednesday: { open: '09:00', close: '17:00', closed: false },
+          thursday: { open: '09:00', close: '17:00', closed: false },
+          friday: { open: '09:00', close: '17:00', closed: false },
+          saturday: { open: '10:00', close: '14:00', closed: false },
+          sunday: { open: '10:00', close: '14:00', closed: true }
+        };
+      }
+
       setFormData(cleanedSettings);
-
-      // Set logo preview if available
-      if (settings.site_logo) {
-        setLogoPreview(settings.site_logo);
-      }
-
-      // Set favicon preview if available
-      if (settings.site_favicon) {
-        setFaviconPreview(settings.site_favicon);
-      }
     } else {
       console.log('No settings available yet');
     }
   }, [settings]);
 
+  // Generic handler for updating any field
+  const handleFieldChange = (field: string, value: unknown) => {
+    setFormData((prev: SiteSettingsUpdate | null) => prev ? { ...prev, [field]: value } : null);
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => prev ? { ...prev, [name]: value } : null);
+    handleFieldChange(name, value);
   };
 
   const handleSwitchChange = (name: string, checked: boolean) => {
-    setFormData(prev => prev ? { ...prev, [name]: checked } : null);
-  };
-
-  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => prev ? { ...prev, [name]: value } : null);
-  };
-
-  const handleSocialLinksChange = (platform: string, value: string) => {
-    if (!formData) return;
-
-    // Ensure we have a proper object to work with
-    const currentLinks = formData.social_links ?
-      (typeof formData.social_links === 'object' ?
-        formData.social_links as Record<string, string> :
-        {}) :
-      {};
-
-    // Create a new object with the updated value
-    const updatedLinks = { ...currentLinks, [platform]: value };
-
-    console.log(`Updating social links for ${platform}:`, updatedLinks);
-
-    setFormData(prev => prev ? {
-      ...prev,
-      social_links: updatedLinks
-    } : null);
-  };
-
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-    if (!uploadType) return;
-
-    const file = e.target.files[0];
-
-    // Validate file type
-    const validTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/webp', 'image/gif', 'image/x-icon', 'image/vnd.microsoft.icon'];
-    if (!validTypes.includes(file.type)) {
-      toast({
-        title: "Invalid File Type",
-        description: "Please upload a valid image file (JPEG, PNG, SVG, WebP, GIF, or ICO).",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      setIsUploading(true);
-
-      // Create a temporary preview
-      const objectUrl = URL.createObjectURL(file);
-
-      if (uploadType === 'logo') {
-        setLogoPreview(objectUrl);
-      } else {
-        setFaviconPreview(objectUrl);
-      }
-
-      // Upload to Supabase storage with a folder based on type
-      const folderName = uploadType === 'logo' ? 'logos' : 'favicons';
-      const uploadPath = await uploadFile(file, folderName);
-
-      // Update form data with the new URL
-      if (uploadType === 'logo') {
-        setFormData(prev => prev ? { ...prev, site_logo: uploadPath } : null);
-        toast({
-          title: "Logo Uploaded",
-          description: "Logo has been uploaded successfully. Don't forget to save your changes."
-        });
-      } else {
-        setFormData(prev => prev ? { ...prev, site_favicon: uploadPath } : null);
-        toast({
-          title: "Favicon Uploaded",
-          description: "Favicon has been uploaded successfully. Don't forget to save your changes."
-        });
-      }
-
-    } catch (err) {
-      toast({
-        title: "Upload Failed",
-        description: `Failed to upload ${uploadType}. Please try again.`,
-        variant: "destructive"
-      });
-      console.error(`${uploadType} upload error:`, err);
-
-      // Revert to the original image if upload fails
-      if (uploadType === 'logo') {
-        setLogoPreview(formData?.site_logo || null);
-      } else {
-        setFaviconPreview(formData?.site_favicon || null);
-      }
-    } finally {
-      setIsUploading(false);
-      setUploadType(null);
-
-      // Reset the file input
-      if (logoInputRef.current) {
-        logoInputRef.current.value = '';
-      }
-      if (faviconInputRef.current) {
-        faviconInputRef.current.value = '';
-      }
-    }
-  };
-
-  const handleLogoUpload = () => {
-    setUploadType('logo');
-    logoInputRef.current?.click();
-  };
-
-  const handleFaviconUpload = () => {
-    setUploadType('favicon');
-    faviconInputRef.current?.click();
-  };
-
-  const handleRemoveLogo = () => {
-    // Update form data to remove the logo
-    setFormData(prev => prev ? { ...prev, site_logo: null } : null);
-    setLogoPreview(null);
-
-    toast({
-      title: "Logo Removed",
-      description: "Logo has been removed. Don't forget to save your changes."
-    });
-  };
-
-  const handleRemoveFavicon = () => {
-    // Update form data to remove the favicon
-    setFormData(prev => prev ? { ...prev, site_favicon: null } : null);
-    setFaviconPreview(null);
-
-    toast({
-      title: "Favicon Removed",
-      description: "Favicon has been removed. Don't forget to save your changes."
-    });
+    handleFieldChange(name, checked);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData) return;
 
+    setIsSaving(true);
     try {
-      setIsSaving(true);
-      console.log('Submitting settings update:', formData);
-
-      // Create a clean copy of the data to submit
-      const dataToSubmit = {
-        ...formData,
-        // Ensure social_links is properly formatted
-        social_links: formData.social_links || {}
-      };
-
-      const result = await updateSettings(dataToSubmit);
-
+      const result = await updateSettings(formData);
       if (result.success) {
         toast({
-          title: "Success",
-          description: "Settings updated successfully"
+          title: "Settings Updated",
+          description: "Website settings have been saved successfully."
         });
+        // Refresh settings to get the latest data
+        await fetchSettings();
       } else {
-        toast({
-          title: "Error",
-          description: "Failed to update settings",
-          variant: "destructive"
-        });
-        console.error(result.error);
+        throw result.error || new Error('Failed to update settings');
       }
     } catch (err) {
+      console.error('Error updating settings:', err);
       toast({
-        title: "Error",
-        description: "An error occurred while saving settings",
+        title: "Update Failed",
+        description: err instanceof Error ? err.message : "Failed to update settings. Please try again.",
         variant: "destructive"
       });
-      console.error(err);
     } finally {
       setIsSaving(false);
-      // Refresh the settings to ensure we have the latest data
-      fetchSettings();
     }
   };
 
   const handleReset = async () => {
-    if (window.confirm('Are you sure you want to reset all settings to default values?')) {
-      try {
-        setIsResetting(true);
-        const result = await resetSettings();
-
-        if (result.success) {
-          toast({
-            title: "Success",
-            description: "Settings reset to defaults"
-          });
-        } else {
-          toast({
-            title: "Error",
-            description: "Failed to reset settings",
-            variant: "destructive"
-          });
-          console.error(result.error);
-        }
-      } catch (err) {
+    setIsResetting(true);
+    try {
+      const result = await resetSettings();
+      if (result.success) {
         toast({
-          title: "Error",
-          description: "An error occurred while resetting settings",
-          variant: "destructive"
+          title: "Settings Reset",
+          description: "All settings have been reset to default values."
         });
-        console.error(err);
-      } finally {
-        setIsResetting(false);
+        // Refresh settings to get the latest data
+        await fetchSettings();
+      } else {
+        throw result.error || new Error('Failed to reset settings');
       }
+    } catch (err) {
+      console.error('Error resetting settings:', err);
+      toast({
+        title: "Reset Failed",
+        description: err instanceof Error ? err.message : "Failed to reset settings. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsResetting(false);
     }
   };
 
-  if (loading && !formData) {
+  if (loading) {
     return (
-      <div className="flex items-center justify-center p-6">
-        <div className="animate-spin mr-2">
-          <Settings size={20} />
-        </div>
-        <p>Loading settings...</p>
+      <div className="container mx-auto py-6">
+        <Card className="w-full">
+          <CardContent className="flex items-center justify-center py-12">
+            <div className="flex items-center space-x-2">
+              <Settings className="mr-2 h-5 w-5 animate-spin" />
+              <span>Loading settings...</span>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
-        <div className="flex items-center">
-          <Settings className="mr-2" size={20} />
-          <span className="block sm:inline">Error loading settings: {error.message}</span>
-        </div>
+      <div className="container mx-auto py-6">
+        <Card className="w-full">
+          <CardContent className="flex items-center justify-center py-12">
+            <div className="text-center">
+              <Settings className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Error Loading Settings</h3>
+              <p className="text-gray-600 mb-4">{error.message}</p>
+              <Button onClick={() => fetchSettings()}>
+                Try Again
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   if (!formData) {
     return (
-      <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded relative" role="alert">
-        <div className="flex items-center">
-          <Settings className="mr-2" size={20} />
-          <span className="block sm:inline">No settings found. Please try refreshing the page.</span>
-        </div>
+      <div className="container mx-auto py-6">
+        <Card className="w-full">
+          <CardContent className="flex items-center justify-center py-12">
+            <div className="flex items-center space-x-2 text-gray-500">
+              <Settings className="mr-2" size={20} />
+              <span className="block sm:inline">No settings found. Please try refreshing the page.</span>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -338,390 +210,220 @@ const SettingsManager = () => {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="general" className="space-y-4">
-                <div className="grid gap-4">
-                  <div>
-                    <Label htmlFor="site_name">Website Name</Label>
-                    <Input
-                      id="site_name"
-                      name="site_name"
-                      value={formData.site_name || ''}
-                      onChange={handleInputChange}
-                      placeholder="Enter website name"
-                    />
-                  </div>
+              <TabsContent value="general" className="space-y-6">
+                <div className="grid gap-6">
+                  {/* Basic Site Information */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm">Basic Information</CardTitle>
+                      <CardDescription className="text-xs">
+                        Essential website information and branding
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div>
+                        <Label htmlFor="site_name">Website Name</Label>
+                        <Input
+                          id="site_name"
+                          name="site_name"
+                          value={formData.site_name || ''}
+                          onChange={handleInputChange}
+                          placeholder="Enter website name"
+                        />
+                      </div>
 
-                  <div>
-                    <Label htmlFor="site_logo">Logo URL</Label>
-                    <Input
-                      id="site_logo"
-                      name="site_logo"
-                      value={formData.site_logo || ''}
-                      onChange={handleInputChange}
-                      placeholder="/logo.svg"
-                    />
-                    <p className="text-sm text-gray-500 mt-1">
-                      Path to your logo file (recommended size: 200x50px)
-                    </p>
-                  </div>
+                      <div>
+                        <Label htmlFor="site_tagline">Tagline</Label>
+                        <Input
+                          id="site_tagline"
+                          name="site_tagline"
+                          value={formData.site_tagline || ''}
+                          onChange={handleInputChange}
+                          placeholder="Simplifying Technology"
+                        />
+                      </div>
 
-                  <div>
-                    <Label htmlFor="site_favicon">Favicon URL</Label>
-                    <Input
-                      id="site_favicon"
-                      name="site_favicon"
-                      value={formData.site_favicon || ''}
-                      onChange={handleInputChange}
-                      placeholder="/favicon.ico"
-                    />
-                  </div>
+                      <div>
+                        <Label htmlFor="site_description">Description</Label>
+                        <Textarea
+                          id="site_description"
+                          name="site_description"
+                          value={formData.site_description || ''}
+                          onChange={handleInputChange}
+                          placeholder="Brief description of your website"
+                          rows={3}
+                        />
+                      </div>
 
-                  <div>
-                    <Label htmlFor="meta_title">Meta Title</Label>
-                    <Input
-                      id="meta_title"
-                      name="meta_title"
-                      value={formData.meta_title || ''}
-                      onChange={handleInputChange}
-                      placeholder="Meta title for SEO"
-                    />
-                  </div>
+                      <div>
+                        <Label htmlFor="footer_text">Footer Text</Label>
+                        <Input
+                          id="footer_text"
+                          name="footer_text"
+                          value={formData.footer_text || ''}
+                          onChange={handleInputChange}
+                          placeholder="© 2024 Your Company"
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                  <div>
-                    <Label htmlFor="meta_description">Meta Description</Label>
-                    <Textarea
-                      id="meta_description"
-                      name="meta_description"
-                      value={formData.meta_description || ''}
-                      onChange={handleInputChange}
-                      placeholder="Brief description for search engines"
-                      rows={3}
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="footer_text">Footer Text</Label>
-                    <Input
-                      id="footer_text"
-                      name="footer_text"
-                      value={formData.footer_text || ''}
-                      onChange={handleInputChange}
-                      placeholder="© 2024 Your Company"
-                    />
-                  </div>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="appearance" className="space-y-4">
-                <div className="grid gap-4">
-                  {/* File Upload Inputs */}
-                  <input
-                    ref={logoInputRef}
-                    type="file"
-                    id="logo_upload"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                    aria-label="Upload logo"
-                  />
-                  <input
-                    ref={faviconInputRef}
-                    type="file"
-                    id="favicon_upload"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                    aria-label="Upload favicon"
+                  {/* Dual Logo Upload */}
+                  <DualLogoUpload
+                    siteLogo={formData.site_logo || ''}
+                    siteLogoLight={formData.site_logo_light || ''}
+                    siteLogoDark={formData.site_logo_dark || ''}
+                    onLogoChange={handleFieldChange}
+                    isUploading={isUploading}
+                    onUploadingChange={setIsUploading}
                   />
 
-                  {/* Logo Upload Section */}
-                  <div className="mb-6">
-                    <Label htmlFor="site_logo" className="block mb-2">Site Logo</Label>
-                    <div className="flex flex-col space-y-4">
-                      {/* Logo Preview */}
-                      {logoPreview ? (
-                        <div className="relative w-64 h-24 border rounded-md overflow-hidden flex items-center justify-center bg-gray-50">
-                          <img
-                            src={logoPreview}
-                            alt="Site Logo"
-                            className="max-w-full max-h-full object-contain"
-                          />
-                          <button
-                            type="button"
-                            onClick={handleRemoveLogo}
-                            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
-                            aria-label="Remove logo"
-                          >
-                            <X className="h-4 w-4" />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="w-64 h-24 border-2 border-dashed rounded-md flex items-center justify-center bg-gray-50">
-                          <div className="text-center">
-                            <ImageIcon className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                            <p className="text-sm text-gray-500">No logo uploaded</p>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Upload Button */}
-                      <div>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={handleLogoUpload}
-                          disabled={isUploading}
-                          className="mr-2"
-                        >
-                          {isUploading && uploadType === 'logo' ? (
-                            <>
-                              <UploadIcon className="mr-2 h-4 w-4 animate-spin" />
-                              Uploading...
-                            </>
-                          ) : (
-                            <>
-                              <UploadIcon className="mr-2 h-4 w-4" />
-                              Upload Logo
-                            </>
-                          )}
-                        </Button>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Recommended size: 200x80px. Formats: PNG, JPG, SVG, WebP.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Favicon Upload Section */}
-                  <div className="mb-6">
-                    <Label htmlFor="site_favicon" className="block mb-2">Favicon</Label>
-                    <div className="flex flex-col space-y-4">
-                      {/* Favicon Preview */}
-                      {faviconPreview ? (
-                        <div className="relative w-16 h-16 border rounded-md overflow-hidden flex items-center justify-center bg-gray-50">
-                          <img
-                            src={faviconPreview}
-                            alt="Favicon"
-                            className="w-full h-full object-contain"
-                          />
-                          <button
-                            type="button"
-                            onClick={handleRemoveFavicon}
-                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-0.5 hover:bg-red-600 transition-colors"
-                            aria-label="Remove favicon"
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="w-16 h-16 border-2 border-dashed rounded-md flex items-center justify-center bg-gray-50">
-                          <div className="text-center">
-                            <ImageIcon className="h-6 w-6 text-gray-400" />
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Upload Button */}
-                      <div>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={handleFaviconUpload}
-                          disabled={isUploading}
-                          className="mr-2"
-                        >
-                          {isUploading && uploadType === 'favicon' ? (
-                            <>
-                              <UploadIcon className="mr-2 h-4 w-4 animate-spin" />
-                              Uploading...
-                            </>
-                          ) : (
-                            <>
-                              <UploadIcon className="mr-2 h-4 w-4" />
-                              Upload Favicon
-                            </>
-                          )}
-                        </Button>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Recommended size: 32x32px or 16x16px. Formats: ICO, PNG, SVG.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="primary_color">Primary Color</Label>
-                      <div className="flex items-center gap-2">
-                        <Input
-                          id="primary_color"
-                          name="primary_color"
-                          type="color"
-                          className="w-12 h-10 p-1"
-                          value={formData.primary_color || '#2563EB'}
-                          onChange={handleColorChange}
-                        />
-                        <Input
-                          name="primary_color"
-                          value={formData.primary_color || '#2563EB'}
-                          onChange={handleInputChange}
-                          placeholder="#2563EB"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <Label htmlFor="secondary_color">Secondary Color</Label>
-                      <div className="flex items-center gap-2">
-                        <Input
-                          id="secondary_color"
-                          name="secondary_color"
-                          type="color"
-                          className="w-12 h-10 p-1"
-                          value={formData.secondary_color || '#4F46E5'}
-                          onChange={handleColorChange}
-                        />
-                        <Input
-                          name="secondary_color"
-                          value={formData.secondary_color || '#4F46E5'}
-                          onChange={handleInputChange}
-                          placeholder="#4F46E5"
-                        />
-                      </div>
-                    </div>
-                  </div>
+                  {/* Favicon Upload */}
+                  <FaviconUpload
+                    siteFavicon={formData.site_favicon || ''}
+                    onFaviconChange={handleFieldChange}
+                    isUploading={isUploading}
+                    onUploadingChange={setIsUploading}
+                  />
                 </div>
               </TabsContent>
 
-              <TabsContent value="contact" className="space-y-4">
-                <div className="grid gap-4">
-                  <div>
-                    <Label htmlFor="contact_email">Contact Email</Label>
-                    <Input
-                      id="contact_email"
-                      name="contact_email"
-                      value={formData.contact_email || ''}
-                      onChange={handleInputChange}
-                      placeholder="contact@example.com"
-                      type="email"
-                    />
-                  </div>
+              <TabsContent value="appearance" className="space-y-6">
+                {/* Theme Color Picker */}
+                <ThemeColorPicker
+                  primaryColor={formData.primary_color}
+                  secondaryColor={formData.secondary_color}
+                  accentColor={formData.accent_color}
+                  backgroundColor={formData.background_color}
+                  backgroundColorDark={formData.background_color_dark}
+                  textColor={formData.text_color}
+                  textColorDark={formData.text_color_dark}
+                  borderColor={formData.border_color}
+                  borderColorDark={formData.border_color_dark}
+                  onColorChange={handleFieldChange}
+                />
 
-                  <div>
-                    <Label htmlFor="contact_phone">Contact Phone</Label>
-                    <Input
-                      id="contact_phone"
-                      name="contact_phone"
-                      value={formData.contact_phone || ''}
-                      onChange={handleInputChange}
-                      placeholder="+1 (555) 123-4567"
-                    />
-                  </div>
-
-                  <div className="space-y-3">
-                    <Label>Social Media Links</Label>
-
-                    {['facebook', 'twitter', 'linkedin', 'instagram', 'github'].map(platform => {
-                      const socialLinks = formData.social_links as Record<string, string> || {};
-                      return (
-                        <div key={platform} className="flex items-center gap-2">
-                          <span className="w-24 capitalize">{platform}:</span>
-                          <Input
-                            value={socialLinks[platform] || ''}
-                            onChange={(e) => handleSocialLinksChange(platform, e.target.value)}
-                            placeholder={`https://${platform}.com/yourusername`}
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+                {/* Typography Settings */}
+                <TypographySettings
+                  fontFamily={formData.font_family}
+                  fontSize={formData.font_size}
+                  lineHeight={formData.line_height}
+                  fontWeight={formData.font_weight}
+                  onTypographyChange={handleFieldChange}
+                />
               </TabsContent>
 
-              <TabsContent value="advanced" className="space-y-4">
-                <div className="grid gap-4">
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <Label htmlFor="header_scripts">Header Scripts</Label>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setFormData(prev => ({ ...prev, header_scripts: '' }));
-                          toast.success('Header scripts cleared');
-                        }}
-                        className="text-xs"
-                      >
-                        Clear
-                      </Button>
-                    </div>
-                    <Textarea
-                      id="header_scripts"
-                      name="header_scripts"
-                      value={formData.header_scripts || ''}
-                      onChange={handleInputChange}
-                      placeholder="console.log('Header script example');"
-                      rows={4}
-                      className="font-mono text-sm"
-                    />
-                    <p className="text-sm text-gray-500 mt-1">
-                      JavaScript code only (no HTML tags). Will be inserted in the &lt;head&gt; tag.
-                    </p>
-                  </div>
+              <TabsContent value="contact" className="space-y-6">
+                {/* Contact Settings */}
+                <ContactSettings
+                  contactEmail={formData.contact_email}
+                  contactPhone={formData.contact_phone}
+                  contactPhoneSecondary={formData.contact_phone_secondary}
+                  address={formData.address}
+                  socialLinks={formData.social_links as Record<string, string>}
+                  onContactChange={handleFieldChange}
+                />
 
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <Label htmlFor="footer_scripts">Footer Scripts</Label>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setFormData(prev => ({ ...prev, footer_scripts: '' }));
-                          toast.success('Footer scripts cleared');
-                        }}
-                        className="text-xs"
-                      >
-                        Clear
-                      </Button>
-                    </div>
-                    <Textarea
-                      id="footer_scripts"
-                      name="footer_scripts"
-                      value={formData.footer_scripts || ''}
-                      onChange={handleInputChange}
-                      placeholder="console.log('Footer script example');"
-                      rows={4}
-                      className="font-mono text-sm"
-                    />
-                    <p className="text-sm text-gray-500 mt-1">
-                      JavaScript code only (no HTML tags). Will be inserted before the closing &lt;/body&gt; tag.
-                    </p>
-                  </div>
+                {/* Business Hours */}
+                <BusinessHours
+                  businessHours={formData.business_hours}
+                  onBusinessHoursChange={(hours: unknown) => handleFieldChange('business_hours', hours)}
+                />
+              </TabsContent>
 
-                  <div className="flex items-center space-x-2 pt-2">
-                    <Switch
-                      id="is_maintenance_mode"
-                      checked={!!formData.is_maintenance_mode}
-                      onCheckedChange={(checked) => handleSwitchChange('is_maintenance_mode', checked)}
-                    />
-                    <Label htmlFor="is_maintenance_mode">Maintenance Mode</Label>
-                  </div>
+              <TabsContent value="advanced" className="space-y-6">
+                {/* SEO Settings */}
+                <SEOSettings
+                  metaTitle={formData.meta_title}
+                  metaDescription={formData.meta_description}
+                  metaKeywords={formData.meta_keywords}
+                  googleAnalyticsId={formData.google_analytics_id}
+                  googleTagManagerId={formData.google_tag_manager_id}
+                  facebookPixelId={formData.facebook_pixel_id}
+                  onSEOChange={handleFieldChange}
+                />
 
-                  {formData.is_maintenance_mode && (
+                {/* Custom Code & Maintenance */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-sm">Custom Code & System</CardTitle>
+                    <CardDescription className="text-xs">
+                      Custom styling, scripts, and system settings
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="maintenance_message">Maintenance Message</Label>
+                      <Label htmlFor="custom_css">Custom CSS</Label>
                       <Textarea
-                        id="maintenance_message"
-                        name="maintenance_message"
-                        value={formData.maintenance_message || ''}
+                        id="custom_css"
+                        name="custom_css"
+                        value={formData.custom_css || ''}
                         onChange={handleInputChange}
-                        placeholder="We're currently performing maintenance. Please check back soon."
-                        rows={3}
+                        placeholder="/* Custom CSS styles */"
+                        rows={4}
+                        className="font-mono text-sm"
                       />
+                      <p className="text-sm text-gray-500 mt-1">
+                        Custom CSS that will be applied site-wide
+                      </p>
                     </div>
-                  )}
-                </div>
+
+                    <div>
+                      <Label htmlFor="header_scripts">Header Scripts</Label>
+                      <Textarea
+                        id="header_scripts"
+                        name="header_scripts"
+                        value={formData.header_scripts || ''}
+                        onChange={handleInputChange}
+                        placeholder="console.log('Header script example');"
+                        rows={4}
+                        className="font-mono text-sm"
+                      />
+                      <p className="text-sm text-gray-500 mt-1">
+                        JavaScript code inserted in the &lt;head&gt; tag
+                      </p>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="footer_scripts">Footer Scripts</Label>
+                      <Textarea
+                        id="footer_scripts"
+                        name="footer_scripts"
+                        value={formData.footer_scripts || ''}
+                        onChange={handleInputChange}
+                        placeholder="console.log('Footer script example');"
+                        rows={4}
+                        className="font-mono text-sm"
+                      />
+                      <p className="text-sm text-gray-500 mt-1">
+                        JavaScript code inserted before the closing &lt;/body&gt; tag
+                      </p>
+                    </div>
+
+                    <div className="flex items-center space-x-2 pt-2">
+                      <Switch
+                        id="is_maintenance_mode"
+                        checked={!!formData.is_maintenance_mode}
+                        onCheckedChange={(checked: boolean) => handleSwitchChange('is_maintenance_mode', checked)}
+                      />
+                      <Label htmlFor="is_maintenance_mode">Maintenance Mode</Label>
+                    </div>
+
+                    {formData.is_maintenance_mode && (
+                      <div>
+                        <Label htmlFor="maintenance_message">Maintenance Message</Label>
+                        <Textarea
+                          id="maintenance_message"
+                          name="maintenance_message"
+                          value={formData.maintenance_message || ''}
+                          onChange={handleInputChange}
+                          placeholder="We're currently performing maintenance. Please check back soon."
+                          rows={3}
+                        />
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
               </TabsContent>
             </CardContent>
 
@@ -747,7 +449,7 @@ const SettingsManager = () => {
 
               <Button
                 type="submit"
-                disabled={isSaving || isResetting}
+                disabled={isSaving || isResetting || isUploading}
               >
                 {isSaving ? (
                   <>

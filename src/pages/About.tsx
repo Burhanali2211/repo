@@ -21,7 +21,7 @@ const About = () => {
   return (
     <div className="min-h-screen pt-20">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-b from-blue-600 to-indigo-700 text-white dark:from-indigo-800 dark:to-gray-900">
+      <section className="relative py-20 bg-gradient-to-b from-blue-600 to-indigo-700 text-white dark:from-indigo-800 dark:to-gray-900 overflow-hidden">
         <div className="container mx-auto px-6 text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-6">
             About <span className="text-amber-300 dark:text-amber-300">EasyIo.tech</span>
@@ -32,10 +32,13 @@ const About = () => {
             we're your creative tech partner.
           </p>
         </div>
+
+        {/* Gradient transition to Mission section */}
+        <div className="section-transition-overlay gradient-transition-to-light dark:gradient-transition-to-gray-light"></div>
       </section>
 
       {/* Mission Section */}
-      <section className="py-20 bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-black">
+      <section className="relative py-20 bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-black overflow-hidden">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -56,10 +59,13 @@ const About = () => {
             </div>
           </div>
         </div>
+
+        {/* Gradient transition to Company Story section */}
+        <div className="section-transition-overlay gradient-transition-to-gray-light dark:gradient-transition-to-dark"></div>
       </section>
 
       {/* Company Story Section */}
-      <section className="py-20 bg-gradient-to-b from-gray-100 to-white dark:from-black dark:to-gray-900">
+      <section className="relative py-20 bg-gradient-to-b from-gray-100 to-white dark:from-black dark:to-gray-900 overflow-hidden">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">Our Story</h2>
@@ -74,10 +80,13 @@ const About = () => {
             </p>
           </div>
         </div>
+
+        {/* Gradient transition to Values section */}
+        <div className="section-transition-overlay gradient-transition-to-light dark:gradient-transition-to-dark"></div>
       </section>
 
       {/* Values Section */}
-      <section className="py-20 bg-gradient-to-b from-white to-gray-200 dark:from-gray-900 dark:to-black">
+      <section className="relative py-20 bg-gradient-to-b from-white to-gray-200 dark:from-gray-900 dark:to-black overflow-hidden">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">Our Values</h2>
@@ -97,10 +106,13 @@ const About = () => {
             ))}
           </div>
         </div>
+
+        {/* Gradient transition to Timeline section */}
+        <div className="section-transition-overlay gradient-transition-to-light dark:gradient-transition-to-dark"></div>
       </section>
 
       {/* Timeline Section */}
-      <section className="py-20 bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-black">
+      <section className="relative py-20 bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-black overflow-hidden">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">Our Journey</h2>

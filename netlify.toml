@@ -10,14 +10,19 @@
 [build.environment]
   NODE_VERSION = "18"
 
-# Optional: Headers for security and performance
+# Enhanced security and performance headers
 [[headers]]
   for = "/*"
   [headers.values]
+    # Security headers
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    # Performance headers
+    X-DNS-Prefetch-Control = "on"
 
 [[headers]]
   for = "/static/*"

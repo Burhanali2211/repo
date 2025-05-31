@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useFormValidation } from '@/hooks/useFormValidation';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -15,13 +15,13 @@ const ContactForm = () => {
     message: ''
   });
   const [isSuccess, setIsSuccess] = useState(false);
-  
+
   const { errors, isSubmitting, validateForm, submitForm, setErrors } = useFormValidation();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm(formData)) {
       toast({
         title: "Please fix the errors",
@@ -32,7 +32,7 @@ const ContactForm = () => {
     }
 
     const success = await submitForm(formData);
-    
+
     if (success) {
       setIsSuccess(true);
       setFormData({ name: '', email: '', company: '', message: '' });
@@ -58,7 +58,7 @@ const ContactForm = () => {
         <p className="text-gray-600 dark:text-gray-300 mb-6">
           Thank you for reaching out. We'll get back to you within 24 hours.
         </p>
-        <Button 
+        <Button
           onClick={() => setIsSuccess(false)}
           className="bg-purple-600 hover:bg-purple-700 text-white"
         >
@@ -81,7 +81,7 @@ const ContactForm = () => {
               type="text"
               required
               value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className={`w-full ${errors.name ? 'border-red-500' : ''}`}
               disabled={isSubmitting}
             />
@@ -95,14 +95,14 @@ const ContactForm = () => {
               type="email"
               required
               value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className={`w-full ${errors.email ? 'border-red-500' : ''}`}
               disabled={isSubmitting}
             />
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
           </div>
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
             Company
@@ -110,12 +110,12 @@ const ContactForm = () => {
           <Input
             type="text"
             value={formData.company}
-            onChange={(e) => setFormData({...formData, company: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, company: e.target.value })}
             className="w-full"
             disabled={isSubmitting}
           />
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
             Message *
@@ -124,16 +124,16 @@ const ContactForm = () => {
             required
             rows={5}
             value={formData.message}
-            onChange={(e) => setFormData({...formData, message: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, message: e.target.value })}
             className={`w-full ${errors.message ? 'border-red-500' : ''}`}
             placeholder="Tell us about your project..."
             disabled={isSubmitting}
           />
           {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
         </div>
-        
-        <Button 
-          type="submit" 
+
+        <Button
+          type="submit"
           className="w-full bg-purple-600 hover:bg-purple-700 text-white py-4"
           disabled={isSubmitting}
         >

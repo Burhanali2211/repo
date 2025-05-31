@@ -43,24 +43,128 @@ export const useWebsiteSettings = () => {
 
 // Utility components to apply settings across the app
 
-// Component that applies site colors from settings to CSS variables
+// Component that applies site colors and typography from settings to CSS variables
 export const SettingsStyleProvider = () => {
   const { settings } = useWebsiteSettings();
 
   useEffect(() => {
     if (settings) {
-      // Set CSS variables for colors
+      // Set CSS variables for colors with fallbacks
+      const colorMappings = [
+        { setting: settings.primary_color, variable: '--primary-color' },
+        { setting: settings.secondary_color, variable: '--secondary-color' },
+        { setting: settings.accent_color, variable: '--accent-color' },
+        { setting: settings.background_color, variable: '--background-color' },
+        { setting: settings.background_color_dark, variable: '--background-color-dark' },
+        { setting: settings.text_color, variable: '--text-color' },
+        { setting: settings.text_color_dark, variable: '--text-color-dark' },
+        { setting: settings.border_color, variable: '--border-color' },
+        { setting: settings.border_color_dark, variable: '--border-color-dark' }
+      ];
+
+      colorMappings.forEach(({ setting, variable }) => {
+        if (setting) {
+          document.documentElement.style.setProperty(variable, setting);
+        }
+      });
+
+      // Also update Tailwind CSS custom properties for better integration
       if (settings.primary_color) {
-        document.documentElement.style.setProperty('--primary-color', settings.primary_color);
+        // Convert hex to HSL for Tailwind compatibility
+        const hsl = hexToHsl(settings.primary_color);
+        if (hsl) {
+          document.documentElement.style.setProperty('--primary', hsl);
+        }
       }
+
       if (settings.secondary_color) {
-        document.documentElement.style.setProperty('--secondary-color', settings.secondary_color);
+        const hsl = hexToHsl(settings.secondary_color);
+        if (hsl) {
+          document.documentElement.style.setProperty('--secondary', hsl);
+        }
+      }
+
+      if (settings.accent_color) {
+        const hsl = hexToHsl(settings.accent_color);
+        if (hsl) {
+          document.documentElement.style.setProperty('--accent', hsl);
+        }
+      }
+
+      // Set CSS variables for typography
+      if (settings.font_family) {
+        document.documentElement.style.setProperty('--font-family', settings.font_family);
+      }
+      if (settings.font_size) {
+        document.documentElement.style.setProperty('--font-size', `${settings.font_size}px`);
+      }
+      if (settings.line_height) {
+        document.documentElement.style.setProperty('--line-height', settings.line_height);
+      }
+      if (settings.font_weight) {
+        document.documentElement.style.setProperty('--font-weight', settings.font_weight);
+      }
+
+      // Apply custom CSS if available
+      if (settings.custom_css) {
+        // Remove existing custom styles
+        const existingStyle = document.getElementById('settings-custom-css');
+        if (existingStyle) {
+          existingStyle.remove();
+        }
+
+        // Add new custom styles
+        const style = document.createElement('style');
+        style.id = 'settings-custom-css';
+        style.textContent = settings.custom_css;
+        document.head.appendChild(style);
       }
     }
   }, [settings]);
 
   // This component doesn't render anything visible
   return null;
+};
+
+// Helper function to convert hex to HSL for Tailwind compatibility
+const hexToHsl = (hex: string): string | null => {
+  try {
+    // Remove the hash if present
+    hex = hex.replace('#', '');
+
+    // Parse the hex values
+    const r = parseInt(hex.substr(0, 2), 16) / 255;
+    const g = parseInt(hex.substr(2, 2), 16) / 255;
+    const b = parseInt(hex.substr(4, 2), 16) / 255;
+
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let h = 0;
+    let s = 0;
+    const l = (max + min) / 2;
+
+    if (max !== min) {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+
+    // Convert to degrees and percentages
+    h = Math.round(h * 360);
+    s = Math.round(s * 100);
+    const lPercent = Math.round(l * 100);
+
+    return `${h} ${s}% ${lPercent}%`;
+  } catch (error) {
+    console.warn('Error converting hex to HSL:', error);
+    return null;
+  }
 };
 
 // Helper function to safely inject scripts
@@ -146,35 +250,43 @@ export const SettingsScriptInjector = () => {
   useEffect(() => {
     if (!settings) return;
 
-    // Skip script injection if scripts contain problematic content
+    // Skip script injection in development to avoid console spam
+    const isDev = import.meta.env.DEV;
+
+    // Skip script injection if scripts contain problematic content or are development test scripts
     const skipHeaderScript = settings.header_scripts && (
       /<[^>]+>/g.test(settings.header_scripts) ||
       settings.header_scripts.includes('<') ||
-      settings.header_scripts.includes('>')
+      settings.header_scripts.includes('>') ||
+      (isDev && settings.header_scripts.includes('hello world'))
     );
 
     const skipFooterScript = settings.footer_scripts && (
       /<[^>]+>/g.test(settings.footer_scripts) ||
       settings.footer_scripts.includes('<') ||
-      settings.footer_scripts.includes('>')
+      settings.footer_scripts.includes('>') ||
+      (isDev && settings.footer_scripts.includes('hello world'))
     );
 
-    if (skipHeaderScript) {
+    if (skipHeaderScript && !isDev) {
       console.warn('Skipping header script injection due to HTML content that may cause syntax errors');
     }
 
-    if (skipFooterScript) {
+    if (skipFooterScript && !isDev) {
       console.warn('Skipping footer script injection due to HTML content that may cause syntax errors');
     }
 
     try {
-      // Add header scripts only if they're safe
-      if (settings.header_scripts && !skipHeaderScript) {
+      // Only inject scripts if they don't already exist and are safe
+      if (settings.header_scripts &&
+        !skipHeaderScript &&
+        !document.getElementById('settings-header-script')) {
         safelyInjectScript(settings.header_scripts, 'settings-header-script', 'head');
       }
 
-      // Add footer scripts only if they're safe
-      if (settings.footer_scripts && !skipFooterScript) {
+      if (settings.footer_scripts &&
+        !skipFooterScript &&
+        !document.getElementById('settings-footer-script')) {
         safelyInjectScript(settings.footer_scripts, 'settings-footer-script', 'body');
       }
     } catch (error) {

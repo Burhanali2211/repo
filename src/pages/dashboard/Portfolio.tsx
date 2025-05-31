@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Search, Plus, Edit, Trash2, Upload, ExternalLink, Image as ImageIcon } from 'lucide-react';
+import * as React from 'react';
+const { useState, useEffect, useRef } = React;
+import { Search, Plus, Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,14 +15,14 @@ import { Progress } from '@/components/ui/progress';
 import { initialProjects, categories } from '@/lib/data/portfolioData';
 
 // Import Supabase project functions
-import { 
-  getAllProjects, 
-  createProject, 
-  updateProject, 
-  deleteProject, 
-  getProjectsByCategory, 
+import {
+  getAllProjects,
+  createProject,
+  updateProject,
+  deleteProject,
+  getProjectsByCategory,
   uploadFile,
-  type Project as SupabaseProject 
+  type Project as SupabaseProject
 } from '@/lib/supabase/services';
 
 // Project type definition
@@ -43,7 +44,7 @@ const PortfolioManagement = () => {
     ...project,
     id: project.id ? project.id.toString() : crypto.randomUUID()
   }));
-  
+
   const [projects, setProjects] = useState<Project[]>(projectsWithIds);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -66,7 +67,7 @@ const PortfolioManagement = () => {
     results: '',
     link: '',
   });
-  
+
   // File upload state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -80,11 +81,11 @@ const PortfolioManagement = () => {
       try {
         setIsLoading(true);
         const { data, error } = await getAllProjects();
-        
+
         if (error) {
           throw error;
         }
-        
+
         if (data && Array.isArray(data) && data.length > 0) {
           setProjects(data as Project[]);
         } else {
@@ -103,7 +104,7 @@ const PortfolioManagement = () => {
         setIsLoading(false);
       }
     };
-    
+
     fetchProjects();
   }, []);
 
@@ -111,13 +112,13 @@ const PortfolioManagement = () => {
 
   // Filter projects based on search term and category
   const filteredProjects = projects.filter(project => {
-    const matchesSearch = 
+    const matchesSearch =
       project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       project.technologies.some(tech => tech.toLowerCase().includes(searchTerm.toLowerCase()));
-    
+
     const matchesCategory = categoryFilter === 'All' || project.category === categoryFilter;
-    
+
     return matchesSearch && matchesCategory;
   });
 
@@ -163,22 +164,22 @@ const PortfolioManagement = () => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setSelectedFile(file);
-      
+
       // Create a preview URL
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
-      
+
       // We don't set formData.image here because we'll upload the file later
     }
   };
-  
+
   // Trigger file input click
   const handleUploadClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
-  
+
   // Upload file to Supabase Storage
   const handleFileUpload = async (): Promise<string> => {
     if (!selectedFile) {
@@ -188,10 +189,10 @@ const PortfolioManagement = () => {
       }
       return '';
     }
-    
+
     try {
       setIsUploading(true);
-      
+
       // Simulate progress for better UX (actual upload doesn't provide progress)
       let progress = 0;
       const progressInterval = setInterval(() => {
@@ -201,15 +202,15 @@ const PortfolioManagement = () => {
         }
         setUploadProgress(progress);
       }, 100);
-      
+
       // Upload file to Supabase Storage
-      const imageUrl = await uploadFile(selectedFile, 'projects');
-      
+      const imageUrl = await uploadFile('images', `projects/${selectedFile.name}`, selectedFile);
+
       // Complete progress
       clearInterval(progressInterval);
       setUploadProgress(100);
-      
-      return imageUrl;
+
+      return imageUrl.publicUrl;
     } catch (error) {
       console.error('Error uploading file:', error);
       toast({
@@ -273,12 +274,12 @@ const PortfolioManagement = () => {
   const handleAddProject = async () => {
     try {
       setIsLoading(true);
-      
+
       // First upload the image if there is one
       const imageUrl = await handleFileUpload();
-      
+
       const technologies = parseTechnologies(formData.technologiesInput);
-      
+
       const newProjectData = {
         title: formData.title,
         category: formData.category,
@@ -291,21 +292,21 @@ const PortfolioManagement = () => {
       };
 
       const { data, error } = await createProject(newProjectData);
-      
+
       if (error) {
         throw error;
       }
-      
+
       if (data) {
         const newProject = data as Project;
         setProjects([...projects, newProject]);
-        
+
         toast({
           title: "Project added",
           description: `${formData.title} has been added successfully.`,
         });
       }
-      
+
       setIsAddDialogOpen(false);
       resetFormData();
     } catch (error) {
@@ -323,28 +324,28 @@ const PortfolioManagement = () => {
   // Filter based on category
   const handleCategoryFilter = async (category: string) => {
     setCategoryFilter(category);
-    
+
     try {
       setIsLoading(true);
-      
+
       // If 'All' is selected, fetch all projects, otherwise filter by category
       if (category === 'All') {
         const { data, error } = await getAllProjects();
-        
+
         if (error) {
           throw error;
         }
-        
+
         if (data) {
           setProjects(data as Project[]);
         }
       } else {
         const { data, error } = await getProjectsByCategory(category);
-        
+
         if (error) {
           throw error;
         }
-        
+
         if (data) {
           setProjects(data as Project[]);
         }
@@ -364,13 +365,13 @@ const PortfolioManagement = () => {
   // Update existing project
   const handleUpdateProject = async () => {
     if (!currentProject) return;
-    
+
     try {
       setIsLoading(true);
-      
+
       // First upload the image if there is one
       const imageUrl = await handleFileUpload();
-      
+
       const technologies = parseTechnologies(formData.technologiesInput);
 
       const updatedProjectData = {
@@ -385,29 +386,29 @@ const PortfolioManagement = () => {
       };
 
       const { data, error } = await updateProject(currentProject.id, updatedProjectData);
-      
+
       if (error) {
         throw error;
       }
-      
+
       if (data) {
-        const updatedProjects = projects.map(project => 
-          project.id === currentProject.id 
+        const updatedProjects = projects.map(project =>
+          project.id === currentProject.id
             ? {
-                ...project,
-                ...data as SupabaseProject
-              } 
+              ...project,
+              ...data as SupabaseProject
+            }
             : project
         );
 
         setProjects(updatedProjects);
-        
+
         toast({
           title: "Project updated",
           description: `${formData.title} has been updated successfully.`,
         });
       }
-      
+
       setIsEditDialogOpen(false);
       resetFormData();
     } catch (error) {
@@ -425,23 +426,23 @@ const PortfolioManagement = () => {
   // Delete project
   const handleDeleteProject = async () => {
     if (!currentProject) return;
-    
+
     try {
       setIsLoading(true);
       const { error } = await deleteProject(currentProject.id);
-      
+
       if (error) {
         throw error;
       }
-      
+
       const updatedProjects = projects.filter(project => project.id !== currentProject.id);
       setProjects(updatedProjects);
-      
+
       toast({
         title: "Project deleted",
         description: `${currentProject.title} has been deleted.`,
       });
-      
+
       setIsDeleteDialogOpen(false);
     } catch (error) {
       console.error('Error deleting project:', error);
@@ -454,7 +455,7 @@ const PortfolioManagement = () => {
       setIsLoading(false);
     }
     setIsDeleteDialogOpen(false);
-    
+
     toast({
       title: "Project deleted",
       description: `${currentProject.title} has been deleted.`,
@@ -482,7 +483,7 @@ const PortfolioManagement = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        
+
         <div className="w-full md:w-64">
           <Select
             value={categoryFilter}
@@ -505,11 +506,11 @@ const PortfolioManagement = () => {
       {/* Projects Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProjects.map((project) => (
-          <div 
-            key={project.id} 
+          <div
+            key={project.id}
             className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
           >
-            <div 
+            <div
               className="h-48 bg-gray-200 relative"
               style={{
                 backgroundImage: `url(${project.image})`,
@@ -524,10 +525,10 @@ const PortfolioManagement = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="p-4">
               <p className="text-gray-600 text-sm mb-4 line-clamp-2">{project.description}</p>
-              
+
               <div className="flex flex-wrap gap-2 mb-3">
                 {project.technologies.slice(0, 3).map((tech, index) => (
                   <Badge key={index} variant="outline" className="bg-gray-100">
@@ -540,28 +541,28 @@ const PortfolioManagement = () => {
                   </Badge>
                 )}
               </div>
-              
+
               <div className="flex justify-between items-center mt-4">
                 <span className="text-sm text-gray-500">Year: {project.year}</span>
                 <div className="flex space-x-2">
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     size="sm"
                     onClick={() => handleViewClick(project)}
                     aria-label={`View ${project.title}`}
                   >
-                    <ExternalLink className="h-4 w-4" />
+                    <Edit className="h-4 w-4" />
                   </Button>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     size="sm"
                     onClick={() => handleEditClick(project)}
                     aria-label={`Edit ${project.title}`}
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     size="sm"
                     className="text-red-600 hover:text-red-700 hover:bg-red-50"
                     onClick={() => handleDeleteClick(project)}
@@ -574,7 +575,7 @@ const PortfolioManagement = () => {
             </div>
           </div>
         ))}
-        
+
         {filteredProjects.length === 0 && (
           <div className="col-span-full py-12 text-center text-gray-500 bg-white rounded-lg shadow">
             <div className="mb-3">
@@ -592,10 +593,10 @@ const PortfolioManagement = () => {
           <DialogHeader>
             <DialogTitle>Project Details</DialogTitle>
           </DialogHeader>
-          
+
           {currentProject && (
             <div className="py-4">
-              <div 
+              <div
                 className="h-60 bg-gray-200 rounded-lg mb-4"
                 style={{
                   backgroundImage: `url(${currentProject.image})`,
@@ -603,14 +604,14 @@ const PortfolioManagement = () => {
                   backgroundPosition: 'center'
                 }}
               />
-              
+
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-bold">{currentProject.title}</h3>
                 <Badge>{currentProject.category}</Badge>
               </div>
-              
+
               <p className="text-gray-700 mb-4">{currentProject.description}</p>
-              
+
               <div className="mb-4">
                 <h4 className="text-sm font-semibold text-gray-500 mb-2">Technologies</h4>
                 <div className="flex flex-wrap gap-2">
@@ -619,7 +620,7 @@ const PortfolioManagement = () => {
                   ))}
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                   <h4 className="text-sm font-semibold text-gray-500 mb-1">Year</h4>
@@ -630,22 +631,22 @@ const PortfolioManagement = () => {
                   <p>{currentProject.results}</p>
                 </div>
               </div>
-              
+
               <div>
                 <h4 className="text-sm font-semibold text-gray-500 mb-1">Project Link</h4>
-                <a 
-                  href={currentProject.link} 
+                <a
+                  href={currentProject.link}
                   className="text-purple-600 hover:text-purple-700 inline-flex items-center"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   {currentProject.link}
-                  <ExternalLink className="h-3 w-3 ml-1" />
+                  <Edit className="h-3 w-3 ml-1" />
                 </a>
               </div>
             </div>
           )}
-          
+
           <DialogFooter>
             <Button onClick={() => setIsViewDialogOpen(false)}>Close</Button>
           </DialogFooter>
@@ -669,12 +670,12 @@ const PortfolioManagement = () => {
                 placeholder="e.g., Modern E-commerce Website"
               />
             </div>
-            
+
             <div>
               <Label htmlFor="category">Category</Label>
               <Select
                 value={formData.category}
-                onValueChange={(value) => setFormData({...formData, category: value})}
+                onValueChange={(value) => setFormData({ ...formData, category: value })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a category" />
@@ -688,7 +689,7 @@ const PortfolioManagement = () => {
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div className="space-y-2">
                 <Label htmlFor="image">Image</Label>
@@ -701,14 +702,14 @@ const PortfolioManagement = () => {
                     placeholder="Enter image URL or upload a file"
                     className="flex-1"
                   />
-                  <Button 
-                    type="button" 
-                    variant="outline" 
+                  <Button
+                    type="button"
+                    variant="outline"
                     onClick={handleUploadClick}
                     className="whitespace-nowrap"
                     disabled={isUploading}
                   >
-                    <Upload className="h-4 w-4 mr-2" />
+                    <Plus className="h-4 w-4 mr-2" />
                     Upload
                   </Button>
                   <input
@@ -719,7 +720,7 @@ const PortfolioManagement = () => {
                     className="hidden"
                   />
                 </div>
-                
+
                 {/* Image upload progress */}
                 {isUploading && (
                   <div className="mt-2">
@@ -727,14 +728,14 @@ const PortfolioManagement = () => {
                     <p className="text-xs text-gray-500 mt-1">Uploading: {uploadProgress}%</p>
                   </div>
                 )}
-                
+
                 {/* Image preview */}
                 {imagePreview && (
                   <div className="mt-2 relative">
-                    <img 
-                      src={imagePreview} 
-                      alt="Preview" 
-                      className="w-full h-40 object-cover rounded-md border border-gray-200" 
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="w-full h-40 object-cover rounded-md border border-gray-200"
                     />
                     <Button
                       type="button"
@@ -753,7 +754,7 @@ const PortfolioManagement = () => {
                 )}
               </div>
             </div>
-            
+
             <div>
               <Label htmlFor="description">Description</Label>
               <Textarea
@@ -765,7 +766,7 @@ const PortfolioManagement = () => {
                 rows={3}
               />
             </div>
-            
+
             <div>
               <Label htmlFor="technologiesInput">Technologies (comma-separated)</Label>
               <Input
@@ -776,7 +777,7 @@ const PortfolioManagement = () => {
                 placeholder="React, Node.js, MongoDB, etc."
               />
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="year">Year</Label>
@@ -801,7 +802,7 @@ const PortfolioManagement = () => {
                 />
               </div>
             </div>
-            
+
             <div>
               <Label htmlFor="link">Project Link</Label>
               <Input
@@ -814,13 +815,13 @@ const PortfolioManagement = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setIsAddDialogOpen(false)}
             >
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={handleAddProject}
               className="bg-purple-600 hover:bg-purple-700 text-white"
               disabled={!formData.title || !formData.category || !formData.image || !formData.description}
@@ -848,12 +849,12 @@ const PortfolioManagement = () => {
                 placeholder="e.g., Modern E-commerce Website"
               />
             </div>
-            
+
             <div>
               <Label htmlFor="edit-category">Category</Label>
               <Select
                 value={formData.category}
-                onValueChange={(value) => setFormData({...formData, category: value})}
+                onValueChange={(value) => setFormData({ ...formData, category: value })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a category" />
@@ -867,7 +868,7 @@ const PortfolioManagement = () => {
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div>
               <Label htmlFor="edit-image">Image URL</Label>
               <Input
@@ -878,7 +879,7 @@ const PortfolioManagement = () => {
                 placeholder="https://example.com/image.jpg"
               />
             </div>
-            
+
             <div>
               <Label htmlFor="edit-description">Description</Label>
               <Textarea
@@ -890,7 +891,7 @@ const PortfolioManagement = () => {
                 rows={3}
               />
             </div>
-            
+
             <div>
               <Label htmlFor="edit-technologiesInput">Technologies (comma-separated)</Label>
               <Input
@@ -901,7 +902,7 @@ const PortfolioManagement = () => {
                 placeholder="React, Node.js, MongoDB, etc."
               />
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="edit-year">Year</Label>
@@ -926,7 +927,7 @@ const PortfolioManagement = () => {
                 />
               </div>
             </div>
-            
+
             <div>
               <Label htmlFor="edit-link">Project Link</Label>
               <Input
@@ -939,13 +940,13 @@ const PortfolioManagement = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setIsEditDialogOpen(false)}
             >
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={handleUpdateProject}
               className="bg-purple-600 hover:bg-purple-700 text-white"
               disabled={!formData.title || !formData.category || !formData.image || !formData.description}
@@ -964,19 +965,19 @@ const PortfolioManagement = () => {
           </DialogHeader>
           <div className="py-4">
             <p className="text-gray-500">
-              Are you sure you want to delete <span className="font-semibold text-gray-900">{currentProject?.title}</span>? 
+              Are you sure you want to delete <span className="font-semibold text-gray-900">{currentProject?.title}</span>?
               This action cannot be undone.
             </p>
           </div>
           <DialogFooter>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setIsDeleteDialogOpen(false)}
             >
               Cancel
             </Button>
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               onClick={handleDeleteProject}
             >
               Delete

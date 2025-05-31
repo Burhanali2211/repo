@@ -1,14 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
+import { env } from '@/lib/config/env';
 
-// Use environment variables for Supabase credentials
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-// Check if environment variables are defined
-if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  console.error('Missing Supabase environment variables. Please check your .env file.');
-}
+// Use validated environment variables
+const SUPABASE_URL = env.supabase.url;
+const SUPABASE_ANON_KEY = env.supabase.anonKey;
 
 // Create a singleton variable to ensure we only create one client instance
 let supabaseInstance: ReturnType<typeof createClient<Database>> | null = null;
@@ -50,15 +46,15 @@ const storageOptions = {
 // Create a single supabase client for interacting with your database
 export const supabase = (() => {
   if (supabaseInstance) return supabaseInstance;
-  
+
   supabaseInstance = createClient<Database>(
-    SUPABASE_URL as string, 
-    SUPABASE_ANON_KEY as string, 
+    SUPABASE_URL as string,
+    SUPABASE_ANON_KEY as string,
     {
       auth: storageOptions
     }
   );
-  
+
   return supabaseInstance;
 })();
 
@@ -84,7 +80,7 @@ export const getCurrentUser = async () => {
   try {
     // Try to get the session first
     const { data: sessionData } = await supabase.auth.getSession();
-    
+
     // If we have a session, get the user
     if (sessionData?.session) {
       const { data, error } = await supabase.auth.getUser();
@@ -92,7 +88,7 @@ export const getCurrentUser = async () => {
         return data.user;
       }
     }
-    
+
     // No session or error getting user, try refreshing
     const refreshResult = await refreshSession();
     if (refreshResult) {
@@ -157,7 +153,7 @@ export const refreshSession = async (): Promise<boolean> => {
   try {
     // First check if we have a session
     const { data: sessionData } = await supabase.auth.getSession();
-    
+
     // Only try to refresh if we actually have a session
     if (sessionData?.session) {
       const { data, error } = await supabase.auth.refreshSession();
@@ -170,7 +166,7 @@ export const refreshSession = async (): Promise<boolean> => {
       }
       return !!data.session;
     }
-    
+
     return false;
   } catch (error) {
     // Only log real errors, not just missing session

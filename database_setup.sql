@@ -47,7 +47,16 @@ CREATE TABLE projects (
   client_name TEXT,
   testimonial_text TEXT,
   featured BOOLEAN DEFAULT false,
-  order_index INTEGER DEFAULT 0
+  order_index INTEGER DEFAULT 0,
+  -- Additional fields for enhanced portfolio functionality
+  year INTEGER DEFAULT EXTRACT(YEAR FROM NOW()),
+  results TEXT,
+  project_link TEXT,
+  status TEXT DEFAULT 'published' CHECK (status IN ('draft', 'published', 'archived')),
+  gallery_images TEXT[] DEFAULT '{}',
+  project_duration TEXT,
+  budget_range TEXT,
+  team_size INTEGER
 );
 
 -- Create services table
