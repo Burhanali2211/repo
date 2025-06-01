@@ -16,7 +16,7 @@ const ServicesManager = () => {
     service.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleEdit = (service: any) => {
+  const handleEdit = (service: Service) => {
     setSelectedService(service);
     setIsModalOpen(true);
   };

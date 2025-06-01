@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { useTestimonials, Testimonial } from '@/hooks/useTestimonials';
 
 interface TestimonialModalProps {
-  testimonial: any | null;
+  testimonial: Testimonial | null;
   isOpen: boolean;
   onClose: () => void;
 }

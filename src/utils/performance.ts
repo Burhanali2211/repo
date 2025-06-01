@@ -8,7 +8,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 /**
  * Debounce function to limit the rate of function calls
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
@@ -22,7 +22,7 @@ export function debounce<T extends (...args: any[]) => any>(
 /**
  * Throttle function to limit function calls to once per interval
  */
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: unknown[]) => unknown>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
@@ -117,7 +117,7 @@ export async function preloadImages(srcs: string[]): Promise<void> {
 /**
  * Memory-efficient animation frame handler
  */
-export function useAnimationFrame(callback: () => void, deps: any[] = []) {
+export function useAnimationFrame(callback: () => void, deps: unknown[] = []) {
   const requestRef = useRef<number>();
   const callbackRef = useRef(callback);
   callbackRef.current = callback;
@@ -134,7 +134,7 @@ export function useAnimationFrame(callback: () => void, deps: any[] = []) {
         cancelAnimationFrame(requestRef.current);
       }
     };
-  }, deps);
+  }, [animate, ...deps]);
 }
 
 /**

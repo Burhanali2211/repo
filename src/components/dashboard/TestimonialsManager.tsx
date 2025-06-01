@@ -1,5 +1,4 @@
-import * as React from 'react';
-const { useState } = React;
+import React, { useState } from 'react';
 import { Plus, Edit, Trash2, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,7 +20,7 @@ const TestimonialsManager = () => {
     return nameMatch || companyMatch || contentMatch;
   });
 
-  const handleEdit = (testimonial: any) => {
+  const handleEdit = (testimonial: Testimonial) => {
     setSelectedTestimonial(testimonial);
     setIsModalOpen(true);
   };

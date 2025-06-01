@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -66,9 +66,9 @@ const ContactFormFieldsManager = () => {
 
   useEffect(() => {
     loadFields();
-  }, []);
+  }, [loadFields]);
 
-  const loadFields = async () => {
+  const loadFields = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getAllContactFormFieldsAdmin();
@@ -83,7 +83,7 @@ const ContactFormFieldsManager = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const resetFormData = () => {
     setFormData({
@@ -103,7 +103,7 @@ const ContactFormFieldsManager = () => {
         ...formData,
         order_index: fields.length + 1
       });
-      
+
       if (newField) {
         setFields([...fields, newField]);
         setIsAddDialogOpen(false);
@@ -128,9 +128,9 @@ const ContactFormFieldsManager = () => {
 
     try {
       const updatedField = await updateContactFormField(selectedField.id, formData);
-      
+
       if (updatedField) {
-        setFields(fields.map(field => 
+        setFields(fields.map(field =>
           field.id === selectedField.id ? updatedField : field
         ));
         setIsEditDialogOpen(false);
@@ -156,7 +156,7 @@ const ContactFormFieldsManager = () => {
 
     try {
       const success = await deleteContactFormField(field.id);
-      
+
       if (success) {
         setFields(fields.filter(f => f.id !== field.id));
         toast({
@@ -177,9 +177,9 @@ const ContactFormFieldsManager = () => {
   const handleToggleStatus = async (field: ContactFormField) => {
     try {
       const success = await toggleContactFormFieldStatus(field.id, !field.is_active);
-      
+
       if (success) {
-        setFields(fields.map(f => 
+        setFields(fields.map(f =>
           f.id === field.id ? { ...f, is_active: !f.is_active } : f
         ));
         toast({
@@ -200,7 +200,7 @@ const ContactFormFieldsManager = () => {
   const handleDuplicateField = async (field: ContactFormField) => {
     try {
       const duplicatedField = await duplicateContactFormField(field.id);
-      
+
       if (duplicatedField) {
         setFields([...fields, duplicatedField]);
         toast({
@@ -284,7 +284,7 @@ const ContactFormFieldsManager = () => {
                   placeholder="e.g., full_name"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="field_label">Field Label</Label>
                 <Input
@@ -294,12 +294,12 @@ const ContactFormFieldsManager = () => {
                   placeholder="e.g., Full Name"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="field_type">Field Type</Label>
-                <Select 
-                  value={formData.field_type} 
-                  onValueChange={(value: any) => setFormData({ ...formData, field_type: value })}
+                <Select
+                  value={formData.field_type}
+                  onValueChange={(value: string) => setFormData({ ...formData, field_type: value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select field type" />
@@ -316,7 +316,7 @@ const ContactFormFieldsManager = () => {
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="field_placeholder">Placeholder Text</Label>
                 <Input
@@ -326,7 +326,7 @@ const ContactFormFieldsManager = () => {
                   placeholder="e.g., Enter your full name"
                 />
               </div>
-              
+
               <div className="flex items-center space-x-2">
                 <Switch
                   id="is_required"
@@ -335,7 +335,7 @@ const ContactFormFieldsManager = () => {
                 />
                 <Label htmlFor="is_required">Required field</Label>
               </div>
-              
+
               <div className="flex justify-end space-x-2">
                 <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
                   Cancel
@@ -385,7 +385,7 @@ const ContactFormFieldsManager = () => {
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center space-x-2">
                       <Button
                         variant="ghost"
@@ -448,7 +448,7 @@ const ContactFormFieldsManager = () => {
                 placeholder="e.g., full_name"
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="edit_field_label">Field Label</Label>
               <Input
@@ -458,12 +458,12 @@ const ContactFormFieldsManager = () => {
                 placeholder="e.g., Full Name"
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="edit_field_type">Field Type</Label>
-              <Select 
-                value={formData.field_type} 
-                onValueChange={(value: any) => setFormData({ ...formData, field_type: value })}
+              <Select
+                value={formData.field_type}
+                onValueChange={(value: string) => setFormData({ ...formData, field_type: value })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select field type" />
@@ -480,7 +480,7 @@ const ContactFormFieldsManager = () => {
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="edit_field_placeholder">Placeholder Text</Label>
               <Input
@@ -490,7 +490,7 @@ const ContactFormFieldsManager = () => {
                 placeholder="e.g., Enter your full name"
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="edit_help_text">Help Text</Label>
               <Textarea
@@ -501,7 +501,7 @@ const ContactFormFieldsManager = () => {
                 rows={2}
               />
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Switch
                 id="edit_is_required"
@@ -510,7 +510,7 @@ const ContactFormFieldsManager = () => {
               />
               <Label htmlFor="edit_is_required">Required field</Label>
             </div>
-            
+
             <div className="flex justify-end space-x-2">
               <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
                 Cancel

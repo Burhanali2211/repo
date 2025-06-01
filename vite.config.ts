@@ -5,7 +5,13 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
+  const isProd = mode === 'production';
   return {
+    // Define mode in env for runtime checks
+    define: {
+      __APP_ENV__: JSON.stringify(mode),
+      '__APP_VERSION__': JSON.stringify(process.env.npm_package_version || '1.0.0'),
+    },
     server: {
       host: "::",
       port: 8080,
@@ -28,6 +34,8 @@ export default defineConfig(({ mode }) => {
       // Configure CORS for external resources
       cors: true,
     },
+    // Ensure assets are served correctly - use relative paths for better compatibility
+    base: './',
     plugins: [
       react(),
       mode === 'development' ? componentTagger() : null,
@@ -37,28 +45,15 @@ export default defineConfig(({ mode }) => {
         "@": path.resolve(__dirname, "./src"),
       },
     },
-    // Enhanced optimizeDeps for better build performance and bundle splitting
+    // Simplified optimizeDeps
     optimizeDeps: {
       include: [
         'react',
         'react-dom',
         'react-router-dom',
-        'react/jsx-runtime',
-        'react/jsx-dev-runtime',
-        // Pre-bundle heavy dependencies for better performance
-        'framer-motion',
         '@supabase/supabase-js',
-        '@tanstack/react-query',
-        'lucide-react',
-        'recharts'
+        '@tanstack/react-query'
       ],
-      exclude: [
-        // Exclude heavy components that should be lazy loaded
-        '@/components/dashboard',
-        '@/pages/Dashboard'
-      ],
-      // Force pre-bundling of React to ensure it's available
-      force: true,
     },
     // Improve build performance
     build: {
@@ -72,14 +67,17 @@ export default defineConfig(({ mode }) => {
       minify: 'terser',
       terserOptions: {
         compress: {
-          drop_console: mode === 'production',
-          drop_debugger: mode === 'production',
-          pure_funcs: mode === 'production' ? ['console.log', 'console.info'] : [],
+          drop_console: isProd,
+          drop_debugger: isProd,
         },
         mangle: {
-          safari10: true,
+          // Preserve function names for better error debugging in development
+          keep_fnames: !isProd,
         },
       },
+      // Ensure proper asset handling
+      assetsDir: 'assets',
+      assetsInlineLimit: 4096,
       // Copy additional files for hosting configuration
       rollupOptions: {
         input: {
@@ -88,66 +86,28 @@ export default defineConfig(({ mode }) => {
         // Ensure proper external dependencies handling
         external: [],
         output: {
-          // Enhanced chunk splitting for optimal performance
+          // Prevent code splitting for critical functionality
+          inlineDynamicImports: false,
+          // Simplified chunk splitting
           manualChunks: (id) => {
-            // React core and routing
+            // React and related packages
             if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
               return 'react-vendor';
             }
 
-            // Supabase and data fetching
-            if (id.includes('@supabase') || id.includes('@tanstack/react-query')) {
-              return 'data-vendor';
-            }
-
-            // UI component libraries (Radix UI)
+            // UI component libraries
             if (id.includes('@radix-ui')) {
               return 'ui-vendor';
             }
 
-            // Animation libraries
-            if (id.includes('framer-motion')) {
-              return 'animation-vendor';
+            // Data fetching libraries
+            if (id.includes('@supabase') || id.includes('@tanstack/react-query')) {
+              return 'data-vendor';
             }
 
-            // Chart libraries
-            if (id.includes('recharts')) {
-              return 'chart-vendor';
-            }
-
-            // Form libraries
-            if (id.includes('react-hook-form') || id.includes('@hookform') || id.includes('zod')) {
-              return 'form-vendor';
-            }
-
-            // Icon libraries - split into smaller chunks
-            if (id.includes('lucide-react')) {
-              return 'icon-vendor';
-            }
-
-            // Utility libraries
-            if (id.includes('class-variance-authority') || id.includes('clsx') || id.includes('tailwind-merge')) {
-              return 'utils-vendor';
-            }
-
-            // Dashboard components - separate chunk for admin functionality
+            // Dashboard components
             if (id.includes('/dashboard/') || id.includes('Dashboard')) {
               return 'dashboard';
-            }
-
-            // Large page components
-            if (id.includes('/pages/') && (
-              id.includes('Home') ||
-              id.includes('Contact') ||
-              id.includes('OurWork') ||
-              id.includes('BlogPost')
-            )) {
-              return 'pages-heavy';
-            }
-
-            // Service pages
-            if (id.includes('/pages/services/') || id.includes('ServiceDetail')) {
-              return 'service-pages';
             }
 
             // Other vendor dependencies
@@ -159,6 +119,7 @@ export default defineConfig(({ mode }) => {
           chunkFileNames: 'assets/[name]-[hash].js',
           entryFileNames: 'assets/[name]-[hash].js',
           assetFileNames: 'assets/[name]-[hash].[ext]',
+
         }
       }
     },

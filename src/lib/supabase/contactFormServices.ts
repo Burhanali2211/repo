@@ -8,11 +8,11 @@ export interface ContactFormField {
   field_label: string;
   field_type: 'text' | 'email' | 'tel' | 'textarea' | 'select' | 'checkbox' | 'radio';
   field_placeholder?: string;
-  field_options?: any; // JSONB for select, checkbox, radio options
+  field_options?: Record<string, unknown>; // JSONB for select, checkbox, radio options
   is_required: boolean;
   is_active: boolean;
   order_index: number;
-  validation_rules?: any; // JSONB for validation rules
+  validation_rules?: Record<string, unknown>; // JSONB for validation rules
   help_text?: string;
 }
 
@@ -21,11 +21,11 @@ export interface CreateContactFormFieldData {
   field_label: string;
   field_type: 'text' | 'email' | 'tel' | 'textarea' | 'select' | 'checkbox' | 'radio';
   field_placeholder?: string;
-  field_options?: any;
+  field_options?: Record<string, unknown>;
   is_required?: boolean;
   is_active?: boolean;
   order_index?: number;
-  validation_rules?: any;
+  validation_rules?: Record<string, unknown>;
   help_text?: string;
 }
 
@@ -175,7 +175,7 @@ export const reorderContactFormFields = async (fieldIds: string[]): Promise<bool
 /**
  * Subscribe to contact form fields changes
  */
-export const subscribeToContactFormFields = (callback: (payload: any) => void) => {
+export const subscribeToContactFormFields = (callback: (payload: Record<string, unknown>) => void) => {
   return supabase
     .channel('contact_form_fields_changes')
     .on(

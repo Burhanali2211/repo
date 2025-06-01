@@ -1,5 +1,4 @@
-import * as React from 'react';
-const { useState, useRef } = React;
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -30,7 +29,7 @@ const DualLogoUpload: React.FC<DualLogoUploadProps> = ({
     light: siteLogoLight || '',
     dark: siteLogoDark || ''
   });
-  
+
   const fileInputRefs = {
     fallback: useRef<HTMLInputElement>(null),
     light: useRef<HTMLInputElement>(null),
@@ -38,7 +37,7 @@ const DualLogoUpload: React.FC<DualLogoUploadProps> = ({
   };
 
   const handleFileUpload = async (
-    file: File, 
+    file: File,
     type: 'fallback' | 'light' | 'dark'
   ) => {
     if (!file) return;
@@ -65,33 +64,33 @@ const DualLogoUpload: React.FC<DualLogoUploadProps> = ({
 
     try {
       onUploadingChange?.(true);
-      
+
       // Create a unique filename
       const fileExt = file.name.split('.').pop();
       const fileName = `logo-${type}-${Date.now()}.${fileExt}`;
-      
+
       const uploadedUrl = await uploadFile(file, `logos/${fileName}`);
-      
+
       // Update the appropriate field
       const fieldMap = {
         fallback: 'site_logo' as const,
         light: 'site_logo_light' as const,
         dark: 'site_logo_dark' as const
       };
-      
+
       onLogoChange(fieldMap[type], uploadedUrl);
-      
+
       // Update preview
       setPreviews(prev => ({
         ...prev,
         [type]: uploadedUrl
       }));
-      
+
       toast({
         title: 'Logo uploaded successfully',
         description: `${type.charAt(0).toUpperCase() + type.slice(1)} logo has been updated`
       });
-      
+
     } catch (error) {
       console.error('Error uploading logo:', error);
       toast({
@@ -123,7 +122,7 @@ const DualLogoUpload: React.FC<DualLogoUploadProps> = ({
       light: 'site_logo_light' as const,
       dark: 'site_logo_dark' as const
     };
-    
+
     onLogoChange(fieldMap[type], value);
     setPreviews(prev => ({
       ...prev,
@@ -137,31 +136,31 @@ const DualLogoUpload: React.FC<DualLogoUploadProps> = ({
       light: 'site_logo_light' as const,
       dark: 'site_logo_dark' as const
     };
-    
+
     onLogoChange(fieldMap[type], '');
     setPreviews(prev => ({
       ...prev,
       [type]: ''
     }));
-    
+
     // Clear file input
     if (fileInputRefs[type].current) {
       fileInputRefs[type].current.value = '';
     }
   };
 
-  const LogoUploadCard = ({ 
-    type, 
-    title, 
-    description, 
+  const LogoUploadCard = ({
+    type,
+    title,
+    description,
     icon: Icon,
     preview,
-    urlValue 
+    urlValue
   }: {
     type: 'fallback' | 'light' | 'dark';
     title: string;
     description: string;
-    icon: React.ComponentType<any>;
+    icon: React.ComponentType<{ className?: string }>;
     preview: string;
     urlValue: string;
   }) => (
@@ -180,8 +179,8 @@ const DualLogoUpload: React.FC<DualLogoUploadProps> = ({
         <div className="flex items-center justify-center h-20 bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
           {preview ? (
             <div className="relative">
-              <img 
-                src={preview} 
+              <img
+                src={preview}
                 alt={`${title} preview`}
                 className="max-h-16 max-w-32 object-contain"
                 onError={(e) => {
@@ -261,7 +260,7 @@ const DualLogoUpload: React.FC<DualLogoUploadProps> = ({
           preview={previews.light}
           urlValue={siteLogoLight || ''}
         />
-        
+
         <LogoUploadCard
           type="dark"
           title="Dark Theme Logo"
@@ -270,7 +269,7 @@ const DualLogoUpload: React.FC<DualLogoUploadProps> = ({
           preview={previews.dark}
           urlValue={siteLogoDark || ''}
         />
-        
+
         <LogoUploadCard
           type="fallback"
           title="Fallback Logo"

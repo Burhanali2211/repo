@@ -12,7 +12,7 @@ export interface SuccessStory {
   client_image?: string;
   project_image?: string;
   results_achieved?: string;
-  metrics?: any; // JSONB for storing key metrics
+  metrics?: Record<string, unknown>; // JSONB for storing key metrics
   project_duration?: string;
   technologies_used?: string[];
   is_featured: boolean;
@@ -30,7 +30,7 @@ export interface CreateSuccessStoryData {
   client_image?: string;
   project_image?: string;
   results_achieved?: string;
-  metrics?: any;
+  metrics?: Record<string, unknown>;
   project_duration?: string;
   technologies_used?: string[];
   is_featured?: boolean;
@@ -284,7 +284,7 @@ export const reorderSuccessStories = async (storyIds: string[]): Promise<boolean
 /**
  * Subscribe to success stories changes
  */
-export const subscribeToSuccessStories = (callback: (payload: any) => void) => {
+export const subscribeToSuccessStories = (callback: (payload: unknown) => void) => {
   return supabase
     .channel('success_stories_changes')
     .on(
@@ -345,7 +345,7 @@ export const getSuccessStoryStats = async () => {
       total: data.length,
       active: data.filter(story => story.is_active).length,
       featured: data.filter(story => story.is_featured).length,
-      categories: data.reduce((acc: any, story) => {
+      categories: data.reduce((acc: Record<string, number>, story) => {
         if (story.category) {
           acc[story.category] = (acc[story.category] || 0) + 1;
         }

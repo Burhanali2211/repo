@@ -1,7 +1,7 @@
 /**
  * Safe property access utilities to prevent "undefined has no properties" errors
  */
-import * as React from 'react';
+import React from 'react';
 
 /**
  * Safely access nested object properties
@@ -10,8 +10,8 @@ import * as React from 'react';
  * @param defaultValue The default value to return if path is not found
  * @returns The value at the path or the default value
  */
-export const safeGet = <T = any>(
-  obj: any,
+export const safeGet = <T = unknown>(
+  obj: Record<string, unknown> | null | undefined,
   path: string,
   defaultValue: T | null = null
 ): T | null => {
@@ -44,7 +44,7 @@ export const safeGet = <T = any>(
  * @param context Optional context for error logging
  * @returns The function result or fallback value
  */
-export const safeExecute = <T = any>(
+export const safeExecute = <T = unknown>(
   fn: () => T,
   fallback: T,
   context?: string
@@ -68,7 +68,7 @@ export const safeExecute = <T = any>(
  * @param defaultValue The default value if index is out of bounds
  * @returns The array element or default value
  */
-export const safeArrayAccess = <T = any>(
+export const safeArrayAccess = <T = unknown>(
   arr: T[] | null | undefined,
   index: number,
   defaultValue: T | null = null
@@ -90,7 +90,7 @@ export const safeArrayAccess = <T = any>(
  * @param fallback The fallback value if parsing fails
  * @returns The parsed object or fallback value
  */
-export const safeJsonParse = <T = any>(
+export const safeJsonParse = <T = unknown>(
   jsonString: string | null | undefined,
   fallback: T
 ): T => {
@@ -111,7 +111,7 @@ export const safeJsonParse = <T = any>(
  * @param fallback The fallback value if key doesn't exist or access fails
  * @returns The stored value or fallback
  */
-export const safeLocalStorageGet = <T = any>(
+export const safeLocalStorageGet = <T = unknown>(
   key: string,
   fallback: T
 ): T => {
@@ -138,7 +138,7 @@ export const safeLocalStorageGet = <T = any>(
  * @param value The value to store
  * @returns True if successful, false otherwise
  */
-export const safeLocalStorageSet = (key: string, value: any): boolean => {
+export const safeLocalStorageSet = (key: string, value: unknown): boolean => {
   try {
     if (typeof window === 'undefined' || !window.localStorage) {
       return false;
@@ -174,7 +174,7 @@ export const safeEnvGet = (key: string, fallback: string = ''): string => {
  * @param defaults The default values
  * @returns The destructured object with defaults applied
  */
-export const safeDestructure = <T extends Record<string, any>>(
+export const safeDestructure = <T extends Record<string, unknown>>(
   obj: Partial<T> | null | undefined,
   defaults: T
 ): T => {
@@ -196,9 +196,9 @@ export const safeDestructure = <T extends Record<string, any>>(
  * @param fallback The fallback component to render on error
  * @returns The wrapped component
  */
-export const createSafeComponent = <P extends Record<string, any>>(
-  Component: any,
-  fallback: any = null
+export const createSafeComponent = <P extends Record<string, unknown>>(
+  Component: React.ComponentType<P>,
+  fallback: React.ComponentType<P> | null = null
 ) => {
   return (props: P) => {
     try {
@@ -221,7 +221,7 @@ export const createSafeComponent = <P extends Record<string, any>>(
  * @param context Optional context for error logging
  * @returns Promise that resolves to result or fallback
  */
-export const safeAsync = async <T = any>(
+export const safeAsync = async <T = unknown>(
   asyncFn: () => Promise<T>,
   fallback: T,
   context?: string

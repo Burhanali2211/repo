@@ -1,5 +1,4 @@
-import * as React from 'react';
-const { useState, useEffect } = React;
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 // Import icons individually to avoid TypeScript errors
 import RefreshCwIcon from 'lucide-react/dist/esm/icons/refresh-cw';
@@ -10,7 +9,7 @@ import { useServices, Service } from '@/hooks/useServices';
 import { useToast } from '@/components/ui/use-toast';
 
 interface ServiceModalProps {
-  service: any | null;
+  service: Service | null;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -53,7 +52,7 @@ const ServiceModal = ({ service, isOpen, onClose }: ServiceModalProps) => {
       const newSlug = generateSlug(formData.title);
       setFormData(prev => ({ ...prev, slug: newSlug }));
     }
-  }, [formData.title, slugEdited, services]);
+  }, [formData.title, slugEdited, service, services, generateSlug]);
 
   useEffect(() => {
     if (service) {

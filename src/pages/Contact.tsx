@@ -22,15 +22,40 @@ import {
   Sparkles,
   Heart
 } from 'lucide-react';
-import ContactForm from '../components/ContactForm';
+import DynamicContactForm from '../components/forms/DynamicContactForm';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import { useWebsiteSettings } from '@/contexts/SettingsContext';
+import { getFeaturedSuccessStories, type SuccessStory } from '@/lib/supabase/successStoriesServices';
 
 const Contact = () => {
+  const { settings } = useWebsiteSettings();
   const [responseTime, setResponseTime] = useState('< 2 hours');
   const [activeClients, setActiveClients] = useState(47);
   const [projectsCompleted, setProjectsCompleted] = useState(156);
+  const [successStories, setSuccessStories] = useState<SuccessStory[]>([]);
+
+  // Load success stories
+  useEffect(() => {
+    const loadSuccessStories = async () => {
+      try {
+        const stories = await getFeaturedSuccessStories(1);
+        setSuccessStories(stories);
+      } catch (error) {
+        console.error('Error loading success stories:', error);
+      }
+    };
+
+    loadSuccessStories();
+  }, []);
+
+  // Update response time from settings
+  useEffect(() => {
+    if (settings?.response_time_promise) {
+      setResponseTime(settings.response_time_promise);
+    }
+  }, [settings]);
 
   // Animated counters for engagement
   useEffect(() => {
@@ -172,75 +197,106 @@ const Contact = () => {
                 </h3>
 
                 <div className="space-y-6">
-                  <div className="group flex items-center space-x-4 p-4 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-300">
-                    <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                      <Mail className="h-7 w-7 text-white" />
+                  {settings?.contact_email && (
+                    <div className="group flex items-center space-x-4 p-4 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-300">
+                      <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <Mail className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 dark:text-gray-100">Email Us</h4>
+                        <p className="text-purple-600 dark:text-purple-400 font-medium">{settings.contact_email}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{settings.response_time_promise || 'We respond quickly'}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 dark:text-gray-100">Email Us</h4>
-                      <p className="text-purple-600 dark:text-purple-400 font-medium">hello@easyio.tech</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">We respond within 2 hours</p>
-                    </div>
-                  </div>
+                  )}
 
-                  <div className="group flex items-center space-x-4 p-4 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-300">
-                    <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                      <Phone className="h-7 w-7 text-white" />
+                  {settings?.contact_phone && (
+                    <div className="group flex items-center space-x-4 p-4 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-300">
+                      <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <Phone className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 dark:text-gray-100">Call Us</h4>
+                        <p className="text-blue-600 dark:text-blue-400 font-medium">{settings.contact_phone}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{settings.office_hours_display || 'Business hours'}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 dark:text-gray-100">Call Us</h4>
-                      <p className="text-blue-600 dark:text-blue-400 font-medium">+1 (555) 123-4567</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">Mon-Fri, 9 AM - 6 PM EST</p>
-                    </div>
-                  </div>
+                  )}
 
-                  <div className="group flex items-center space-x-4 p-4 rounded-xl hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-300">
-                    <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                      <MapPin className="h-7 w-7 text-white" />
+                  {settings?.address && (
+                    <div className="group flex items-center space-x-4 p-4 rounded-xl hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-300">
+                      <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <MapPin className="h-7 w-7 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 dark:text-gray-100">Visit Us</h4>
+                        <p className="text-green-600 dark:text-green-400 font-medium">
+                          {[
+                            settings.address,
+                            settings.address_line_2,
+                            settings.city,
+                            settings.state_province
+                          ].filter(Boolean).join(', ')}
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          {settings.location_description || 'By appointment only'}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 dark:text-gray-100">Visit Us</h4>
-                      <p className="text-green-600 dark:text-green-400 font-medium">123 Business St, Digital City</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">By appointment only</p>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </div>
 
               {/* Success Stories Teaser */}
-              <div className="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-2xl p-8 border border-yellow-200 dark:border-yellow-700">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-                  <Award className="h-6 w-6 mr-3 text-yellow-600" />
-                  Recent Success Story
-                </h3>
-                <blockquote className="text-gray-700 dark:text-gray-300 italic mb-4">
-                  "EasyIo.tech transformed our online presence completely. Our sales increased by 300% within 3 months!"
-                </blockquote>
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold">
-                    JD
+              {successStories.length > 0 && (
+                <div className="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-2xl p-8 border border-yellow-200 dark:border-yellow-700">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                    <Award className="h-6 w-6 mr-3 text-yellow-600" />
+                    Recent Success Story
+                  </h3>
+                  <blockquote className="text-gray-700 dark:text-gray-300 italic mb-4">
+                    "{successStories[0].story_content}"
+                  </blockquote>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                      {successStories[0].client_name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900 dark:text-white">{successStories[0].client_name}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {successStories[0].client_role && successStories[0].client_company
+                          ? `${successStories[0].client_role}, ${successStories[0].client_company}`
+                          : successStories[0].client_role || successStories[0].client_company || 'Satisfied Client'
+                        }
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-semibold text-gray-900 dark:text-white">John Doe</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">CEO, TechStart Inc.</p>
-                  </div>
+                  {successStories[0].results_achieved && (
+                    <div className="mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700">
+                      <p className="text-sm text-green-800 dark:text-green-200 font-medium">
+                        Results: {successStories[0].results_achieved}
+                      </p>
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
 
               {/* Interactive Map */}
-              <div className="rounded-2xl overflow-hidden shadow-xl border border-gray-200 dark:border-gray-700">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.215573174316!2d-73.98784542426508!3d40.75751157138396!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6480299%3A0x55194ec5a1ae072e!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1657867372607!5m2!1sen!2sus"
-                  width="100%"
-                  height="300"
-                  style={{ border: 0 }}
-                  allowFullScreen={true}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Google Maps Location"
-                  className="grayscale hover:grayscale-0 transition-all duration-500 dark:invert-[0.85] dark:contrast-125 dark:brightness-90"
-                ></iframe>
-              </div>
+              {settings?.map_embed_url && (
+                <div className="rounded-2xl overflow-hidden shadow-xl border border-gray-200 dark:border-gray-700">
+                  <iframe
+                    src={settings.map_embed_url}
+                    width="100%"
+                    height="300"
+                    style={{ border: 0 }}
+                    allowFullScreen={true}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Office Location"
+                    className="grayscale hover:grayscale-0 transition-all duration-500 dark:invert-[0.85] dark:contrast-125 dark:brightness-90"
+                  ></iframe>
+                </div>
+              )}
             </div>
 
             {/* Enhanced Contact Form */}
@@ -251,20 +307,20 @@ const Contact = () => {
                 {/* Form Header */}
                 <div className="text-center mb-8">
                   <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                    Get Your Free Consultation
+                    {settings?.contact_form_title || 'Get Your Free Consultation'}
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400">
-                    Fill out the form below and we'll get back to you within 2 hours
+                    {settings?.contact_form_subtitle || 'Fill out the form below and we\'ll get back to you soon'}
                   </p>
                   <div className="flex justify-center items-center space-x-2 mt-4">
                     <Timer className="h-4 w-4 text-green-500" />
                     <span className="text-sm text-green-600 dark:text-green-400 font-medium">
-                      Average response time: {responseTime}
+                      {settings?.response_time_promise || `Average response time: ${responseTime}`}
                     </span>
                   </div>
                 </div>
 
-                <ContactForm />
+                <DynamicContactForm showTitle={false} />
 
                 {/* Trust Indicators */}
                 <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">

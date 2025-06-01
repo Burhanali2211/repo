@@ -9,7 +9,7 @@ type SupabaseDataHookOptions<T> = {
   updateFunction: (id: string, item: Partial<Omit<T, 'id'>>) => Promise<{ data: T | null; error: PostgrestError | null }>;
   deleteFunction: (id: string) => Promise<{ data: T | null; error: PostgrestError | null }>;
   resourceName: string;
-  mapper?: (data: any) => T;
+  mapper?: (data: unknown) => T;
 };
 
 /**
@@ -33,17 +33,17 @@ export const useSupabaseData = <T extends { id: string }>({
     try {
       setIsLoading(true);
       const { data: fetchedData, error } = await fetchFunction();
-      
+
       if (error) {
         throw error;
       }
-      
+
       if (fetchedData) {
         // Apply custom mapping if provided
-        const mappedData = mapper 
+        const mappedData = mapper
           ? fetchedData.map(item => mapper(item))
           : fetchedData;
-        
+
         setData(mappedData as T[]);
       } else {
         // Fallback to initial data if no data from Supabase
@@ -67,17 +67,17 @@ export const useSupabaseData = <T extends { id: string }>({
     try {
       setIsLoading(true);
       const { data: createdData, error } = await createFunction(item);
-      
+
       if (error) {
         throw error;
       }
-      
+
       if (createdData) {
         // Apply custom mapping if provided
-        const mappedItem = mapper 
+        const mappedItem = mapper
           ? mapper(createdData)
           : createdData;
-        
+
         setData(prevData => [...prevData, mappedItem as T]);
         toast({
           title: `${resourceName} added`,
@@ -104,17 +104,17 @@ export const useSupabaseData = <T extends { id: string }>({
     try {
       setIsLoading(true);
       const { data: updatedData, error } = await updateFunction(id, item);
-      
+
       if (error) {
         throw error;
       }
-      
+
       if (updatedData) {
         // Apply custom mapping if provided
-        const mappedItem = mapper 
+        const mappedItem = mapper
           ? mapper(updatedData)
           : updatedData;
-        
+
         setData(prevData => prevData.map(d => d.id === id ? (mappedItem as T) : d));
         toast({
           title: `${resourceName} updated`,
@@ -141,11 +141,11 @@ export const useSupabaseData = <T extends { id: string }>({
     try {
       setIsLoading(true);
       const { error } = await deleteFunction(id);
-      
+
       if (error) {
         throw error;
       }
-      
+
       setData(prevData => prevData.filter(d => d.id !== id));
       toast({
         title: `${resourceName} deleted`,

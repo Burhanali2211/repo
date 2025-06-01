@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { useWhatWeDo, WhatWeDo } from '@/hooks/useWhatWeDo';
 
 interface WhatWeDoModalProps {
-  item: any | null;
+  item: WhatWeDo | null;
   isOpen: boolean;
   onClose: () => void;
 }

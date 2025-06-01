@@ -1,5 +1,4 @@
-import * as React from 'react';
-const { createContext, useContext, useState, useEffect } = React;
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useSettings, type SiteSettings } from '@/hooks/useSettings';
 
 interface SettingsContextType {

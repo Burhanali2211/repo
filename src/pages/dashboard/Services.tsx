@@ -87,7 +87,7 @@ const colorOptions = [
 const ServicesManagement = () => {
   // UUID generation function that works in all environments
   const generateUUID = () => {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
       const r = Math.random() * 16 | 0;
       const v = c === 'x' ? r : (r & 0x3 | 0x8);
       return v.toString(16);
@@ -106,7 +106,7 @@ const ServicesManagement = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const [selectedIcon, setSelectedIcon] = useState<string>('Globe');
-  const [selectedColor, setSelectedColor] = useState<{name: string, color: string, gradient: string}>(colorOptions[0]);
+  const [selectedColor, setSelectedColor] = useState<{ name: string, color: string, gradient: string }>(colorOptions[0]);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -123,40 +123,41 @@ const ServicesManagement = () => {
         setIsLoading(false);
         return;
       }
-      
+
       try {
         setIsLoading(true);
         setAuthError(false);
-        
+
         // Get services from Supabase
         const { data, error } = await getAllServices();
-        
+
         if (error) {
           throw error;
         }
-        
+
         if (data && Array.isArray(data)) {
           // Map database services to UI services with icon components
           const mappedServices = data.map(dbService => {
             // Use the iconName directly from the database or fallback to a default
             const iconName = dbService.iconName || 'Code';
-            
+
             return {
               ...dbService,
               iconName: iconName,
               icon: getIconComponent(iconName)
             };
           });
-          
+
           setServices(mappedServices);
         } else {
           // Set empty services array if no data
           setServices([]);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Error loading services:', error);
-        
-        if (error.name === 'auth_required') {
+
+        const errorObj = error as { name?: string };
+        if (errorObj.name === 'auth_required') {
           setAuthError(true);
           toast({
             title: "Authentication Required",
@@ -176,12 +177,12 @@ const ServicesManagement = () => {
         setIsLoading(false);
       }
     };
-    
+
     fetchServices();
   }, [user, toast]);
 
   // Filter services based on search term
-  const filteredServices = services.filter(service => 
+  const filteredServices = services.filter(service =>
     service.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     service.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -220,14 +221,14 @@ const ServicesManagement = () => {
       description: service.description,
       link: service.link,
     });
-    
+
     // Find the icon and color from options
     const iconName = iconOptions.find(icon => icon.component === service.icon)?.name || 'Globe';
     setSelectedIcon(iconName);
-    
+
     const colorName = colorOptions.find(color => color.gradient === service.gradient) || colorOptions[0];
     setSelectedColor(colorName);
-    
+
     setIsEditDialogOpen(true);
   };
 
@@ -241,7 +242,7 @@ const ServicesManagement = () => {
   const handleAddService = async () => {
     try {
       setIsLoading(true);
-      
+
       // Prepare service data with iconName included
       const newServiceData = {
         title: formData.title,
@@ -254,15 +255,15 @@ const ServicesManagement = () => {
 
       // Use the create service function which is simpler
       const { data, error } = await createService(newServiceData);
-      
+
       if (error) {
         console.error('Service creation error:', error);
         throw error;
       }
-      
+
       if (data) {
         console.log('Service created successfully:', data);
-        
+
         // Convert database service to UI service with icon component
         // Handle the case where data might be an array
         const serviceData = Array.isArray(data) ? data[0] : data;
@@ -278,7 +279,7 @@ const ServicesManagement = () => {
           description: `${formData.title} has been added successfully.`,
         });
       }
-      
+
       setIsAddDialogOpen(false);
       resetFormData();
     } catch (error) {
@@ -296,11 +297,11 @@ const ServicesManagement = () => {
   // Update existing service
   const handleUpdateService = async () => {
     if (!currentService) return;
-    
+
     try {
       setIsLoading(true);
       console.log('Updating service with ID:', currentService.id);
-      
+
       // Prepare service data with iconName included
       const updatedServiceData = {
         title: formData.title,
@@ -313,18 +314,18 @@ const ServicesManagement = () => {
 
       // Use updateService with the current service ID to properly update the existing record
       const { data, error } = await updateService(currentService.id, updatedServiceData);
-      
+
       if (error) {
         console.error('Service update error:', error);
         throw error;
       }
-      
+
       if (data) {
         console.log('Service updated successfully:', data);
-        
+
         // Remove the old service from the UI
         const filteredServices = services.filter(s => s.id !== currentService.id);
-        
+
         // Add the updated service with the new data
         // Handle the case where data might be an array
         const serviceData = Array.isArray(data) ? data[0] : data;
@@ -340,7 +341,7 @@ const ServicesManagement = () => {
           description: `${formData.title} has been updated successfully.`,
         });
       }
-      
+
       setIsEditDialogOpen(false);
       resetFormData();
     } catch (error) {
@@ -358,19 +359,19 @@ const ServicesManagement = () => {
   // Delete service
   const handleDeleteService = async () => {
     if (!currentService) return;
-    
+
     try {
       setIsLoading(true);
       const { error } = await deleteService(currentService.id);
-      
+
       if (error) {
         throw error;
       }
-      
+
       const updatedServices = services.filter(service => service.id !== currentService.id);
       setServices(updatedServices);
       setIsDeleteDialogOpen(false);
-      
+
       toast({
         title: "Service deleted",
         description: `${currentService.title} has been deleted.`,
@@ -398,11 +399,11 @@ const ServicesManagement = () => {
           </AlertDescription>
         </Alert>
       )}
-      
+
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Manage Services</h1>
-        <Button 
-          onClick={handleAddClick} 
+        <Button
+          onClick={handleAddClick}
           className="bg-purple-600 hover:bg-purple-700"
           disabled={isLoading || authError}
         >
@@ -460,19 +461,19 @@ const ServicesManagement = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex justify-end space-x-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => handleEditClick(service)}
                         aria-label={`Edit ${service.title}`}
                         tabIndex={0}
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700" 
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
                         onClick={() => handleDeleteClick(service)}
                         aria-label={`Delete ${service.title}`}
                         tabIndex={0}
@@ -549,7 +550,7 @@ const ServicesManagement = () => {
                 </Select>
               </div>
             </div>
-            
+
             <div>
               <Label htmlFor="title">Title</Label>
               <Input
@@ -560,7 +561,7 @@ const ServicesManagement = () => {
                 placeholder="Service title"
               />
             </div>
-            
+
             <div>
               <Label htmlFor="description">Description</Label>
               <Textarea
@@ -572,7 +573,7 @@ const ServicesManagement = () => {
                 rows={3}
               />
             </div>
-            
+
             <div>
               <Label htmlFor="link">Link</Label>
               <Input
@@ -585,15 +586,15 @@ const ServicesManagement = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setIsAddDialogOpen(false)}
               tabIndex={0}
               aria-label="Cancel adding service"
             >
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={handleAddService}
               className="bg-purple-600 hover:bg-purple-700 text-white"
               disabled={!formData.title || !formData.description || !formData.link}
@@ -660,7 +661,7 @@ const ServicesManagement = () => {
                 </Select>
               </div>
             </div>
-            
+
             <div>
               <Label htmlFor="edit-title">Title</Label>
               <Input
@@ -671,7 +672,7 @@ const ServicesManagement = () => {
                 placeholder="Service title"
               />
             </div>
-            
+
             <div>
               <Label htmlFor="edit-description">Description</Label>
               <Textarea
@@ -683,7 +684,7 @@ const ServicesManagement = () => {
                 rows={3}
               />
             </div>
-            
+
             <div>
               <Label htmlFor="edit-link">Link</Label>
               <Input
@@ -696,15 +697,15 @@ const ServicesManagement = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setIsEditDialogOpen(false)}
               tabIndex={0}
               aria-label="Cancel editing service"
             >
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={handleUpdateService}
               className="bg-purple-600 hover:bg-purple-700 text-white"
               disabled={!formData.title || !formData.description || !formData.link}
@@ -725,21 +726,21 @@ const ServicesManagement = () => {
           </DialogHeader>
           <div className="py-4">
             <p className="text-gray-500">
-              Are you sure you want to delete <span className="font-semibold text-gray-900">{currentService?.title}</span>? 
+              Are you sure you want to delete <span className="font-semibold text-gray-900">{currentService?.title}</span>?
               This action cannot be undone.
             </p>
           </div>
           <DialogFooter>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setIsDeleteDialogOpen(false)}
               tabIndex={0}
               aria-label="Cancel deletion"
             >
               Cancel
             </Button>
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               onClick={handleDeleteService}
               tabIndex={0}
               aria-label="Confirm deletion"

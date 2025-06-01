@@ -42,7 +42,7 @@ const Portfolio = () => {
   };
 
   // Transform Supabase data to match component expectations
-  const transformSupabaseProject = (project: any): UnifiedProject => ({
+  const transformSupabaseProject = (project: Project): UnifiedProject => ({
     id: project.id,
     title: project.title,
     category: project.category,

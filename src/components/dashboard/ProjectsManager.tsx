@@ -31,7 +31,7 @@ const ProjectsManager = () => {
     return matchesSearch && matchesStatus && matchesCategory;
   });
 
-  const handleEdit = (project: any) => {
+  const handleEdit = (project: Project) => {
     setSelectedProject(project);
     setIsModalOpen(true);
   };

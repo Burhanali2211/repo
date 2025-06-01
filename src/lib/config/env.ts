@@ -1,10 +1,17 @@
 /**
  * Environment configuration with validation and fallbacks
+ * Fixed to prevent "Cannot access 'a' before initialization" errors
  */
 
-// Safe environment variable access with fallbacks
+// Safe environment variable access with fallbacks and initialization guards
 const getEnvVar = (key: string, fallback: string = ''): string => {
   try {
+    // Ensure import.meta.env is available before accessing
+    if (typeof import.meta === 'undefined' || !import.meta.env) {
+      console.warn(`import.meta.env not available for ${key}, using fallback`);
+      return fallback;
+    }
+
     const value = import.meta.env[key];
     return (typeof value === 'string' && value.trim() !== '') ? value : fallback;
   } catch (error) {
@@ -13,17 +20,28 @@ const getEnvVar = (key: string, fallback: string = ''): string => {
   }
 };
 
-// Environment variable validation with safe access
-const requiredEnvVars = {
-  VITE_SUPABASE_URL: getEnvVar('VITE_SUPABASE_URL'),
-  VITE_SUPABASE_ANON_KEY: getEnvVar('VITE_SUPABASE_ANON_KEY'),
-} as const;
+// Lazy initialization to prevent circular dependency issues
+let requiredEnvVars: {
+  VITE_SUPABASE_URL: string;
+  VITE_SUPABASE_ANON_KEY: string;
+} | null = null;
 
-// Validate required environment variables
+const getRequiredEnvVars = () => {
+  if (requiredEnvVars === null) {
+    requiredEnvVars = {
+      VITE_SUPABASE_URL: getEnvVar('VITE_SUPABASE_URL'),
+      VITE_SUPABASE_ANON_KEY: getEnvVar('VITE_SUPABASE_ANON_KEY'),
+    };
+  }
+  return requiredEnvVars;
+};
+
+// Validate required environment variables with lazy loading
 const validateEnv = () => {
   const missing: string[] = [];
+  const envVars = getRequiredEnvVars();
 
-  Object.entries(requiredEnvVars).forEach(([key, value]) => {
+  Object.entries(envVars).forEach(([key, value]) => {
     if (!value || value.trim() === '') {
       missing.push(key);
     }
@@ -35,13 +53,13 @@ const validateEnv = () => {
 
     // In development, show a helpful error
     try {
-      if (import.meta?.env?.DEV) {
+      if (typeof import.meta !== 'undefined' && import.meta?.env?.DEV) {
         console.error('Please check your .env file and ensure all required variables are set.');
         console.error('You can copy .env.example to .env and update the values.');
       }
 
       // Don't throw in production to avoid breaking the app
-      if (import.meta?.env?.PROD) {
+      if (typeof import.meta !== 'undefined' && import.meta?.env?.PROD) {
         console.warn('App may not function correctly without proper environment configuration.');
       }
     } catch (error) {
@@ -50,19 +68,53 @@ const validateEnv = () => {
   }
 };
 
-// Validate on module load
-validateEnv();
-
-// Export validated environment variables with safe access
-export const env = {
+// Lazy environment object to prevent initialization issues
+let envInstance: {
   supabase: {
-    url: requiredEnvVars.VITE_SUPABASE_URL || '',
-    anonKey: requiredEnvVars.VITE_SUPABASE_ANON_KEY || '',
-  },
-  isDev: getEnvVar('DEV') === 'true' || false,
-  isProd: getEnvVar('PROD') === 'true' || false,
-  mode: getEnvVar('MODE') || 'development',
-} as const;
+    url: string;
+    anonKey: string;
+  };
+  isDev: boolean;
+  isProd: boolean;
+  mode: string;
+} | null = null;
+
+// Export validated environment variables with safe access and lazy initialization
+export const env = new Proxy({} as any, {
+  get(target, prop) {
+    if (envInstance === null) {
+      // Initialize environment on first access
+      try {
+        validateEnv();
+        const envVars = getRequiredEnvVars();
+
+        envInstance = {
+          supabase: {
+            url: envVars.VITE_SUPABASE_URL || '',
+            anonKey: envVars.VITE_SUPABASE_ANON_KEY || '',
+          },
+          isDev: getEnvVar('DEV') === 'true' || false,
+          isProd: getEnvVar('PROD') === 'true' || false,
+          mode: getEnvVar('MODE') || 'development',
+        };
+      } catch (error) {
+        console.error('Error initializing environment:', error);
+        // Fallback environment
+        envInstance = {
+          supabase: {
+            url: '',
+            anonKey: '',
+          },
+          isDev: false,
+          isProd: true,
+          mode: 'production',
+        };
+      }
+    }
+
+    return envInstance[prop as keyof typeof envInstance];
+  }
+});
 
 // Type for environment configuration
 export type EnvConfig = typeof env;

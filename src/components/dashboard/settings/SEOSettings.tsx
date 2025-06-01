@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -33,7 +33,7 @@ const SEOSettings: React.FC<SEOSettingsProps> = ({
     onSEOChange('google_analytics_id', '');
     onSEOChange('google_tag_manager_id', '');
     onSEOChange('facebook_pixel_id', '');
-    
+
     toast({
       title: 'SEO settings reset',
       description: 'All SEO settings have been reset to defaults'
@@ -46,7 +46,7 @@ const SEOSettings: React.FC<SEOSettingsProps> = ({
       gtm: /^GTM-[A-Z0-9]{7}$/,
       fb: /^\d{15,16}$/
     };
-    
+
     if (!id) return true; // Empty is valid
     return patterns[type].test(id);
   };
@@ -60,7 +60,7 @@ const SEOSettings: React.FC<SEOSettingsProps> = ({
   const SEOPreview = () => {
     const title = metaTitle || 'EasyIo.tech - Simplifying Technology';
     const description = metaDescription || 'Founded in 2023, EasyIo.tech simplifies technology...';
-    
+
     return (
       <Card className="mt-6">
         <CardHeader>

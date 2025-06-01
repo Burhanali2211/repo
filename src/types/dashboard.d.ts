@@ -76,10 +76,10 @@ declare global {
     title: string;
     description?: string;
     year?: string;
-    content_data: any;
+    content_data: Record<string, unknown>;
     order_index: number;
     is_active: boolean;
   }
 }
 
-export {};
+export { };

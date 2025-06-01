@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Animations are now imported in main.tsx */
+/* Critical CSS only - animations loaded separately for performance */
 
 @layer base {
   :root {

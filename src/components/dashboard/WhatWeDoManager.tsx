@@ -17,7 +17,7 @@ const WhatWeDoManager = () => {
     item.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleEdit = (item: any) => {
+  const handleEdit = (item: WhatWeDoItem) => {
     setSelectedItem(item);
     setIsModalOpen(true);
   };

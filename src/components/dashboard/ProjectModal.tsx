@@ -11,7 +11,7 @@ import { useProjects, Project } from '@/hooks/useProjects';
 import { useToast } from '@/components/ui/use-toast';
 
 interface ProjectModalProps {
-  project: any | null;
+  project: Project | null;
   isOpen: boolean;
   onClose: () => void;
 }

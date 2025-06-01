@@ -1,23 +1,39 @@
-import { createClient } from '@supabase/supabase-js';
+import { createSupabaseClient, validateSupabaseModules } from '@/lib/supabase/module-wrapper';
 import type { Database } from './types';
 import { env } from '@/lib/config/env';
 
-// Use validated environment variables with additional safety checks
-const SUPABASE_URL = env?.supabase?.url || '';
-const SUPABASE_ANON_KEY = env?.supabase?.anonKey || '';
+// Lazy initialization to prevent "Cannot access 'a' before initialization" errors
+let SUPABASE_URL: string | null = null;
+let SUPABASE_ANON_KEY: string | null = null;
 
-// Validate that we have the required values
-if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  console.error('Missing Supabase configuration:', {
-    hasUrl: !!SUPABASE_URL,
-    hasKey: !!SUPABASE_ANON_KEY,
-    url: SUPABASE_URL,
-    key: SUPABASE_ANON_KEY
-  });
-}
+const getSupabaseConfig = () => {
+  if (SUPABASE_URL === null || SUPABASE_ANON_KEY === null) {
+    try {
+      // Access env lazily to prevent initialization issues
+      SUPABASE_URL = env?.supabase?.url || '';
+      SUPABASE_ANON_KEY = env?.supabase?.anonKey || '';
+
+      // Validate that we have the required values
+      if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+        console.error('Missing Supabase configuration:', {
+          hasUrl: !!SUPABASE_URL,
+          hasKey: !!SUPABASE_ANON_KEY,
+          url: SUPABASE_URL ? 'Present' : 'Missing',
+          key: SUPABASE_ANON_KEY ? 'Present' : 'Missing'
+        });
+      }
+    } catch (error) {
+      console.error('Error accessing Supabase configuration:', error);
+      SUPABASE_URL = '';
+      SUPABASE_ANON_KEY = '';
+    }
+  }
+
+  return { url: SUPABASE_URL, key: SUPABASE_ANON_KEY };
+};
 
 // Create a singleton variable to ensure we only create one client instance
-let supabaseInstance: ReturnType<typeof createClient<Database>> | null = null;
+let supabaseInstance: ReturnType<typeof createSupabaseClient> | null = null;
 
 // Enhanced storage options for better session persistence
 const storageOptions = {
@@ -53,25 +69,33 @@ const storageOptions = {
   }
 };
 
-// Create a single supabase client for interacting with your database
+// Create a single supabase client for interacting with your database with lazy initialization
 export const supabase = (() => {
   if (supabaseInstance) return supabaseInstance;
 
-  // Ensure we have valid URL and key before creating client
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-    console.error('Missing Supabase configuration:', {
-      hasUrl: !!SUPABASE_URL,
-      hasKey: !!SUPABASE_ANON_KEY,
-      url: SUPABASE_URL ? 'Present' : 'Missing',
-      key: SUPABASE_ANON_KEY ? 'Present' : 'Missing'
-    });
-    throw new Error('Missing required Supabase configuration. Please check your environment variables.');
-  }
-
   try {
-    supabaseInstance = createClient<Database>(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY,
+    // Get configuration lazily to prevent initialization issues
+    const config = getSupabaseConfig();
+
+    // Ensure we have valid URL and key before creating client
+    if (!config.url || !config.key) {
+      console.error('Missing Supabase configuration:', {
+        hasUrl: !!config.url,
+        hasKey: !!config.key,
+        url: config.url ? 'Present' : 'Missing',
+        key: config.key ? 'Present' : 'Missing'
+      });
+      throw new Error('Missing required Supabase configuration. Please check your environment variables.');
+    }
+
+    // Validate Supabase modules before creating client
+    if (!validateSupabaseModules()) {
+      throw new Error('Supabase modules validation failed');
+    }
+
+    supabaseInstance = createSupabaseClient(
+      config.url,
+      config.key,
       {
         auth: storageOptions
       }

@@ -46,13 +46,13 @@ export const useTestimonials = () => {
         ...testimonial,
         avatar: testimonial.image, // Map image to avatar
         // Remove the image field as it's not in the Supabase schema
-        image: undefined as any
+        image: undefined as unknown
       };
       return createTestimonial(supabaseData);
     },
     updateFunction: (id, testimonial) => {
       // Convert UI testimonial format to Supabase format if image is present
-      const supabaseData: any = { ...testimonial };
+      const supabaseData: Record<string, unknown> = { ...testimonial };
       if ('image' in testimonial) {
         supabaseData.avatar = testimonial.image;
         delete supabaseData.image;

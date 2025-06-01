@@ -1,5 +1,4 @@
-import * as React from 'react';
-const { useState, useEffect, useCallback } = React;
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../integrations/supabase/client';
 import type { Tables, TablesInsert, TablesUpdate } from '../integrations/supabase/types';
 

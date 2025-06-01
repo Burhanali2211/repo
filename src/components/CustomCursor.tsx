@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 interface CustomCursorProps {
   size?: number;
@@ -21,11 +21,11 @@ const CustomCursor: React.FC<CustomCursorProps> = ({
   const [isVisible, setIsVisible] = useState(false);
   const [trail, setTrail] = useState<{ x: number; y: number }[]>([]);
   const [isPointer, setIsPointer] = useState(false);
-  
+
   // Handle mouse movement
-  const handleMouseMove = (e: MouseEvent) => {
+  const handleMouseMove = useCallback((e: MouseEvent) => {
     setPosition({ x: e.clientX, y: e.clientY });
-    
+
     // Update trail positions
     setTrail(prevTrail => {
       const newTrail = [...prevTrail, { x: e.clientX, y: e.clientY }];
@@ -34,28 +34,28 @@ const CustomCursor: React.FC<CustomCursorProps> = ({
       }
       return newTrail;
     });
-    
+
     // Check if cursor is over a clickable element
     const target = e.target as HTMLElement;
-    const isClickable = 
-      target.tagName === 'A' || 
-      target.tagName === 'BUTTON' || 
-      target.closest('a') || 
+    const isClickable =
+      target.tagName === 'A' ||
+      target.tagName === 'BUTTON' ||
+      target.closest('a') ||
       target.closest('button') ||
       window.getComputedStyle(target).cursor === 'pointer';
-    
+
     setIsPointer(!!isClickable);
-  };
-  
+  }, [trailLength]);
+
   // Handle mouse enter/leave events
   const handleMouseEnter = () => setIsVisible(true);
   const handleMouseLeave = () => setIsVisible(false);
-  
+
   useEffect(() => {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseenter', handleMouseEnter);
     document.addEventListener('mouseleave', handleMouseLeave);
-    
+
     // Check if we should show the custom cursor on mobile
     if (!showOnMobile) {
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -65,23 +65,23 @@ const CustomCursor: React.FC<CustomCursorProps> = ({
         setIsVisible(false);
       }
     }
-    
+
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseenter', handleMouseEnter);
       document.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [showOnMobile]);
-  
+  }, [showOnMobile, handleMouseMove]);
+
   if (!isVisible) return null;
-  
+
   return (
     <>
       {/* Trail elements */}
       {trail.map((point, index) => {
         const scale = 1 - (index / trailLength) * 0.6;
         const opacity = 1 - (index / trailLength) * 0.8;
-        
+
         return (
           <div
             key={index}
@@ -97,7 +97,7 @@ const CustomCursor: React.FC<CustomCursorProps> = ({
           />
         );
       })}
-      
+
       {/* Main cursor */}
       <div
         className={`fixed pointer-events-none z-50 rounded-full transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-100 ${className}`}

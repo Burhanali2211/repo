@@ -290,7 +290,7 @@ export const getMessageStats = async () => {
 /**
  * Subscribe to real-time contact message changes
  */
-export const subscribeToContactMessages = (callback: (payload: any) => void) => {
+export const subscribeToContactMessages = (callback: (payload: unknown) => void) => {
   return supabase
     .channel('contact_messages')
     .on('postgres_changes',

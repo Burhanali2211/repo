@@ -26,7 +26,7 @@ export const cleanupScriptContent = async () => {
     }
 
     let needsUpdate = false;
-    const updates: any = {};
+    const updates: Record<string, unknown> = {};
 
     // Check header_scripts
     if (settings.header_scripts) {
@@ -97,7 +97,7 @@ export const cleanupScriptContent = async () => {
  */
 export const setSafeScriptContent = async (headerScripts?: string | null, footerScripts?: string | null) => {
   try {
-    const updates: any = {};
+    const updates: Record<string, unknown> = {};
 
     // Validate and clean header scripts
     if (headerScripts !== undefined) {

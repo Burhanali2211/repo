@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ArrowUp } from 'lucide-react';
 
 interface ScrollToTopProps {
@@ -21,7 +21,7 @@ const ScrollToTop: React.FC<ScrollToTopProps> = ({
   className = '',
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  
+
   // Position classes
   const positionClasses = {
     'bottom-right': 'bottom-6 right-6',
@@ -29,37 +29,37 @@ const ScrollToTop: React.FC<ScrollToTopProps> = ({
     'top-right': 'top-6 right-6',
     'top-left': 'top-6 left-6',
   };
-  
+
   // Size classes
   const sizeClasses = {
     sm: 'w-10 h-10',
     md: 'w-12 h-12',
     lg: 'w-14 h-14',
   };
-  
+
   // Icon size classes
   const iconSizeClasses = {
     sm: 'h-4 w-4',
     md: 'h-5 w-5',
     lg: 'h-6 w-6',
   };
-  
+
   // Style classes
   const styleClasses = {
     circle: 'rounded-full',
     square: 'rounded-md',
     pill: 'rounded-full px-4',
   };
-  
+
   // Check scroll position
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     if (window.scrollY > showAfter) {
       setIsVisible(true);
     } else {
       setIsVisible(false);
     }
-  };
-  
+  }, [showAfter]);
+
   // Scroll to top function
   const scrollToTop = () => {
     window.scrollTo({
@@ -67,15 +67,15 @@ const ScrollToTop: React.FC<ScrollToTopProps> = ({
       behavior: 'smooth',
     });
   };
-  
+
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [showAfter]);
-  
+  }, [showAfter, handleScroll]);
+
   // Hide on mobile if specified
   useEffect(() => {
     if (!showOnMobile) {
@@ -87,9 +87,9 @@ const ScrollToTop: React.FC<ScrollToTopProps> = ({
       }
     }
   }, [showOnMobile]);
-  
+
   if (!isVisible) return null;
-  
+
   return (
     <button
       onClick={scrollToTop}

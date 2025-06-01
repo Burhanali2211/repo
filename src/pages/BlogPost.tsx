@@ -5,18 +5,33 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card } from '@/components/ui/card';
 
+interface BlogPost {
+  id: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  author: string;
+  authorTitle: string;
+  authorBio: string;
+  date: string;
+  category: string;
+  image: string;
+  readTime: string;
+  tags: string[];
+}
+
 // Mock blog data - same as in Blog.tsx
-const blogPosts = [
+const blogPosts: BlogPost[] = [
   {
     id: '1',
     title: 'The Future of Digital Identity',
     excerpt: 'Exploring how blockchain and decentralized technologies are transforming digital identity management.',
     content: `
       <p>Digital identity is undergoing a profound transformation, driven by blockchain technology and decentralized systems. These innovations are reshaping how we think about identity management, offering new paradigms for security, privacy, and user control.</p>
-      
+
       <h2>The Problem with Traditional Identity Systems</h2>
       <p>For decades, our digital identities have been fragmented across countless platforms and services. Each requires its own credentials, creating security vulnerabilities and a poor user experience. Centralized identity providers hold enormous power over our data, often monetizing it without our explicit consent.</p>
-      
+
       <p>This fragmentation leads to several critical issues:</p>
       <ul>
         <li>Password fatigue and reuse, creating security vulnerabilities</li>
@@ -24,25 +39,25 @@ const blogPosts = [
         <li>Limited user control over how identity data is used</li>
         <li>Exclusion of individuals without access to traditional identity documents</li>
       </ul>
-      
+
       <h2>Blockchain and Self-Sovereign Identity</h2>
       <p>Blockchain technology enables a new approach: self-sovereign identity (SSI). This model gives individuals ownership and control over their digital identities without relying on centralized authorities.</p>
-      
+
       <p>Key components of blockchain-based identity systems include:</p>
       <ul>
         <li><strong>Decentralized Identifiers (DIDs):</strong> Unique identifiers that users control independently of any central registry</li>
         <li><strong>Verifiable Credentials:</strong> Cryptographically secure attestations about an identity subject</li>
         <li><strong>Zero-Knowledge Proofs:</strong> Allowing users to prove specific attributes without revealing unnecessary information</li>
       </ul>
-      
+
       <h2>Real-World Applications</h2>
       <p>These technologies are already finding practical applications across various sectors:</p>
-      
+
       <p><strong>Financial Services:</strong> Streamlining KYC processes while enhancing privacy and reducing fraud</p>
       <p><strong>Healthcare:</strong> Giving patients control over their medical records while ensuring data integrity</p>
       <p><strong>Education:</strong> Creating tamper-proof academic credentials that can be instantly verified</p>
       <p><strong>Government Services:</strong> Developing digital ID systems that protect privacy while improving access to services</p>
-      
+
       <h2>Challenges and Considerations</h2>
       <p>Despite its promise, blockchain-based identity faces significant hurdles:</p>
       <ul>
@@ -51,10 +66,10 @@ const blogPosts = [
         <li>Integration with legacy systems</li>
         <li>Ensuring inclusivity for all populations</li>
       </ul>
-      
+
       <h2>The Path Forward</h2>
       <p>As these technologies mature, we're likely to see hybrid systems emerge that combine the best aspects of centralized and decentralized approaches. The key will be developing solutions that prioritize user control while meeting regulatory requirements and offering intuitive user experiences.</p>
-      
+
       <p>The transformation of digital identity won't happen overnight, but the direction is clear: we're moving toward a future where individuals have greater agency over their digital selves, with profound implications for privacy, security, and digital interaction.</p>
     `,
     author: 'Alex Johnson',
@@ -72,10 +87,10 @@ const blogPosts = [
     excerpt: 'Best practices for protecting your digital identity and personal information in an increasingly connected world.',
     content: `
       <p>In today's hyper-connected world, your digital identity is as valuable as your physical one—perhaps even more so. Protecting it has never been more important or more challenging.</p>
-      
+
       <h2>The Growing Threat Landscape</h2>
       <p>Cyber threats continue to evolve in sophistication and scale. From phishing attacks to data breaches, the risks to your personal information are numerous and constantly changing.</p>
-      
+
       <p>Recent statistics paint a concerning picture:</p>
       <ul>
         <li>Identity theft affected over 15 million Americans last year</li>
@@ -83,10 +98,10 @@ const blogPosts = [
         <li>Phishing attempts increased by 350% during the pandemic</li>
         <li>Credential stuffing attacks have risen by 750% since 2023</li>
       </ul>
-      
+
       <h2>Essential Security Practices</h2>
       <p>While no security measure is foolproof, implementing these practices can significantly reduce your risk:</p>
-      
+
       <h3>Password Management</h3>
       <p>Strong, unique passwords are your first line of defense. Consider these guidelines:</p>
       <ul>
@@ -95,7 +110,7 @@ const blogPosts = [
         <li>Regularly audit and update your credentials</li>
         <li>Consider passwordless authentication options where available</li>
       </ul>
-      
+
       <h3>Data Minimization</h3>
       <p>The less information you share, the less vulnerable you are:</p>
       <ul>
@@ -104,7 +119,7 @@ const blogPosts = [
         <li>Use temporary or alias email addresses for non-essential services</li>
         <li>Regularly delete accounts you no longer use</li>
       </ul>
-      
+
       <h3>Network Security</h3>
       <p>Securing your connections is critical:</p>
       <ul>
@@ -113,7 +128,7 @@ const blogPosts = [
         <li>Consider network segmentation for IoT devices</li>
         <li>Regularly scan for unauthorized devices on your network</li>
       </ul>
-      
+
       <h2>Responding to Security Incidents</h2>
       <p>Even with the best precautions, breaches can occur. Having a response plan is essential:</p>
       <ol>
@@ -122,7 +137,7 @@ const blogPosts = [
         <li>Report the incident to relevant authorities</li>
         <li>Monitor your accounts for suspicious activity</li>
       </ol>
-      
+
       <h2>The Future of Personal Security</h2>
       <p>As threats evolve, so do protective measures. Keep an eye on emerging technologies:</p>
       <ul>
@@ -131,7 +146,7 @@ const blogPosts = [
         <li>AI-powered threat detection for personal use</li>
         <li>Decentralized identity solutions reducing single points of failure</li>
       </ul>
-      
+
       <p>Remember that security is not a one-time effort but an ongoing process. Staying informed about new threats and regularly updating your security practices is the best way to protect your digital identity in an ever-changing landscape.</p>
     `,
     author: 'Samantha Lee',
@@ -204,36 +219,36 @@ const blogPosts = [
 // Related posts suggestion function
 const getRelatedPosts = (currentPostId: string, category: string, tags: string[]) => {
   return blogPosts
-    .filter(post => post.id !== currentPostId && 
+    .filter(post => post.id !== currentPostId &&
       (post.category === category || post.tags.some(tag => tags.includes(tag))))
     .slice(0, 3);
 };
 
-const BlogPost = () => {
+const BlogPostComponent = () => {
   const { id } = useParams<{ id: string }>();
-  const [post, setPost] = useState<any>(null);
-  const [relatedPosts, setRelatedPosts] = useState<any[]>([]);
-  
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
+
   useEffect(() => {
     // Find the post with the matching ID
     const foundPost = blogPosts.find(post => post.id === id);
-    
+
     if (foundPost) {
       setPost(foundPost);
       // Get related posts based on category and tags
       setRelatedPosts(getRelatedPosts(foundPost.id, foundPost.category, foundPost.tags));
-      
+
       // Scroll to top when post changes
       window.scrollTo(0, 0);
     }
   }, [id]);
-  
+
   // Format date to be more readable
   const formatDate = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-US', options);
   };
-  
+
   if (!post) {
     return (
       <div className="container mx-auto px-4 py-16 flex items-center justify-center min-h-[60vh]">
@@ -249,7 +264,7 @@ const BlogPost = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="max-w-4xl mx-auto">
@@ -258,7 +273,7 @@ const BlogPost = () => {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to all articles
         </Link>
-        
+
         {/* Article header */}
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-4">
@@ -266,11 +281,11 @@ const BlogPost = () => {
               {post.category}
             </span>
           </div>
-          
+
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-purple-600 bg-clip-text text-transparent">
             {post.title}
           </h1>
-          
+
           <div className="flex flex-wrap items-center text-sm text-gray-400 gap-4 mb-6">
             <div className="flex items-center">
               <Calendar className="h-4 w-4 mr-2" />
@@ -286,26 +301,26 @@ const BlogPost = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Featured image */}
         <div className="mb-10 rounded-xl overflow-hidden">
-          <img 
-            src={post.image} 
-            alt={post.title} 
+          <img
+            src={post.image}
+            alt={post.title}
             className="w-full h-auto object-cover"
           />
         </div>
-        
+
         {/* Article content */}
         <div className="prose prose-lg prose-invert max-w-none mb-12">
           <div dangerouslySetInnerHTML={{ __html: post.content }} />
         </div>
-        
+
         {/* Tags */}
         <div className="flex flex-wrap gap-2 mb-12">
           {post.tags.map((tag: string) => (
-            <div 
-              key={tag} 
+            <div
+              key={tag}
               className="bg-gray-800 text-gray-300 text-sm px-3 py-1 rounded-full flex items-center"
             >
               <Tag className="h-3 w-3 mr-1" />
@@ -313,7 +328,7 @@ const BlogPost = () => {
             </div>
           ))}
         </div>
-        
+
         {/* Share buttons */}
         <div className="border-t border-gray-800 pt-8 mb-12">
           <h3 className="text-lg font-medium mb-4 flex items-center">
@@ -332,7 +347,7 @@ const BlogPost = () => {
             </Button>
           </div>
         </div>
-        
+
         {/* Author bio */}
         <div className="bg-gray-900 rounded-xl p-6 mb-16 border border-gray-800">
           <div className="flex items-start gap-4">
@@ -348,7 +363,7 @@ const BlogPost = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Related articles */}
         {relatedPosts.length > 0 && (
           <div className="mb-16">
@@ -358,9 +373,9 @@ const BlogPost = () => {
                 <Card key={relatedPost.id} className="bg-gray-900 border-gray-800 overflow-hidden hover:border-gray-700 transition-colors">
                   <Link to={`/blog/${relatedPost.id}`} className="block">
                     <div className="h-40 overflow-hidden">
-                      <img 
-                        src={relatedPost.image} 
-                        alt={relatedPost.title} 
+                      <img
+                        src={relatedPost.image}
+                        alt={relatedPost.title}
                         className="w-full h-full object-cover transition-transform hover:scale-105"
                       />
                     </div>
@@ -381,15 +396,15 @@ const BlogPost = () => {
             </div>
           </div>
         )}
-        
+
         {/* Newsletter signup */}
         <div className="bg-gradient-to-r from-gray-900 to-black p-8 rounded-2xl border border-gray-800 text-center">
           <h3 className="text-2xl font-bold mb-2">Enjoyed this article?</h3>
           <p className="text-gray-400 mb-6">Subscribe to our newsletter for more insights on digital identity and technology</p>
           <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-            <input 
-              type="email" 
-              placeholder="Enter your email" 
+            <input
+              type="email"
+              placeholder="Enter your email"
               className="flex-1 px-4 py-2 rounded-md bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
             />
             <Button className="bg-gradient-to-r from-yellow-400 to-purple-600 text-white hover:opacity-90">
@@ -402,4 +417,4 @@ const BlogPost = () => {
   );
 };
 
-export default BlogPost;
+export default BlogPostComponent;

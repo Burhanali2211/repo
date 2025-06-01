@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { 
+import {
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -79,7 +79,7 @@ export function DataTable<TData, TValue>({
             />
           </div>
         </div>
-        
+
         {onAddNew && (
           <Button onClick={onAddNew}>
             <Plus className="mr-2 h-4 w-4" />
@@ -87,7 +87,7 @@ export function DataTable<TData, TValue>({
           </Button>
         )}
       </div>
-      
+
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -149,7 +149,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      
+
       <div className="flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
           Showing {table.getFilteredRowModel().rows.length} of {data.length} items
@@ -178,13 +178,13 @@ export function DataTable<TData, TValue>({
 }
 
 // Action column component for common operations like edit/delete
-export function ActionsCell<TData>({ 
-  row, 
-  onEdit, 
-  onDelete, 
-  onView 
-}: { 
-  row: any;
+export function ActionsCell<TData>({
+  row,
+  onEdit,
+  onDelete,
+  onView
+}: {
+  row: Row<TData>;
   onEdit?: (data: TData) => void;
   onDelete?: (data: TData) => void;
   onView?: (data: TData) => void;
@@ -212,7 +212,7 @@ export function ActionsCell<TData>({
             </DropdownMenuItem>
           )}
           {onDelete && (
-            <DropdownMenuItem 
+            <DropdownMenuItem
               onClick={() => onDelete(row.original)}
               className="text-red-600 focus:text-red-600"
             >

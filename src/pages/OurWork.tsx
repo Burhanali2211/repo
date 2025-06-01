@@ -4,14 +4,14 @@ import { Search, Filter, Grid, List, Eye, ExternalLink, Calendar, Award, Code, U
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { useProjects } from '@/hooks/useProjects';
+import { useProjects, type Project } from '@/hooks/useProjects';
 import ImageWithFallback from '@/components/ui/image-with-fallback';
 import AnimatedSection from '@/components/AnimatedSection';
 import FloatingElement from '@/components/FloatingElement';
 
 // Enhanced Project Preview Modal
 interface ProjectModalProps {
-  project: any;
+  project: Project | null;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -216,7 +216,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, isOpen, onClose })
 
 const OurWork = () => {
   const { projects, loading } = useProjects();
-  const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -234,7 +234,7 @@ const OurWork = () => {
   // Get unique categories
   const categories = ['All', ...Array.from(new Set(projects.map(p => p.category)))];
 
-  const handleProjectClick = (project: any) => {
+  const handleProjectClick = (project: Project) => {
     setSelectedProject(project);
     setIsModalOpen(true);
   };

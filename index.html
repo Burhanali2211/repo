@@ -18,6 +18,62 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@easyio_tech" />
   <meta name="twitter:image" content="https://www.easyio.tech/opengraph-image-p98pqg.png" />
+
+  <!-- Simplified React initialization script -->
+  <script>
+    // Basic React shim to prevent initialization errors
+    (function () {
+      if (typeof window.React === 'undefined') {
+        window.React = {
+          createElement: function () { return {}; },
+          createContext: function (defaultValue) {
+            return {
+              Provider: function () { },
+              Consumer: function () { },
+              displayName: '',
+              _currentValue: defaultValue
+            };
+          },
+          useState: function () { return [null, function () { }]; },
+          useEffect: function () { },
+          useContext: function () { return {}; },
+          Fragment: 'Fragment'
+        };
+      }
+
+      if (typeof window.ReactDOM === 'undefined') {
+        window.ReactDOM = {
+          createRoot: function () {
+            return { render: function () { } };
+          }
+        };
+      }
+
+      // Browser compatibility polyfills
+      if (typeof window.global === 'undefined') {
+        window.global = window;
+      }
+      if (typeof globalThis === 'undefined') {
+        window.globalThis = window;
+      }
+      if (typeof window.process === 'undefined') {
+        window.process = {
+          env: {},
+          browser: true
+        };
+      }
+    })();
+
+    // Simple error handling
+    window.addEventListener('error', function (event) {
+      if (event.message && event.message.includes('createContext')) {
+        console.warn('React context error detected, attempting recovery...');
+        setTimeout(function () {
+          window.location.reload();
+        }, 1000);
+      }
+    });
+  </script>
 </head>
 
 <body>

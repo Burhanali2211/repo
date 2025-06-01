@@ -1,5 +1,4 @@
-import * as React from 'react';
-const { useEffect, useState } = React;
+import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import LoadingSpinner from '@/components/ui/loading-spinner';

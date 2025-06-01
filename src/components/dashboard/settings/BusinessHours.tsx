@@ -1,5 +1,4 @@
-import * as React from 'react';
-const { useState } = React;
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -93,13 +92,13 @@ const BusinessHours: React.FC<BusinessHoursProps> = ({
   const copyToAllDays = (sourceDay: string) => {
     const sourceHours = hours[sourceDay];
     const newHours = { ...hours };
-    
+
     Object.keys(newHours).forEach(day => {
       if (day !== sourceDay) {
         newHours[day] = { ...sourceHours };
       }
     });
-    
+
     updateHours(newHours);
     toast({
       title: 'Hours copied',
@@ -144,8 +143,8 @@ const BusinessHours: React.FC<BusinessHoursProps> = ({
               <div key={key} className="flex justify-between items-center py-1">
                 <span className="text-sm font-medium">{label}</span>
                 <span className="text-sm text-gray-600">
-                  {dayHours.closed 
-                    ? 'Closed' 
+                  {dayHours.closed
+                    ? 'Closed'
                     : `${formatTime(dayHours.open)} - ${formatTime(dayHours.close)}`
                   }
                 </span>
@@ -227,7 +226,7 @@ const BusinessHours: React.FC<BusinessHoursProps> = ({
                 <div className="md:col-span-1">
                   <Label className="text-sm font-medium">{label}</Label>
                 </div>
-                
+
                 <div className="md:col-span-1 flex items-center space-x-2">
                   <Switch
                     checked={!dayHours.closed}
@@ -254,7 +253,7 @@ const BusinessHours: React.FC<BusinessHoursProps> = ({
                         className="text-xs"
                       />
                     </div>
-                    
+
                     <div className="md:col-span-1">
                       <Label htmlFor={`${key}_close`} className="text-xs">Closing</Label>
                       <Input

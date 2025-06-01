@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Session } from '@supabase/supabase-js';
+import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
 // Define types for our context
@@ -11,7 +11,7 @@ type SupabaseContextType = {
     success: boolean;
   }>;
   signOut: () => Promise<void>;
-  user: any | null; // Using any here as we don't know the exact user type from Supabase
+  user: User | null;
 };
 
 // Create the context with default values
@@ -32,7 +32,7 @@ type SupabaseProviderProps = {
 export const SupabaseProvider: React.FC<SupabaseProviderProps> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   // Initialize session and user
   useEffect(() => {

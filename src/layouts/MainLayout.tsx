@@ -1,5 +1,4 @@
-import * as React from 'react';
-const { useEffect } = React;
+import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from '../components/navigation/Navbar';
 import Footer from '../components/navigation/Footer';
@@ -8,7 +7,7 @@ import { useSettings } from '../hooks/useSettings';
 
 const MainLayout = () => {
   const { settings } = useSettings();
-  
+
   // Update document title when settings change
   useEffect(() => {
     if (settings?.site_name) {

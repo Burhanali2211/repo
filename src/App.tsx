@@ -1,21 +1,17 @@
 
-import React, { useState, useEffect, lazy, Suspense } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-// Import router configuration to handle React Router v7 warnings
-import { configureRouterOptions, ROUTER_FUTURE_FLAGS } from "@/lib/router-config";
 import ErrorBoundary from "@/components/ErrorBoundary";
-// Import performance monitoring
-import { measureWebVitals, sendPerformanceToAnalytics, trackUserInteractions } from "@/utils/performanceMonitor";
+import { safeLazyPage, safeLazySection } from "@/lib/utils/safe-lazy-loading";
 
-// Configure React Router v7 future flags on app startup
-if (typeof window !== 'undefined') {
-  configureRouterOptions();
-}
+// Import React Query directly to avoid lazy loading conflicts
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+
 import { AuthProvider } from "./contexts/AuthContext";
 import { AdminAuthProvider } from "./contexts/AdminAuthContext";
 import { DataProvider } from "./contexts/DataContext";
@@ -29,56 +25,58 @@ import { SupabaseProvider, SupabaseInitializer } from "./lib/supabase/context";
 import MainLayout from "./layouts/MainLayout";
 import DashboardLayout from "./pages/Dashboard";
 
-// Pages - Lazy loaded for better performance
-const HomePage = lazy(() => import("./pages/Home"));
-const AboutPage = lazy(() => import("./pages/About"));
-const ServicesPage = lazy(() => import("./pages/Services"));
-const PortfolioPage = lazy(() => import("./pages/Portfolio"));
-const OurWorkPage = lazy(() => import("./pages/OurWork"));
-const ContactPage = lazy(() => import("./pages/Contact"));
-const LoginPage = lazy(() => import("./pages/Login"));
-const RegisterPage = lazy(() => import("./pages/Register"));
-const AdminLoginPage = lazy(() => import("./pages/AdminLogin"));
-const AdminSignupPage = lazy(() => import("./pages/AdminSignup"));
-const SettingsPage = lazy(() => import("./pages/Settings"));
-const NotFoundPage = lazy(() => import("./pages/NotFound"));
-const BlogPage = lazy(() => import("./pages/Blog"));
-const BlogPostPage = lazy(() => import("./pages/BlogPost"));
-const CareersPage = lazy(() => import("./pages/Careers"));
-const PrivacyPage = lazy(() => import("./pages/Privacy"));
-const TermsPage = lazy(() => import("./pages/Terms"));
-const CookiesPage = lazy(() => import("./pages/Cookies"));
-const SetupSettingsPage = lazy(() => import("./pages/SetupSettings"));
+// Pages - Safe lazy loaded for better performance and error handling
+const HomePage = safeLazyPage(() => import("./pages/Home"), "Home");
+const AboutPage = safeLazyPage(() => import("./pages/About"), "About");
+const ServicesPage = safeLazyPage(() => import("./pages/Services"), "Services");
+const PortfolioPage = safeLazyPage(() => import("./pages/Portfolio"), "Portfolio");
+const OurWorkPage = safeLazyPage(() => import("./pages/OurWork"), "Our Work");
+const ContactPage = safeLazyPage(() => import("./pages/Contact"), "Contact");
+const EnhancedContactPage = safeLazyPage(() => import("./pages/EnhancedContact"), "Enhanced Contact");
+const LoginPage = safeLazyPage(() => import("./pages/Login"), "Login");
+const RegisterPage = safeLazyPage(() => import("./pages/Register"), "Register");
+const AdminLoginPage = safeLazyPage(() => import("./pages/AdminLogin"), "Admin Login");
+const AdminSignupPage = safeLazyPage(() => import("./pages/AdminSignup"), "Admin Signup");
+const SettingsPage = safeLazyPage(() => import("./pages/Settings"), "Settings");
+const NotFoundPage = safeLazyPage(() => import("./pages/NotFound"), "Not Found");
+const BlogPage = safeLazyPage(() => import("./pages/Blog"), "Blog");
+const BlogPostPage = safeLazyPage(() => import("./pages/BlogPost"), "Blog Post");
+const CareersPage = safeLazyPage(() => import("./pages/Careers"), "Careers");
+const PrivacyPage = safeLazyPage(() => import("./pages/Privacy"), "Privacy Policy");
+const TermsPage = safeLazyPage(() => import("./pages/Terms"), "Terms of Service");
+const CookiesPage = safeLazyPage(() => import("./pages/Cookies"), "Cookie Policy");
+const SetupSettingsPage = safeLazyPage(() => import("./pages/SetupSettings"), "Setup Settings");
 
 // New pages for missing routes
-const IndustriesPage = lazy(() => import("./pages/Industries"));
-const CaseStudiesPage = lazy(() => import("./pages/CaseStudies"));
-const SitemapPage = lazy(() => import("./pages/Sitemap"));
+const IndustriesPage = safeLazyPage(() => import("./pages/Industries"), "Industries");
+const CaseStudiesPage = safeLazyPage(() => import("./pages/CaseStudies"), "Case Studies");
+const SitemapPage = safeLazyPage(() => import("./pages/Sitemap"), "Sitemap");
 
 // Service Pages
-const WebDevelopmentPage = lazy(() => import("./pages/services/WebDevelopment"));
-const SEOPage = lazy(() => import("./pages/services/SEO"));
-const DigitalMarketingPage = lazy(() => import("./pages/services/DigitalMarketing"));
-const BrandDesignPage = lazy(() => import("./pages/services/BrandDesign"));
-const CloudServicesPage = lazy(() => import("./pages/services/CloudServices"));
-const AppDevelopmentPage = lazy(() => import("./pages/services/AppDevelopment"));
+const WebDevelopmentPage = safeLazyPage(() => import("./pages/services/WebDevelopment"), "Web Development");
+const SEOPage = safeLazyPage(() => import("./pages/services/SEO"), "SEO Services");
+const DigitalMarketingPage = safeLazyPage(() => import("./pages/services/DigitalMarketing"), "Digital Marketing");
+const BrandDesignPage = safeLazyPage(() => import("./pages/services/BrandDesign"), "Brand Design");
+const CloudServicesPage = safeLazyPage(() => import("./pages/services/CloudServices"), "Cloud Services");
+const AppDevelopmentPage = safeLazyPage(() => import("./pages/services/AppDevelopment"), "App Development");
 
 // New Service Pages
-const AgricultureTechPage = lazy(() => import("./pages/services/AgricultureTech"));
-const SchoolManagementPage = lazy(() => import("./pages/services/SchoolManagement"));
-const BusinessSolutionsPage = lazy(() => import("./pages/services/BusinessSolutions"));
-const StudentProgramsPage = lazy(() => import("./pages/services/StudentPrograms"));
-const TechnicalServicesPage = lazy(() => import("./pages/services/TechnicalServices"));
-const DigitalTransformationPage = lazy(() => import("./pages/services/DigitalTransformation"));
+const AgricultureTechPage = safeLazyPage(() => import("./pages/services/AgricultureTech"), "Agriculture Tech");
+const SchoolManagementPage = safeLazyPage(() => import("./pages/services/SchoolManagement"), "School Management");
+const BusinessSolutionsPage = safeLazyPage(() => import("./pages/services/BusinessSolutions"), "Business Solutions");
+const StudentProgramsPage = safeLazyPage(() => import("./pages/services/StudentPrograms"), "Student Programs");
+const TechnicalServicesPage = safeLazyPage(() => import("./pages/services/TechnicalServices"), "Technical Services");
+const DigitalTransformationPage = safeLazyPage(() => import("./pages/services/DigitalTransformation"), "Digital Transformation");
 
 // Dynamic Service Detail Page
-const ServiceDetailPage = lazy(() => import("./pages/ServiceDetail"));
+const ServiceDetailPage = safeLazyPage(() => import("./pages/ServiceDetail"), "Service Details");
 
 // No longer needed - Dashboard now handles its own routing
 
-// Animation and common components
-import { CustomCursor, ParticleBackground } from "./components/animations";
-import { ScrollProgress } from "./components/common/";
+// Safe lazy load animation and common components for better performance
+const CustomCursor = safeLazySection(() => import("./components/animations").then(module => ({ default: module.CustomCursor })), "Custom Cursor");
+const ScrollProgress = safeLazySection(() => import("./components/common/").then(module => ({ default: module.ScrollProgress })), "Scroll Progress");
+const ParticleBackground = safeLazySection(() => import("./components/animations").then(module => ({ default: module.ParticleBackground })), "Particle Background");
 import { safeExecute } from "@/lib/utils/safe-access";
 
 // Create a loading component for Suspense fallback
@@ -88,7 +86,7 @@ const PageLoader = () => (
   </div>
 );
 
-// Configure the query client with better caching and error handling
+// Create query client directly to avoid lazy loading issues
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -100,6 +98,7 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
+
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Set loaded state after initial render to enable animations
@@ -112,156 +111,149 @@ const App = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Initialize performance monitoring
+  // Simple performance monitoring
   useEffect(() => {
-    safeExecute(() => {
-      if (typeof window !== 'undefined') {
-        // Start measuring Web Vitals
-        safeExecute(() => measureWebVitals(sendPerformanceToAnalytics), undefined, 'measureWebVitals');
-
-        // Track user interactions
-        safeExecute(() => trackUserInteractions(), undefined, 'trackUserInteractions');
-
-        // Preload critical resources
-        const criticalResources = [
-          '/fonts/inter-var.woff2',
-          '/images/hero-bg.webp'
-        ];
-
-        criticalResources.forEach(resource => {
-          safeExecute(() => {
-            const link = document.createElement('link');
-            link.rel = 'preload';
-            link.href = resource;
-            link.as = resource.includes('font') ? 'font' : 'image';
-            if (resource.includes('font')) {
-              link.crossOrigin = 'anonymous';
-            }
-            document.head.appendChild(link);
-          }, undefined, `preload-${resource}`);
+    const timer = setTimeout(() => {
+      // Optional performance monitoring
+      try {
+        import("@/utils/performanceMonitor").then(({ measureWebVitals, sendPerformanceToAnalytics }) => {
+          measureWebVitals(sendPerformanceToAnalytics);
+        }).catch(() => {
+          // Silently fail if performance monitoring is not available
         });
+      } catch (error) {
+        // Silently fail
       }
-    }, undefined, 'performance-monitoring-init');
+    }, 2000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
     <ErrorBoundary>
       <HelmetProvider>
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <ThemeProvider defaultTheme="light">
-              <SupabaseProvider>
-                <SupabaseInitializer>
-                  <AuthProvider>
-                    <AdminAuthProvider>
-                      <SettingsProvider>
-                        <SettingsStyleProvider />
-                        <SettingsScriptInjector />
-                        <FaviconInjector />
-                        <MaintenanceMode>
-                          <DataProvider>
-                            {/* Toast notifications */}
-                            <Toaster />
-                            <Sonner />
+        <Suspense fallback={<PageLoader />}>
+          <QueryClientProvider client={queryClient}>
+            <TooltipProvider>
+              <ThemeProvider defaultTheme="light">
+                <SupabaseProvider>
+                  <SupabaseInitializer>
+                    <AuthProvider>
+                      <AdminAuthProvider>
+                        <SettingsProvider>
+                          <SettingsStyleProvider />
+                          <SettingsScriptInjector />
+                          <FaviconInjector />
+                          <MaintenanceMode>
+                            <DataProvider>
+                              {/* Toast notifications */}
+                              <Toaster />
+                              <Sonner />
 
-                            {/* Animation and interactive components */}
-                            <CustomCursor
-                              size={16}
-                              color="rgba(138, 43, 226, 0.6)"
-                              trailColor="rgba(138, 43, 226, 0.2)"
-                              showOnMobile={false}
-                              trailLength={3}
-                            />
+                              {/* Animation and interactive components - lazy loaded */}
+                              <Suspense fallback={null}>
+                                <CustomCursor
+                                  size={16}
+                                  color="rgba(138, 43, 226, 0.6)"
+                                  trailColor="rgba(138, 43, 226, 0.2)"
+                                  showOnMobile={false}
+                                  trailLength={3}
+                                />
 
-                            <ScrollProgress
-                              color="bg-gradient-to-r from-yellow-400 to-purple-600"
-                              height={3}
-                              position="top"
-                            />
+                                <ScrollProgress
+                                  color="bg-gradient-to-r from-yellow-400 to-purple-600"
+                                  height={3}
+                                  position="top"
+                                />
+                              </Suspense>
 
-                            <ParticleBackground
-                              particleCount={30}
-                              connectParticles={true}
-                              connectDistance={100}
-                              particleSpeed={0.3}
-                              maxFPS={30}
-                            />
+                              <Suspense fallback={null}>
+                                <ParticleBackground
+                                  particleCount={30}
+                                  connectParticles={true}
+                                  connectDistance={100}
+                                  particleSpeed={0.3}
+                                  maxFPS={30}
+                                />
+                              </Suspense>
 
-                            {/* Main content with transition */}
-                            <div className={`transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
-                              <BrowserRouter>
-                                <Suspense fallback={<PageLoader />}>
-                                  <Routes>
-                                    {/* Main Layout Routes */}
-                                    <Route element={<MainLayout />}>
-                                      <Route path="/" element={<HomePage />} />
-                                      <Route path="/about" element={<AboutPage />} />
-                                      <Route path="/services" element={<ServicesPage />} />
-                                      <Route path="/services/web-development" element={<WebDevelopmentPage />} />
-                                      <Route path="/services/seo" element={<SEOPage />} />
-                                      <Route path="/services/digital-marketing" element={<DigitalMarketingPage />} />
-                                      <Route path="/services/brand-design" element={<BrandDesignPage />} />
-                                      <Route path="/services/cloud-services" element={<CloudServicesPage />} />
-                                      <Route path="/services/app-development" element={<AppDevelopmentPage />} />
-                                      <Route path="/services/agriculture-tech" element={<AgricultureTechPage />} />
-                                      <Route path="/services/school-management" element={<SchoolManagementPage />} />
-                                      <Route path="/services/business-solutions" element={<BusinessSolutionsPage />} />
-                                      <Route path="/services/student-programs" element={<StudentProgramsPage />} />
-                                      <Route path="/services/technical-services" element={<TechnicalServicesPage />} />
-                                      <Route path="/services/digital-transformation" element={<DigitalTransformationPage />} />
-                                      {/* Dynamic service detail route */}
-                                      <Route path="/services/:slug" element={<ServiceDetailPage />} />
-                                      <Route path="/portfolio" element={<PortfolioPage />} />
-                                      <Route path="/our-work" element={<OurWorkPage />} />
-                                      <Route path="/contact" element={<ContactPage />} />
-                                      <Route path="/blog" element={<BlogPage />} />
-                                      <Route path="/blog/:id" element={<BlogPostPage />} />
-                                      <Route path="/careers" element={<CareersPage />} />
-                                      <Route path="/industries" element={<IndustriesPage />} />
-                                      <Route path="/case-studies" element={<CaseStudiesPage />} />
-                                      <Route path="/sitemap" element={<SitemapPage />} />
-                                      <Route path="/privacy" element={<PrivacyPage />} />
-                                      <Route path="/terms" element={<TermsPage />} />
-                                      <Route path="/cookies" element={<CookiesPage />} />
-                                      <Route path="/login" element={<LoginPage />} />
-                                      <Route path="/register" element={<RegisterPage />} />
-                                      <Route path="/admin/login" element={<AdminLoginPage />} />
-                                      <Route path="/admin/signup" element={<AdminSignupPage />} />
-                                    </Route>
+                              {/* Main content with transition */}
+                              <div className={`transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+                                <BrowserRouter>
+                                  <Suspense fallback={<PageLoader />}>
+                                    <Routes>
+                                      {/* Main Layout Routes */}
+                                      <Route element={<MainLayout />}>
+                                        <Route path="/" element={<HomePage />} />
+                                        <Route path="/about" element={<AboutPage />} />
+                                        <Route path="/services" element={<ServicesPage />} />
+                                        <Route path="/services/web-development" element={<WebDevelopmentPage />} />
+                                        <Route path="/services/seo" element={<SEOPage />} />
+                                        <Route path="/services/digital-marketing" element={<DigitalMarketingPage />} />
+                                        <Route path="/services/brand-design" element={<BrandDesignPage />} />
+                                        <Route path="/services/cloud-services" element={<CloudServicesPage />} />
+                                        <Route path="/services/app-development" element={<AppDevelopmentPage />} />
+                                        <Route path="/services/agriculture-tech" element={<AgricultureTechPage />} />
+                                        <Route path="/services/school-management" element={<SchoolManagementPage />} />
+                                        <Route path="/services/business-solutions" element={<BusinessSolutionsPage />} />
+                                        <Route path="/services/student-programs" element={<StudentProgramsPage />} />
+                                        <Route path="/services/technical-services" element={<TechnicalServicesPage />} />
+                                        <Route path="/services/digital-transformation" element={<DigitalTransformationPage />} />
+                                        {/* Dynamic service detail route */}
+                                        <Route path="/services/:slug" element={<ServiceDetailPage />} />
+                                        <Route path="/portfolio" element={<PortfolioPage />} />
+                                        <Route path="/our-work" element={<OurWorkPage />} />
+                                        <Route path="/contact" element={<ContactPage />} />
+                                        <Route path="/contact-enhanced" element={<EnhancedContactPage />} />
+                                        <Route path="/blog" element={<BlogPage />} />
+                                        <Route path="/blog/:id" element={<BlogPostPage />} />
+                                        <Route path="/careers" element={<CareersPage />} />
+                                        <Route path="/industries" element={<IndustriesPage />} />
+                                        <Route path="/case-studies" element={<CaseStudiesPage />} />
+                                        <Route path="/sitemap" element={<SitemapPage />} />
+                                        <Route path="/privacy" element={<PrivacyPage />} />
+                                        <Route path="/terms" element={<TermsPage />} />
+                                        <Route path="/cookies" element={<CookiesPage />} />
+                                        <Route path="/login" element={<LoginPage />} />
+                                        <Route path="/register" element={<RegisterPage />} />
+                                        <Route path="/admin/login" element={<AdminLoginPage />} />
+                                        <Route path="/admin/signup" element={<AdminSignupPage />} />
+                                      </Route>
 
-                                    {/* Dashboard Route */}
-                                    <Route path="/dashboard" element={
-                                      <ProtectedRoute>
-                                        <DashboardLayout />
-                                      </ProtectedRoute>
-                                    } />
+                                      {/* Dashboard Route */}
+                                      <Route path="/dashboard" element={
+                                        <ProtectedRoute>
+                                          <DashboardLayout />
+                                        </ProtectedRoute>
+                                      } />
 
-                                    {/* Setup Settings Route */}
-                                    <Route path="/setup-settings" element={
-                                      <ProtectedRoute>
-                                        <SetupSettingsPage />
-                                      </ProtectedRoute>
-                                    } />
+                                      {/* Setup Settings Route */}
+                                      <Route path="/setup-settings" element={
+                                        <ProtectedRoute>
+                                          <SetupSettingsPage />
+                                        </ProtectedRoute>
+                                      } />
 
-                                    {/* Redirect legacy Index to Home */}
-                                    <Route path="/index" element={<Navigate to="/" replace />} />
+                                      {/* Redirect legacy Index to Home */}
+                                      <Route path="/index" element={<Navigate to="/" replace />} />
 
-                                    {/* 404 Route */}
-                                    <Route path="*" element={<NotFoundPage />} />
-                                  </Routes>
-                                </Suspense>
-                              </BrowserRouter>
-                            </div>
-                          </DataProvider>
-                        </MaintenanceMode>
-                      </SettingsProvider>
-                    </AdminAuthProvider>
-                  </AuthProvider>
-                </SupabaseInitializer>
-              </SupabaseProvider>
-            </ThemeProvider>
-          </TooltipProvider>
-        </QueryClientProvider>
+                                      {/* 404 Route */}
+                                      <Route path="*" element={<NotFoundPage />} />
+                                    </Routes>
+                                  </Suspense>
+                                </BrowserRouter>
+                              </div>
+                            </DataProvider>
+                          </MaintenanceMode>
+                        </SettingsProvider>
+                      </AdminAuthProvider>
+                    </AuthProvider>
+                  </SupabaseInitializer>
+                </SupabaseProvider>
+              </ThemeProvider>
+            </TooltipProvider>
+          </QueryClientProvider>
+        </Suspense>
       </HelmetProvider>
     </ErrorBoundary>
   );

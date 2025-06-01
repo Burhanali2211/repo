@@ -54,8 +54,8 @@ export function measureWebVitals(callback: (data: WebVitalsData) => void): void 
     try {
       const lcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        const lastEntry = entries[entries.length - 1] as any;
-        
+        const lastEntry = entries[entries.length - 1] as PerformanceEntry & { startTime: number };
+
         if (lastEntry) {
           const value = lastEntry.startTime;
           callback({
@@ -72,7 +72,7 @@ export function measureWebVitals(callback: (data: WebVitalsData) => void): void 
       // First Input Delay (FID)
       const fidObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        entries.forEach((entry: any) => {
+        entries.forEach((entry: PerformanceEntry & { processingStart: number; startTime: number }) => {
           const value = entry.processingStart - entry.startTime;
           callback({
             name: 'FID',
@@ -89,12 +89,12 @@ export function measureWebVitals(callback: (data: WebVitalsData) => void): void 
       let clsValue = 0;
       const clsObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        entries.forEach((entry: any) => {
+        entries.forEach((entry: PerformanceEntry & { hadRecentInput: boolean; value: number }) => {
           if (!entry.hadRecentInput) {
             clsValue += entry.value;
           }
         });
-        
+
         callback({
           name: 'CLS',
           value: clsValue,
@@ -108,7 +108,7 @@ export function measureWebVitals(callback: (data: WebVitalsData) => void): void 
       // First Contentful Paint (FCP)
       const fcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        entries.forEach((entry: any) => {
+        entries.forEach((entry: PerformanceEntry & { name: string; startTime: number }) => {
           if (entry.name === 'first-contentful-paint') {
             const value = entry.startTime;
             callback({
@@ -161,7 +161,7 @@ export function measureResourceTiming(): Array<{
   }
 
   const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
-  
+
   return resources.map(resource => ({
     name: resource.name,
     duration: resource.duration,
@@ -192,10 +192,10 @@ export function monitorBundleSizes(): Promise<Array<{
 }>> {
   return new Promise((resolve) => {
     const bundles: Array<{ name: string; size: number; gzipSize?: number }> = [];
-    
+
     // Get all script and CSS resources
     const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
-    
+
     resources.forEach(resource => {
       if (resource.name.includes('.js') || resource.name.includes('.css')) {
         const name = resource.name.split('/').pop() || resource.name;
@@ -206,7 +206,7 @@ export function monitorBundleSizes(): Promise<Array<{
         });
       }
     });
-    
+
     resolve(bundles);
   });
 }
@@ -220,14 +220,14 @@ export function trackUserInteractions(): void {
 
   const trackInteraction = (event: Event) => {
     const startTime = performance.now();
-    
+
     // Use requestIdleCallback to measure delay
     if ('requestIdleCallback' in window) {
       requestIdleCallback(() => {
         const delay = performance.now() - startTime;
         interactionCount++;
         totalDelay += delay;
-        
+
         // Log if delay is significant
         if (delay > 50) {
           console.warn(`Slow interaction detected: ${event.type} took ${delay.toFixed(2)}ms`);
@@ -290,11 +290,11 @@ export function generatePerformanceReport(): Promise<{
     // Get other metrics
     const navigation = measureNavigationTiming();
     const resources = measureResourceTiming();
-    
+
     monitorBundleSizes().then(bundles => {
       // Calculate performance score (0-100)
       let score = 100;
-      
+
       if (webVitals.lcp && webVitals.lcp > WEB_VITALS_THRESHOLDS.LCP.poor) score -= 20;
       if (webVitals.fid && webVitals.fid > WEB_VITALS_THRESHOLDS.FID.poor) score -= 20;
       if (webVitals.cls && webVitals.cls > WEB_VITALS_THRESHOLDS.CLS.poor) score -= 20;
@@ -325,7 +325,8 @@ export function generatePerformanceReport(): Promise<{
 export function sendPerformanceToAnalytics(data: WebVitalsData): void {
   // Send to Google Analytics if available
   if ('gtag' in window) {
-    (window as any).gtag('event', 'web_vitals', {
+    const windowWithGtag = window as typeof window & { gtag: (...args: unknown[]) => void };
+    windowWithGtag.gtag('event', 'web_vitals', {
       event_category: 'Performance',
       event_label: data.name,
       value: Math.round(data.value),

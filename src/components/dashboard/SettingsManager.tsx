@@ -1,5 +1,4 @@
-import * as React from 'react';
-const { useState, useEffect } = React;
+import React, { useState, useEffect } from 'react';
 import { useSettings, type SiteSettingsUpdate } from '../../hooks/useSettings';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';

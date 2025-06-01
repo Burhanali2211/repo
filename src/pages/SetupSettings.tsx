@@ -1,5 +1,4 @@
-import * as React from 'react';
-const { useState, useEffect } = React;
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { setupSiteSettings } from '@/utils/setup-site-settings';
@@ -19,7 +18,7 @@ const SetupSettings = () => {
       const setupResult = await setupSiteSettings();
       setResult(setupResult);
       setIsComplete(true);
-      
+
       if (setupResult.success) {
         toast({
           title: "Success",
@@ -94,8 +93,8 @@ const SetupSettings = () => {
         </CardContent>
         <CardFooter className="flex justify-center gap-4">
           {!isComplete ? (
-            <Button 
-              onClick={handleSetup} 
+            <Button
+              onClick={handleSetup}
               disabled={isLoading}
               className="w-full"
             >
@@ -109,8 +108,8 @@ const SetupSettings = () => {
               )}
             </Button>
           ) : (
-            <Button 
-              onClick={handleGoToDashboard} 
+            <Button
+              onClick={handleGoToDashboard}
               className="w-full"
             >
               Go to Dashboard

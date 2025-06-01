@@ -8,7 +8,7 @@ const AdminAuthContext = createContext<ReturnType<typeof useAdminAuth> | undefin
 export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
   // Use the hook inside the provider
   const adminAuth = useAdminAuth();
-  
+
   return (
     <AdminAuthContext.Provider value={adminAuth}>
       {children}

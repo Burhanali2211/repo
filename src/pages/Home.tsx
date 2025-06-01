@@ -1,16 +1,20 @@
 import React, { Suspense } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Star, Zap } from 'lucide-react';
-import Hero from '@/components/sections/Hero';
-import Services from '@/components/sections/Services';
 import { SectionErrorBoundary } from '@/components/ErrorBoundary/ErrorBoundary';
+import { safeLazySection, safeLazyIcon } from '@/lib/utils/safe-lazy-loading';
 
-// Lazy load heavy components for better performance
-const Testimonials = React.lazy(() => import('@/components/sections/Testimonials'));
-const FAQ = React.lazy(() => import('@/components/sections/FAQ'));
-const Portfolio = React.lazy(() => import('@/components/sections/Portfolio'));
-const Industries = React.lazy(() => import('@/components/sections/Industries'));
-const CallToAction = React.lazy(() => import('@/components/sections/CallToAction'));
+// Safe lazy load ALL heavy components for better initial performance
+const Hero = safeLazySection(() => import('@/components/sections/Hero'), 'Hero');
+const Services = safeLazySection(() => import('@/components/sections/Services'), 'Services');
+const Testimonials = safeLazySection(() => import('@/components/sections/Testimonials'), 'Testimonials');
+const FAQ = safeLazySection(() => import('@/components/sections/FAQ'), 'FAQ');
+const Portfolio = safeLazySection(() => import('@/components/sections/Portfolio'), 'Portfolio');
+const Industries = safeLazySection(() => import('@/components/sections/Industries'), 'Industries');
+const CallToAction = safeLazySection(() => import('@/components/sections/CallToAction'), 'Call to Action');
+
+// Safe lazy load icons to reduce initial bundle
+const Star = safeLazyIcon('Star');
+const Zap = safeLazyIcon('Zap');
 
 // Loading component for lazy-loaded sections
 const SectionLoader = () => (
@@ -65,7 +69,9 @@ const Home = () => {
       <main className="flex flex-col w-full">
         {/* Hero Section - Full screen with dynamic elements */}
         <SectionErrorBoundary sectionName="Hero">
-          <Hero />
+          <Suspense fallback={<SectionLoader />}>
+            <Hero />
+          </Suspense>
         </SectionErrorBoundary>
 
         {/* Enhanced Services Section with Psychological Design */}
@@ -90,11 +96,13 @@ const Home = () => {
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                 <span>Trusted by 500+ Businesses Worldwide</span>
                 <div className="flex items-center ml-2">
-                  <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                  <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                  <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                  <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                  <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                  <Suspense fallback={<div className="w-4 h-4 bg-yellow-500 rounded-sm" />}>
+                    <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                    <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                    <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                    <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                    <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                  </Suspense>
                 </div>
               </div>
 
@@ -148,7 +156,9 @@ const Home = () => {
 
               {/* Urgency/Scarcity Element */}
               <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/30 text-orange-700 dark:text-orange-300 px-4 py-2 rounded-full text-sm font-medium mb-4 animate-pulse">
-                <Zap className="h-4 w-4 text-orange-500" />
+                <Suspense fallback={<div className="w-4 h-4 bg-orange-500 rounded-sm" />}>
+                  <Zap className="h-4 w-4 text-orange-500" />
+                </Suspense>
                 <span>Limited Time: Free Consultation Available</span>
               </div>
 
@@ -159,7 +169,9 @@ const Home = () => {
               </div>
             </div>
 
-            <Services />
+            <Suspense fallback={<SectionLoader />}>
+              <Services />
+            </Suspense>
           </div>
 
           {/* Enhanced decorative elements */}

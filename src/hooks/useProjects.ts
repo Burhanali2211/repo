@@ -184,7 +184,7 @@ export const useProjects = () => {
 
   const updateProject = async (id: string, projectData: Partial<Project>) => {
     // Create a new object with the correct field names for the database
-    const dbProjectData: any = {};
+    const dbProjectData: Record<string, unknown> = {};
 
     // Map the fields to the correct database column names
     if (projectData.title !== undefined) dbProjectData.title = projectData.title;

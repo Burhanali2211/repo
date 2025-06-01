@@ -1,6 +1,5 @@
 
-import * as React from 'react';
-const { createContext, useContext, useState, useEffect } = React;
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase, getCurrentUser } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -13,10 +12,18 @@ interface User {
   company?: string;
 }
 
+interface RegisterData {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  company?: string;
+}
+
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<boolean>;
-  register: (userData: any) => Promise<boolean>;
+  register: (userData: RegisterData) => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
 }
@@ -122,7 +129,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const register = async (userData: any): Promise<boolean> => {
+  const register = async (userData: RegisterData): Promise<boolean> => {
     try {
       setIsLoading(true);
 

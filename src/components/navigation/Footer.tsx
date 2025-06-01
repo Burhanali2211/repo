@@ -61,7 +61,7 @@ export const Footer = () => {
   ];
 
   // Social media icon mapping
-  const socialIconMap: { [key: string]: React.ComponentType<any> } = {
+  const socialIconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
     facebook: Facebook,
     twitter: Twitter,
     instagram: Instagram,

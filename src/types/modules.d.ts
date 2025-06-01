@@ -6,7 +6,7 @@ declare module 'react-router-dom' {
 
   export interface NavigateOptions {
     replace?: boolean;
-    state?: any;
+    state?: unknown;
   }
 
   export interface NavigateFunction {
@@ -16,10 +16,10 @@ declare module 'react-router-dom' {
 
   export function useNavigate(): NavigateFunction;
   export function Navigate(props: { to: string, replace?: boolean }): JSX.Element;
-  
+
   export const BrowserRouter: React.FC<{ children?: React.ReactNode }>;
   export const Routes: React.FC<{ children?: React.ReactNode }>;
-  export const Route: React.FC<{ 
+  export const Route: React.FC<{
     path: string;
     element: React.ReactNode;
   }>;
@@ -33,14 +33,14 @@ declare module 'react-router-dom' {
 // Lucide React
 declare module 'lucide-react' {
   import React from 'react';
-  
+
   export interface IconProps {
     color?: string;
     size?: string | number;
     className?: string;
     onClick?: () => void;
   }
-  
+
   // Define all icons used in the dashboard
   export const LayoutDashboard: React.FC<IconProps>;
   export const FolderOpen: React.FC<IconProps>;

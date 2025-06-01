@@ -9,7 +9,7 @@ import AnimatedSection from '@/components/AnimatedSection';
 import FloatingElement from '@/components/animations/FloatingElement';
 
 // Icon mapping for services
-const iconMap: { [key: string]: React.ComponentType<any> } = {
+const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
   Leaf,
   GraduationCap,
   Building2,

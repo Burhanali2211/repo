@@ -1,10 +1,13 @@
 // Global type declarations for the dashboard
-import * as React from 'react';
+import type { ReactElement } from 'react';
 
 // Augment the React namespace
 declare global {
   namespace JSX {
-    interface Element extends React.ReactElement<any, any> {}
+    interface Element extends ReactElement<unknown, unknown> {
+      // Extend with additional properties if needed
+      key?: string | number | null;
+    }
   }
 
   // Project related types
@@ -65,11 +68,11 @@ declare global {
     title: string;
     description?: string;
     year?: string;
-    content_data: any;
+    content_data: Record<string, unknown>;
     order_index: number;
     is_active: boolean;
   }
 }
 
 // Make TypeScript happy with module exports
-export {};
+export { };
