@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { createContactMessage } from '@/lib/supabase/contactServices';
 
 interface FormData {
   name: string;
@@ -43,16 +44,30 @@ export const useFormValidation = () => {
 
   const submitForm = async (data: FormData): Promise<boolean> => {
     setIsSubmitting(true);
-    
+
     try {
-      // Simulate form submission
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Log form data for now (in real app, send to backend)
-      console.log('Form submitted:', data);
-      
+      // Get user's IP and user agent for tracking
+      const userAgent = navigator.userAgent;
+
+      // Create contact message in Supabase
+      const result = await createContactMessage({
+        name: data.name,
+        email: data.email,
+        company: data.company,
+        message: data.message,
+        source: 'contact_form',
+        user_agent: userAgent
+      });
+
       setIsSubmitting(false);
-      return true;
+
+      if (result) {
+        console.log('Contact message created successfully:', result);
+        return true;
+      } else {
+        console.error('Failed to create contact message');
+        return false;
+      }
     } catch (error) {
       console.error('Form submission error:', error);
       setIsSubmitting(false);

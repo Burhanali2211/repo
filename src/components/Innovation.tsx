@@ -1,6 +1,5 @@
 
-import React from 'react';
-import { Zap, Globe, Smartphone, Brain } from 'lucide-react';
+import { Star as Zap, Settings as Globe, User as Smartphone, AlertCircle as Brain } from 'lucide-react';
 
 const Innovation = () => {
   return (

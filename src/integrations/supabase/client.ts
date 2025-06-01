@@ -2,9 +2,19 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 import { env } from '@/lib/config/env';
 
-// Use validated environment variables
-const SUPABASE_URL = env.supabase.url;
-const SUPABASE_ANON_KEY = env.supabase.anonKey;
+// Use validated environment variables with additional safety checks
+const SUPABASE_URL = env?.supabase?.url || '';
+const SUPABASE_ANON_KEY = env?.supabase?.anonKey || '';
+
+// Validate that we have the required values
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  console.error('Missing Supabase configuration:', {
+    hasUrl: !!SUPABASE_URL,
+    hasKey: !!SUPABASE_ANON_KEY,
+    url: SUPABASE_URL,
+    key: SUPABASE_ANON_KEY
+  });
+}
 
 // Create a singleton variable to ensure we only create one client instance
 let supabaseInstance: ReturnType<typeof createClient<Database>> | null = null;
@@ -47,15 +57,32 @@ const storageOptions = {
 export const supabase = (() => {
   if (supabaseInstance) return supabaseInstance;
 
-  supabaseInstance = createClient<Database>(
-    SUPABASE_URL as string,
-    SUPABASE_ANON_KEY as string,
-    {
-      auth: storageOptions
-    }
-  );
+  // Ensure we have valid URL and key before creating client
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    console.error('Missing Supabase configuration:', {
+      hasUrl: !!SUPABASE_URL,
+      hasKey: !!SUPABASE_ANON_KEY,
+      url: SUPABASE_URL ? 'Present' : 'Missing',
+      key: SUPABASE_ANON_KEY ? 'Present' : 'Missing'
+    });
+    throw new Error('Missing required Supabase configuration. Please check your environment variables.');
+  }
 
-  return supabaseInstance;
+  try {
+    supabaseInstance = createClient<Database>(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY,
+      {
+        auth: storageOptions
+      }
+    );
+
+    console.log('Supabase client created successfully');
+    return supabaseInstance;
+  } catch (error) {
+    console.error('Failed to create Supabase client:', error);
+    throw error;
+  }
 })();
 
 // Initialize the auth session without awaiting to avoid blocking render

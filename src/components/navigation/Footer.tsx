@@ -1,6 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Mail, Phone, MapPin, MessageSquare } from 'lucide-react';
+import {
+  ArrowRight,
+  Mail,
+  Phone,
+  MapPin,
+  MessageSquare,
+  Facebook,
+  Twitter,
+  Instagram,
+  Linkedin,
+  Github,
+  Youtube
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/ui/logo';
 import { useWebsiteSettings } from '@/contexts/SettingsContext';
@@ -25,7 +37,7 @@ export const Footer = () => {
         { label: 'SEO Services', path: '/services/seo' },
         { label: 'Digital Marketing', path: '/services/digital-marketing' },
         { label: 'Brand Design', path: '/services/brand-design' },
-        { label: 'Cloud Services', path: '/services/cloud' },
+        { label: 'Cloud Services', path: '/services/cloud-services' },
         { label: 'Mobile Applications', path: '/services/app-development' },
       ],
     },
@@ -48,18 +60,50 @@ export const Footer = () => {
     },
   ];
 
-  const socialLinks = [
-    { icon: 'twitter', label: 'Twitter', url: 'https://twitter.com' },
-    { icon: 'facebook', label: 'Facebook', url: 'https://facebook.com' },
-    { icon: 'instagram', label: 'Instagram', url: 'https://instagram.com' },
-    { icon: 'linkedin', label: 'LinkedIn', url: 'https://linkedin.com' },
-    { icon: 'youtube', label: 'YouTube', url: 'https://youtube.com' },
-  ];
+  // Social media icon mapping
+  const socialIconMap: { [key: string]: React.ComponentType<any> } = {
+    facebook: Facebook,
+    twitter: Twitter,
+    instagram: Instagram,
+    linkedin: Linkedin,
+    github: Github,
+    youtube: Youtube
+  };
 
+  // Dynamic social links from settings
+  const socialLinks = settings?.social_links ?
+    Object.entries(settings.social_links)
+      .filter(([_, url]) => url && url.trim() !== '')
+      .map(([platform, url]) => ({
+        icon: platform,
+        label: platform.charAt(0).toUpperCase() + platform.slice(1),
+        url: url as string,
+        IconComponent: socialIconMap[platform.toLowerCase()] || MessageSquare
+      })) : [];
+
+  // Dynamic contact info from settings
   const contactInfo = [
-    { icon: Phone, label: '+1 (234) 567-8901', url: 'tel:+12345678901' },
-    { icon: Mail, label: 'info@easyio.tech', url: 'mailto:info@easyio.tech' },
-    { icon: MapPin, label: '123 Digital Street, Tech Valley, CA 94123', url: 'https://maps.google.com' },
+    ...(settings?.contact_phone ? [{
+      icon: Phone,
+      label: settings.contact_phone,
+      url: `tel:${settings.contact_phone.replace(/\D/g, '')}`
+    }] : []),
+    ...(settings?.contact_email ? [{
+      icon: Mail,
+      label: settings.contact_email,
+      url: `mailto:${settings.contact_email}`
+    }] : []),
+    ...(settings?.address ? [{
+      icon: MapPin,
+      label: [
+        settings.address,
+        settings.address_line_2,
+        settings.city,
+        settings.state_province,
+        settings.postal_code
+      ].filter(Boolean).join(', '),
+      url: settings.map_embed_url || 'https://maps.google.com'
+    }] : [])
   ];
 
   return (
@@ -115,23 +159,28 @@ export const Footer = () => {
               ))}
             </div>
 
-            <div className="mt-8 flex space-x-4">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.icon}
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-purple-600 hover:text-white transition-all"
-                  aria-label={social.label}
-                  tabIndex={0}
-                  onKeyDown={(e) => e.key === 'Enter' && window.open(social.url, '_blank')}
-                >
-                  <span className="sr-only">{social.label}</span>
-                  <i className={`fa fa-${social.icon}`}></i>
-                </a>
-              ))}
-            </div>
+            {socialLinks.length > 0 && (
+              <div className="mt-8 flex space-x-4">
+                {socialLinks.map((social) => {
+                  const IconComponent = social.IconComponent;
+                  return (
+                    <a
+                      key={social.icon}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-purple-600 hover:text-white transition-all"
+                      aria-label={social.label}
+                      tabIndex={0}
+                      onKeyDown={(e) => e.key === 'Enter' && window.open(social.url, '_blank')}
+                    >
+                      <span className="sr-only">{social.label}</span>
+                      <IconComponent className="h-4 w-4" />
+                    </a>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div className="lg:col-span-8">

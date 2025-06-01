@@ -18,7 +18,7 @@ import ThemeColorPicker from './settings/ThemeColorPicker';
 import TypographySettings from './settings/TypographySettings';
 import BusinessHours from './settings/BusinessHours';
 import SEOSettings from './settings/SEOSettings';
-import ContactSettings from './settings/ContactSettings';
+import EnhancedContactSettings from './settings/EnhancedContactSettings';
 
 const SettingsManager = () => {
   const { settings, loading, error, updateSettings, resetSettings, fetchSettings } = useSettings();
@@ -314,12 +314,30 @@ const SettingsManager = () => {
               </TabsContent>
 
               <TabsContent value="contact" className="space-y-6">
-                {/* Contact Settings */}
-                <ContactSettings
+                {/* Enhanced Contact Settings */}
+                <EnhancedContactSettings
                   contactEmail={formData.contact_email}
                   contactPhone={formData.contact_phone}
                   contactPhoneSecondary={formData.contact_phone_secondary}
+                  emergencyContactPhone={formData.emergency_contact_phone}
+                  emergencyContactEmail={formData.emergency_contact_email}
                   address={formData.address}
+                  addressLine2={formData.address_line_2}
+                  city={formData.city}
+                  stateProvince={formData.state_province}
+                  postalCode={formData.postal_code}
+                  country={formData.country}
+                  timezone={formData.timezone}
+                  mapLatitude={formData.map_latitude}
+                  mapLongitude={formData.map_longitude}
+                  mapZoomLevel={formData.map_zoom_level}
+                  mapEmbedUrl={formData.map_embed_url}
+                  locationDescription={formData.location_description}
+                  contactFormTitle={formData.contact_form_title}
+                  contactFormSubtitle={formData.contact_form_subtitle}
+                  responseTimePromise={formData.response_time_promise}
+                  officeHoursDisplay={formData.office_hours_display}
+                  contactCtaText={formData.contact_cta_text}
                   socialLinks={formData.social_links as Record<string, string>}
                   onContactChange={handleFieldChange}
                 />

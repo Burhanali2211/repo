@@ -72,13 +72,13 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, isOpen, onClose })
               {isEditing ? (
                 <Input
                   value={editedProject.name}
-                  onChange={(e) => setEditedProject({...editedProject, name: e.target.value})}
+                  onChange={(e) => setEditedProject({ ...editedProject, name: e.target.value })}
                 />
               ) : (
                 <p className="text-gray-900">{project.name}</p>
               )}
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Status
@@ -86,7 +86,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, isOpen, onClose })
               {isEditing ? (
                 <select
                   value={editedProject.status}
-                  onChange={(e) => setEditedProject({...editedProject, status: e.target.value as any})}
+                  onChange={(e) => setEditedProject({ ...editedProject, status: e.target.value as 'in-progress' | 'completed' | 'pending' })}
                   className="w-full p-2 border border-gray-300 rounded-md"
                 >
                   <option value="pending">Pending</option>
@@ -108,7 +108,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, isOpen, onClose })
             {isEditing ? (
               <textarea
                 value={editedProject.description}
-                onChange={(e) => setEditedProject({...editedProject, description: e.target.value})}
+                onChange={(e) => setEditedProject({ ...editedProject, description: e.target.value })}
                 className="w-full p-2 border border-gray-300 rounded-md h-24"
               />
             ) : (
@@ -124,7 +124,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, isOpen, onClose })
                 <p className="font-medium">{project.client}</p>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <DollarSign className="h-5 w-5 text-gray-400" />
               <div>
@@ -142,7 +142,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, isOpen, onClose })
                 <p className="font-medium">{project.startDate}</p>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Clock className="h-5 w-5 text-gray-400" />
               <div>
@@ -155,8 +155,8 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, isOpen, onClose })
           <div>
             <p className="text-sm text-gray-500 mb-2">Progress</p>
             <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
-                className="bg-purple-600 h-2 rounded-full transition-all duration-300" 
+              <div
+                className="bg-purple-600 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${project.progress}%` }}
               ></div>
             </div>

@@ -4,11 +4,11 @@ import { supabase } from '@/integrations/supabase/client';
 
 export interface Testimonial {
   id: string;
-  author: string;
-  position: string;
+  name: string;
+  role: string;
   company?: string;
   content: string;
-  image?: string;
+  avatar?: string;
   rating: number;
   featured: boolean;
   order_index: number;
@@ -44,14 +44,14 @@ export const useTestimonials = () => {
           console.warn('Received null or undefined testimonial from database');
           return null;
         }
-        
+
         return {
           id: testimonial.id || '',
-          author: testimonial.author || 'Unknown Author',
-          position: testimonial.position || '',
+          name: testimonial.name || 'Unknown Author',
+          role: testimonial.role || '',
           company: testimonial.company || '',
           content: testimonial.content || '',
-          image: testimonial.image || null,
+          avatar: testimonial.avatar || null,
           rating: testimonial.rating || 5,
           featured: !!testimonial.featured,
           order_index: testimonial.order_index || 0

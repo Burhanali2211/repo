@@ -7,8 +7,13 @@ export interface Service {
   slug: string;
   description: string;
   icon?: string;
+  iconName?: string;
   image?: string;
-  // Remove featured and order_index as they don't exist in the database
+  link?: string;
+  color?: string;
+  gradient?: string;
+  featured?: boolean;
+  order_index?: number;
 }
 
 export const useServices = () => {
@@ -26,8 +31,6 @@ export const useServices = () => {
         .from('services')
         .select('*');
 
-      console.log('Services data:', data, fetchError);
-
       if (fetchError) {
         console.error('Error fetching services:', fetchError);
         setError(fetchError.message);
@@ -40,7 +43,13 @@ export const useServices = () => {
         slug: service.slug,
         description: service.description,
         icon: service.icon,
-        image: service.image
+        iconName: service.icon, // Map icon to iconName for compatibility
+        image: service.image,
+        link: `/services/${service.slug}`, // Generate link from slug
+        color: 'bg-purple-500', // Default color
+        gradient: 'from-purple-600 to-blue-600', // Default gradient
+        featured: service.featured || false,
+        order_index: service.order_index || 0
       }));
 
       setServices(mappedServices);

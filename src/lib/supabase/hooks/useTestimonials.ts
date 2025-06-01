@@ -1,12 +1,11 @@
 import { useSupabaseData } from './useSupabaseData';
-import { 
-  getAllTestimonials, 
-  createTestimonial, 
-  updateTestimonial, 
+import {
+  getAllTestimonials,
+  createTestimonial,
+  updateTestimonial,
   deleteTestimonial,
-  type Testimonial as SupabaseTestimonial 
+  type Testimonial as SupabaseTestimonial
 } from '../services';
-import { testimonials as initialTestimonialsData } from '@/components/sections/Testimonials';
 
 // Testimonial type definition for UI
 export type Testimonial = {
@@ -32,17 +31,8 @@ const testimonialMapper = (item: SupabaseTestimonial): Testimonial => ({
   featured: item.featured || false
 });
 
-// Default testimonials
-const defaultTestimonials = initialTestimonialsData.map(testimonial => ({
-  id: crypto.randomUUID(),
-  name: testimonial.name,
-  role: testimonial.role,
-  company: '',
-  image: testimonial.image,
-  content: testimonial.content,
-  rating: testimonial.rating,
-  featured: false
-}));
+// No default testimonials - load from database only
+const defaultTestimonials: Testimonial[] = [];
 
 // Create a hook for working with testimonials
 export const useTestimonials = () => {

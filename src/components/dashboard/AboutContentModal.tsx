@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { useAboutContent, AboutContent } from '@/hooks/useAboutContent';
 
 interface AboutContentModalProps {
-  content: any | null;
+  content: AboutContent | null;
   isOpen: boolean;
   onClose: () => void;
 }

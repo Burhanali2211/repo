@@ -37,37 +37,44 @@ const faqs = [
 
 const FAQ = () => {
   return (
-    <section className="transition-colors duration-300">
+    <section
+      className="transition-colors duration-300"
+      aria-labelledby="faq-heading"
+    >
       <div className="container mx-auto px-6">
-        <motion.div
+        <motion.header
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 transition-colors">
+          <h2
+            id="faq-heading"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 transition-colors"
+          >
             Frequently Asked Questions
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto transition-colors">
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-4 transition-colors">
             Got questions? We've got answers. Here are some of the most common questions we receive.
           </p>
-        </motion.div>
+          <div className="h-1.5 w-24 bg-gradient-to-r from-violet-500 via-emerald-500 to-purple-500 mx-auto rounded-full"></div>
+        </motion.header>
 
         <div className="max-w-4xl mx-auto">
           <Accordion type="single" collapsible className="space-y-6">
             {faqs.map((faq, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
+                transition={{ duration: 0.25, delay: index * 0.05, ease: [0.25, 1, 0.5, 1] }}
                 viewport={{ once: true }}
               >
                 <AccordionItem
                   value={`item-${index}`}
                   className="bg-gray-100 dark:bg-white/10 backdrop-blur-sm rounded-xl shadow-md dark:shadow-none
-                           hover:bg-gray-200 dark:hover:bg-white/20 transition-all duration-500 px-6 py-2 group relative overflow-hidden"
+                           hover:bg-gray-200 dark:hover:bg-white/20 transition-all duration-250 px-6 py-2 group relative overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <div className="relative z-10">

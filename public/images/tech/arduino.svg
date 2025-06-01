@@ -1,0 +1,86 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="arduinoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00979D" />
+      <stop offset="100%" stop-color="#005A5F" />
+    </linearGradient>
+    <linearGradient id="circuitGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFD700" />
+      <stop offset="100%" stop-color="#FFA500" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" fill="#1a1a1a"/>
+  
+  <!-- Arduino board outline -->
+  <rect x="50" y="80" width="300" height="140" rx="10" fill="url(#arduinoGradient)" stroke="#00B4B8" stroke-width="2"/>
+  
+  <!-- USB connector -->
+  <rect x="30" y="130" width="25" height="40" rx="3" fill="#C0C0C0" stroke="#808080" stroke-width="1"/>
+  
+  <!-- Power jack -->
+  <circle cx="80" cy="100" r="8" fill="#000" stroke="#333" stroke-width="2"/>
+  <circle cx="80" cy="100" r="5" fill="#333"/>
+  
+  <!-- Digital pins -->
+  <g transform="translate(100, 90)">
+    <rect x="0" y="0" width="180" height="8" fill="#333"/>
+    <g fill="url(#circuitGradient)">
+      <circle cx="10" cy="4" r="2"/>
+      <circle cx="25" cy="4" r="2"/>
+      <circle cx="40" cy="4" r="2"/>
+      <circle cx="55" cy="4" r="2"/>
+      <circle cx="70" cy="4" r="2"/>
+      <circle cx="85" cy="4" r="2"/>
+      <circle cx="100" cy="4" r="2"/>
+      <circle cx="115" cy="4" r="2"/>
+      <circle cx="130" cy="4" r="2"/>
+      <circle cx="145" cy="4" r="2"/>
+      <circle cx="160" cy="4" r="2"/>
+      <circle cx="175" cy="4" r="2"/>
+    </g>
+  </g>
+  
+  <!-- Analog pins -->
+  <g transform="translate(100, 202)">
+    <rect x="0" y="0" width="120" height="8" fill="#333"/>
+    <g fill="url(#circuitGradient)">
+      <circle cx="10" cy="4" r="2"/>
+      <circle cx="25" cy="4" r="2"/>
+      <circle cx="40" cy="4" r="2"/>
+      <circle cx="55" cy="4" r="2"/>
+      <circle cx="70" cy="4" r="2"/>
+      <circle cx="85" cy="4" r="2"/>
+      <circle cx="100" cy="4" r="2"/>
+      <circle cx="115" cy="4" r="2"/>
+    </g>
+  </g>
+  
+  <!-- Microcontroller -->
+  <rect x="180" y="130" width="60" height="40" rx="3" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+  <text x="210" y="152" text-anchor="middle" font-family="monospace" font-size="8" fill="#00B4B8">ATMEGA</text>
+  
+  <!-- LED indicators -->
+  <circle cx="120" cy="150" r="3" fill="#FF0000" opacity="0.8"/>
+  <circle cx="130" cy="150" r="3" fill="#00FF00" opacity="0.8"/>
+  <circle cx="140" cy="150" r="3" fill="#0000FF" opacity="0.8"/>
+  
+  <!-- Circuit traces -->
+  <g stroke="url(#circuitGradient)" stroke-width="1" fill="none" opacity="0.6">
+    <path d="M100 150 L180 150"/>
+    <path d="M150 110 L150 190"/>
+    <path d="M200 110 L200 190"/>
+    <path d="M120 130 L120 170"/>
+  </g>
+  
+  <!-- Arduino logo text -->
+  <text x="200" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="url(#arduinoGradient)">
+    Arduino Development
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="200" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#888">
+    Microcontroller Programming &amp; IoT Solutions
+  </text>
+</svg>

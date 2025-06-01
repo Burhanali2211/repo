@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 const CallToAction = () => {
   return (
-    <div className="container mx-auto px-4 md:px-6">
+    <section className="container mx-auto px-4 md:px-6" aria-labelledby="cta-heading">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -14,10 +14,10 @@ const CallToAction = () => {
         className="relative rounded-2xl overflow-hidden"
       >
         {/* Background gradient and overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 to-blue-900 opacity-90"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 to-blue-900 opacity-90" aria-hidden="true"></div>
 
         {/* Decorative elements */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden" aria-hidden="true">
           <div className="absolute top-0 left-0 w-full h-96 bg-white/5 -skew-y-12 translate-y-[-60%]"></div>
           <div className="absolute bottom-0 right-0 w-full h-96 bg-white/5 -skew-y-12 translate-y-[60%]"></div>
           <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-purple-500/10 blur-3xl"></div>
@@ -25,13 +25,14 @@ const CallToAction = () => {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 py-16 md:py-20 px-6 md:px-12 text-center">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
+        <div className="relative z-10 py-12 md:py-16 px-6 md:px-12 text-center">
+          <h2 id="cta-heading" className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
             Got any project in mind?
           </h2>
-          <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-white/80 mb-8 max-w-2xl mx-auto">
             Let's discuss your vision and transform it into reality. Our team is ready to help you achieve your goals.
           </p>
+          <div className="h-1.5 w-24 bg-gradient-to-r from-white/60 via-white/80 to-white/60 mx-auto rounded-full mb-6"></div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
             <Link to="/contact">
@@ -75,7 +76,7 @@ const CallToAction = () => {
 
 
       </div>
-    </div>
+    </section>
   );
 };
 

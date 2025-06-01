@@ -157,7 +157,7 @@
     }
   }
 
-  /* Marquee animation for hero section */
+  /* ===== OPTIMIZED MARQUEE ANIMATIONS ===== */
   @keyframes marquee {
     0% {
       transform: translateX(0);
@@ -168,26 +168,71 @@
     }
   }
 
+  @keyframes marquee-reverse {
+    0% {
+      transform: translateX(-50%);
+    }
+
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  /* Optimized marquee speeds for better UX */
   .animate-marquee {
-    animation: marquee 25s linear infinite;
+    animation: marquee 20s linear infinite;
     will-change: transform;
   }
 
-  /* Pause animation on hover for better UX */
-  .animate-marquee:hover {
+  .animate-marquee-slow {
+    animation: marquee 30s linear infinite;
+    will-change: transform;
+  }
+
+  .animate-marquee-fast {
+    animation: marquee 15s linear infinite;
+    will-change: transform;
+  }
+
+  .animate-marquee-reverse {
+    animation: marquee-reverse 25s linear infinite;
+    will-change: transform;
+  }
+
+  /* Smooth pause on hover for better UX */
+  .animate-marquee:hover,
+  .animate-marquee-slow:hover,
+  .animate-marquee-fast:hover,
+  .animate-marquee-reverse:hover {
     animation-play-state: paused;
   }
 
-  /* Responsive marquee speeds */
+  /* Responsive marquee speeds - optimized for mobile */
   @media (max-width: 768px) {
     .animate-marquee {
-      animation-duration: 20s;
+      animation-duration: 18s;
+    }
+
+    .animate-marquee-slow {
+      animation-duration: 25s;
+    }
+
+    .animate-marquee-fast {
+      animation-duration: 12s;
     }
   }
 
   @media (max-width: 480px) {
     .animate-marquee {
       animation-duration: 15s;
+    }
+
+    .animate-marquee-slow {
+      animation-duration: 20s;
+    }
+
+    .animate-marquee-fast {
+      animation-duration: 10s;
     }
   }
 
@@ -357,5 +402,139 @@
     .section-transition-overlay {
       height: 60px;
     }
+  }
+
+  /* Enhanced psychological design animations */
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  /* Improved section spacing and typography */
+  .section-heading {
+    @apply text-3xl sm:text-4xl md:text-5xl font-bold mb-4 leading-tight;
+  }
+
+  .section-subheading {
+    @apply text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-4;
+  }
+
+  .section-divider {
+    @apply h-1.5 w-24 mx-auto rounded-full;
+  }
+
+  .section-spacing {
+    @apply py-12 sm:py-16 md:py-20;
+  }
+
+  .section-header-spacing {
+    @apply mb-10 sm:mb-12 md:mb-16;
+  }
+
+  @keyframes glow {
+
+    0%,
+    100% {
+      box-shadow: 0 0 5px rgba(147, 51, 234, 0.3);
+    }
+
+    50% {
+      box-shadow: 0 0 20px rgba(147, 51, 234, 0.6), 0 0 30px rgba(59, 130, 246, 0.4);
+    }
+  }
+
+  @keyframes float-gentle {
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-3px);
+    }
+  }
+
+  @keyframes pulse-soft {
+
+    0%,
+    100% {
+      opacity: 0.7;
+    }
+
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes bounce-subtle {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-2px);
+    }
+  }
+
+  /* Psychological design utility classes */
+  .shimmer-effect {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  .glow-effect {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .float-gentle {
+    animation: float-gentle 3s ease-in-out infinite;
+  }
+
+  .pulse-soft {
+    animation: pulse-soft 2s ease-in-out infinite;
+  }
+
+  .bounce-subtle {
+    animation: bounce-subtle 1s ease-in-out infinite;
+  }
+
+  /* Enhanced hover effects for psychological appeal */
+  .psychological-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .psychological-hover:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Trust indicator animations */
+  .trust-indicator {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .trust-indicator::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .trust-indicator:hover::before {
+    left: 100%;
   }
 }

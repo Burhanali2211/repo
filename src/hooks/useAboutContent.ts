@@ -1,5 +1,14 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import type { Database } from '@/integrations/supabase/types';
+
+export interface AboutContentData {
+  icon?: string;
+  color?: string;
+  title?: string;
+  description?: string;
+  [key: string]: unknown;
+}
 
 export interface AboutContent {
   id: string;
@@ -7,10 +16,14 @@ export interface AboutContent {
   title: string;
   description?: string;
   year?: string;
-  content_data: any;
+  content_data: AboutContentData | null;
   order_index: number;
   is_active: boolean;
 }
+
+// Use Supabase generated types
+type AboutContentInsert = Database['public']['Tables']['about_content']['Insert'];
+type AboutContentUpdate = Database['public']['Tables']['about_content']['Update'];
 
 export const useAboutContent = () => {
   const [aboutContent, setAboutContent] = useState<AboutContent[]>([]);
@@ -63,9 +76,21 @@ export const useAboutContent = () => {
   const createAboutContent = async (contentData: Omit<AboutContent, 'id'>) => {
     try {
       console.log('Creating about content:', contentData);
+
+      // Convert to database-compatible format
+      const dbData: AboutContentInsert = {
+        section_type: contentData.section_type,
+        title: contentData.title,
+        description: contentData.description,
+        year: contentData.year,
+        content_data: contentData.content_data as Database['public']['Tables']['about_content']['Insert']['content_data'],
+        order_index: contentData.order_index,
+        is_active: contentData.is_active
+      };
+
       const { data, error } = await supabase
         .from('about_content')
-        .insert([contentData])
+        .insert([dbData])
         .select()
         .single();
 
@@ -86,9 +111,21 @@ export const useAboutContent = () => {
   const updateAboutContent = async (id: string, contentData: Partial<AboutContent>) => {
     try {
       console.log('Updating about content:', id, contentData);
+
+      // Convert to database-compatible format
+      const dbData: AboutContentUpdate = {
+        section_type: contentData.section_type,
+        title: contentData.title,
+        description: contentData.description,
+        year: contentData.year,
+        content_data: contentData.content_data as Database['public']['Tables']['about_content']['Update']['content_data'],
+        order_index: contentData.order_index,
+        is_active: contentData.is_active
+      };
+
       const { data, error } = await supabase
         .from('about_content')
-        .update(contentData)
+        .update(dbData)
         .eq('id', id)
         .select()
         .single();

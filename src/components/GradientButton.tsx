@@ -40,14 +40,14 @@ const GradientButton: React.FC<GradientButtonProps> = ({
   ariaLabel,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  
+
   // Size classes
   const sizeClasses = {
     sm: 'px-3 py-1.5 text-sm',
     md: 'px-4 py-2 text-base',
     lg: 'px-6 py-3 text-lg',
   };
-  
+
   // Rounded classes
   const roundedClasses = {
     none: 'rounded-none',
@@ -56,10 +56,10 @@ const GradientButton: React.FC<GradientButtonProps> = ({
     lg: 'rounded-lg',
     full: 'rounded-full',
   };
-  
-  // Base classes
+
+  // Base classes with optimized transitions
   const baseClasses = `
-    inline-flex items-center justify-center font-medium transition-all duration-300
+    inline-flex items-center justify-center font-medium transition-all duration-200
     ${sizeClasses[size]}
     ${roundedClasses[rounded]}
     ${shadow ? 'shadow-md hover:shadow-lg' : ''}
@@ -68,23 +68,23 @@ const GradientButton: React.FC<GradientButtonProps> = ({
     ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}
     ${className}
   `;
-  
+
   // Gradient classes
   const gradientClasses = `
     bg-gradient-to-r ${isHovered && animateOnHover ? hoverGradient : gradient}
     hover:bg-gradient-to-r hover:${hoverGradient}
     text-white
   `;
-  
-  // Animation classes
+
+  // Optimized animation classes
   const animationClasses = animateOnHover
-    ? 'transform hover:-translate-y-0.5 active:translate-y-0'
+    ? 'transform hover:-translate-y-1 active:translate-y-0 active:scale-995'
     : '';
-  
+
   // Handle mouse events
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
-  
+
   // Render as link if href is provided
   if (href) {
     return (
@@ -104,7 +104,7 @@ const GradientButton: React.FC<GradientButtonProps> = ({
       </a>
     );
   }
-  
+
   // Render as button
   return (
     <button

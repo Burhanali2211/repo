@@ -1,21 +1,26 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  Phone, 
-  Mail, 
-  MapPin, 
-  Facebook, 
-  Twitter, 
-  Instagram, 
-  Linkedin, 
-  Youtube,
-  RotateCcw,
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
+import {
+  Phone,
+  Mail,
+  MapPin,
+  Globe,
   Plus,
-  X
+  X,
+  AlertTriangle,
+  Clock,
+  Map,
+  Settings,
+  Building,
+  User,
+  Shield
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
@@ -27,28 +32,65 @@ interface ContactSettingsProps {
   contactEmail?: string;
   contactPhone?: string;
   contactPhoneSecondary?: string;
+  emergencyContactPhone?: string;
+  emergencyContactEmail?: string;
   address?: string;
+  addressLine2?: string;
+  city?: string;
+  stateProvince?: string;
+  postalCode?: string;
+  country?: string;
+  timezone?: string;
+  mapLatitude?: number;
+  mapLongitude?: number;
+  mapZoomLevel?: number;
+  mapEmbedUrl?: string;
+  locationDescription?: string;
+  contactFormTitle?: string;
+  contactFormSubtitle?: string;
+  responseTimePromise?: string;
+  officeHoursDisplay?: string;
+  contactCtaText?: string;
   socialLinks?: SocialLinks;
-  onContactChange: (field: string, value: string | SocialLinks) => void;
+  onContactChange: (field: string, value: string | SocialLinks | number) => void;
 }
 
 const ContactSettings: React.FC<ContactSettingsProps> = ({
   contactEmail = '',
   contactPhone = '',
   contactPhoneSecondary = '',
+  emergencyContactPhone = '',
+  emergencyContactEmail = '',
   address = '',
+  addressLine2 = '',
+  city = '',
+  stateProvince = '',
+  postalCode = '',
+  country = 'United States',
+  timezone = 'America/New_York',
+  mapLatitude = 37.4419,
+  mapLongitude = -122.1430,
+  mapZoomLevel = 15,
+  mapEmbedUrl = '',
+  locationDescription = '',
+  contactFormTitle = 'Get In Touch',
+  contactFormSubtitle = 'We\'d love to hear from you',
+  responseTimePromise = 'We respond within 24 hours',
+  officeHoursDisplay = '',
+  contactCtaText = 'Contact Us Today',
   socialLinks = {},
   onContactChange
 }) => {
-  const [customSocialPlatform, setCustomSocialPlatform] = React.useState('');
-  const [customSocialUrl, setCustomSocialUrl] = React.useState('');
+  const [customSocialPlatform, setCustomSocialPlatform] = useState('');
+  const [customSocialUrl, setCustomSocialUrl] = useState('');
+  const [activeTab, setActiveTab] = useState('basic');
 
   const predefinedSocials = [
-    { key: 'facebook', label: 'Facebook', icon: Facebook, placeholder: 'https://facebook.com/yourpage' },
-    { key: 'twitter', label: 'Twitter', icon: Twitter, placeholder: 'https://twitter.com/youraccount' },
-    { key: 'instagram', label: 'Instagram', icon: Instagram, placeholder: 'https://instagram.com/youraccount' },
-    { key: 'linkedin', label: 'LinkedIn', icon: Linkedin, placeholder: 'https://linkedin.com/company/yourcompany' },
-    { key: 'youtube', label: 'YouTube', icon: Youtube, placeholder: 'https://youtube.com/channel/yourchannel' }
+    { key: 'facebook', label: 'Facebook', icon: Globe, placeholder: 'https://facebook.com/yourpage' },
+    { key: 'twitter', label: 'Twitter', icon: Globe, placeholder: 'https://twitter.com/youraccount' },
+    { key: 'instagram', label: 'Instagram', icon: Globe, placeholder: 'https://instagram.com/youraccount' },
+    { key: 'linkedin', label: 'LinkedIn', icon: Globe, placeholder: 'https://linkedin.com/company/yourcompany' },
+    { key: 'youtube', label: 'YouTube', icon: Globe, placeholder: 'https://youtube.com/channel/yourchannel' }
   ];
 
   const updateSocialLinks = (key: string, value: string) => {
@@ -87,7 +129,7 @@ const ContactSettings: React.FC<ContactSettingsProps> = ({
     onContactChange('contact_phone_secondary', '');
     onContactChange('address', '123 Tech Street, Innovation City, IC 12345');
     onContactChange('social_links', {});
-    
+
     toast({
       title: 'Contact settings reset',
       description: 'All contact settings have been reset to defaults'
@@ -108,14 +150,7 @@ const ContactSettings: React.FC<ContactSettingsProps> = ({
     }
   };
 
-  const formatPhoneNumber = (phone: string) => {
-    // Simple phone number formatting
-    const cleaned = phone.replace(/\D/g, '');
-    if (cleaned.length === 10) {
-      return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
-    }
-    return phone;
-  };
+
 
   const ContactPreview = () => (
     <Card className="mt-6">
@@ -160,7 +195,7 @@ const ContactSettings: React.FC<ContactSettingsProps> = ({
                 return (
                   <a
                     key={platform}
-                    href={url}
+                    href={url as string}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center space-x-1 text-xs text-blue-600 hover:text-blue-800"
@@ -208,7 +243,7 @@ const ContactSettings: React.FC<ContactSettingsProps> = ({
               id="contact_email"
               type="email"
               value={contactEmail}
-              onChange={(e) => onContactChange('contact_email', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onContactChange('contact_email', e.target.value)}
               placeholder="hello@easyio.tech"
               className={contactEmail && !validateEmail(contactEmail) ? 'border-red-500' : ''}
             />
@@ -227,7 +262,7 @@ const ContactSettings: React.FC<ContactSettingsProps> = ({
               id="contact_phone"
               type="tel"
               value={contactPhone}
-              onChange={(e) => onContactChange('contact_phone', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onContactChange('contact_phone', e.target.value)}
               placeholder="+1 (555) 123-4567"
             />
           </div>
@@ -242,7 +277,7 @@ const ContactSettings: React.FC<ContactSettingsProps> = ({
               id="contact_phone_secondary"
               type="tel"
               value={contactPhoneSecondary}
-              onChange={(e) => onContactChange('contact_phone_secondary', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onContactChange('contact_phone_secondary', e.target.value)}
               placeholder="+1 (555) 987-6543"
             />
           </div>
@@ -256,7 +291,7 @@ const ContactSettings: React.FC<ContactSettingsProps> = ({
             <Textarea
               id="address"
               value={address}
-              onChange={(e) => onContactChange('address', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => onContactChange('address', e.target.value)}
               placeholder="123 Tech Street, Innovation City, IC 12345"
               rows={3}
             />
@@ -284,7 +319,7 @@ const ContactSettings: React.FC<ContactSettingsProps> = ({
                 id={`social_${key}`}
                 type="url"
                 value={socialLinks[key] || ''}
-                onChange={(e) => updateSocialLinks(key, e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateSocialLinks(key, e.target.value)}
                 placeholder={placeholder}
                 className={socialLinks[key] && !validateUrl(socialLinks[key]) ? 'border-red-500' : ''}
               />
@@ -306,7 +341,7 @@ const ContactSettings: React.FC<ContactSettingsProps> = ({
                   <Input
                     type="url"
                     value={url}
-                    onChange={(e) => updateSocialLinks(key, e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateSocialLinks(key, e.target.value)}
                     placeholder="https://example.com/yourprofile"
                   />
                 </div>
@@ -330,13 +365,13 @@ const ContactSettings: React.FC<ContactSettingsProps> = ({
               <Input
                 placeholder="Platform name"
                 value={customSocialPlatform}
-                onChange={(e) => setCustomSocialPlatform(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCustomSocialPlatform(e.target.value)}
                 className="flex-1"
               />
               <Input
                 placeholder="https://example.com/yourprofile"
                 value={customSocialUrl}
-                onChange={(e) => setCustomSocialUrl(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCustomSocialUrl(e.target.value)}
                 className="flex-1"
               />
               <Button

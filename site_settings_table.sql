@@ -38,9 +38,31 @@ CREATE TABLE site_settings (
   contact_email TEXT,
   contact_phone TEXT,
   contact_phone_secondary TEXT,
+  emergency_contact_phone TEXT,
+  emergency_contact_email TEXT,
   address TEXT,
+  address_line_2 TEXT,
+  city TEXT,
+  state_province TEXT,
+  postal_code TEXT,
+  country TEXT DEFAULT 'United States',
   business_hours JSONB DEFAULT '{}',
+  timezone TEXT DEFAULT 'America/New_York',
   social_links JSONB DEFAULT '{}',
+
+  -- Map and Location
+  map_latitude DECIMAL(10, 8),
+  map_longitude DECIMAL(11, 8),
+  map_zoom_level INTEGER DEFAULT 15,
+  map_embed_url TEXT,
+  location_description TEXT,
+
+  -- Additional Contact Settings
+  contact_form_title TEXT DEFAULT 'Get In Touch',
+  contact_form_subtitle TEXT DEFAULT 'We''d love to hear from you',
+  response_time_promise TEXT DEFAULT 'We respond within 24 hours',
+  office_hours_display TEXT,
+  contact_cta_text TEXT DEFAULT 'Contact Us Today',
 
   -- SEO & Analytics
   meta_title TEXT,
@@ -68,16 +90,37 @@ INSERT INTO site_settings (
   site_description,
   site_logo,
   contact_email,
+  contact_phone,
+  address,
+  city,
+  state_province,
+  postal_code,
+  country,
+  map_latitude,
+  map_longitude,
+  map_embed_url,
+  location_description,
   meta_title,
   meta_description,
   footer_text,
-  business_hours
+  business_hours,
+  social_links
 ) VALUES (
   'EasyIo.tech',
   'Simplifying Technology',
   'Founded in 2023, EasyIo.tech simplifies technology to make it more accessible, sustainable, and meaningful. From IoT to Digital transformation, we''re your creative tech partner.',
   '/logo.svg',
   'hello@easyio.tech',
+  '+1 (555) 123-4567',
+  '123 Innovation Drive',
+  'Tech Valley',
+  'California',
+  '94043',
+  'United States',
+  37.4419,
+  -122.1430,
+  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3168.639!2d-122.1430!3d37.4419!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDI2JzMwLjgiTiAxMjLCsDA4JzM0LjgiVw!5e0!3m2!1sen!2sus!4v1234567890',
+  'Located in the heart of Silicon Valley, our office is easily accessible and designed for innovation.',
   'EasyIo.tech - Simplifying Technology',
   'Founded in 2023, EasyIo.tech simplifies technology to make it more accessible, sustainable, and meaningful. From IoT to Digital transformation, we''re your creative tech partner.',
   '© 2024 EasyIo.tech. All rights reserved.',
@@ -89,6 +132,13 @@ INSERT INTO site_settings (
     "friday": {"open": "09:00", "close": "17:00", "closed": false},
     "saturday": {"open": "10:00", "close": "14:00", "closed": false},
     "sunday": {"open": "10:00", "close": "14:00", "closed": true}
+  }'::jsonb,
+  '{
+    "facebook": "https://facebook.com/easyiotech",
+    "twitter": "https://twitter.com/easyiotech",
+    "linkedin": "https://linkedin.com/company/easyiotech",
+    "instagram": "https://instagram.com/easyiotech",
+    "github": "https://github.com/easyiotech"
   }'::jsonb
 );
 

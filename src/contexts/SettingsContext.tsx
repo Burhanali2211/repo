@@ -38,7 +38,15 @@ export const useWebsiteSettings = () => {
   if (context === undefined) {
     throw new Error('useWebsiteSettings must be used within a SettingsProvider');
   }
-  return context;
+
+  // Ensure context has all required properties with safe defaults
+  return {
+    settings: context.settings || null,
+    loading: context.loading || false,
+    error: context.error || null,
+    refresh: context.refresh || (() => Promise.resolve()),
+    ...context
+  };
 };
 
 // Utility components to apply settings across the app
@@ -176,7 +184,7 @@ const safelyInjectScript = (content: string, id: string, target: 'head' | 'body'
       return false;
     }
 
-    let cleanContent = content.trim();
+    const cleanContent = content.trim();
 
     // Skip if content is empty after cleaning
     if (!cleanContent) {

@@ -11,8 +11,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 
-// Import project data from the shared data file
-import { initialProjects, categories } from '@/lib/data/portfolioData';
+// No fallback data - load from database only
 
 // Import Supabase project functions
 import {
@@ -38,14 +37,13 @@ type Project = {
   link: string;
 };
 
-const PortfolioManagement = () => {
-  // Generate IDs for initial projects if not present
-  const projectsWithIds = initialProjects.map(project => ({
-    ...project,
-    id: project.id ? project.id.toString() : crypto.randomUUID()
-  }));
+// Categories for filtering
+const categories = ['All', 'Web Development', 'Mobile Development', 'IoT Solutions', 'Design', 'E-Commerce'];
 
-  const [projects, setProjects] = useState<Project[]>(projectsWithIds);
+const PortfolioManagement = () => {
+  // No default projects - load from database only
+
+  const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -86,20 +84,16 @@ const PortfolioManagement = () => {
           throw error;
         }
 
-        if (data && Array.isArray(data) && data.length > 0) {
+        if (data && Array.isArray(data)) {
           setProjects(data as Project[]);
-        } else {
-          // Fallback to initial projects if no data from Supabase
-          setProjects(projectsWithIds);
         }
       } catch (error) {
         console.error('Error loading portfolio projects:', error);
         toast({
           title: "Error loading projects",
-          description: "There was a problem loading your projects. Using local data instead.",
+          description: "There was a problem loading your projects from the database.",
           variant: "destructive"
         });
-        setProjects(projectsWithIds);
       } finally {
         setIsLoading(false);
       }

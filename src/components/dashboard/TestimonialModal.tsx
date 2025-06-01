@@ -14,11 +14,11 @@ interface TestimonialModalProps {
 const TestimonialModal = ({ testimonial, isOpen, onClose }: TestimonialModalProps) => {
   const { createTestimonial, updateTestimonial } = useTestimonials();
   const [formData, setFormData] = useState({
-    author: '',
-    position: '',
+    name: '',
+    role: '',
     company: '',
     content: '',
-    image: '',
+    avatar: '',
     rating: 5,
     featured: false,
     order_index: 0
@@ -27,22 +27,22 @@ const TestimonialModal = ({ testimonial, isOpen, onClose }: TestimonialModalProp
   useEffect(() => {
     if (testimonial) {
       setFormData({
-        author: testimonial.author || '',
-        position: testimonial.position || '',
+        name: testimonial.name || '',
+        role: testimonial.role || '',
         company: testimonial.company || '',
         content: testimonial.content || '',
-        image: testimonial.image || '',
+        avatar: testimonial.avatar || '',
         rating: testimonial.rating || 5,
         featured: testimonial.featured || false,
         order_index: testimonial.order_index || 0
       });
     } else {
       setFormData({
-        author: '',
-        position: '',
+        name: '',
+        role: '',
         company: '',
         content: '',
-        image: '',
+        avatar: '',
         rating: 5,
         featured: false,
         order_index: 0
@@ -71,120 +71,134 @@ const TestimonialModal = ({ testimonial, isOpen, onClose }: TestimonialModalProp
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-xl font-semibold">
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="testimonial-modal-title"
+    >
+      <div className="bg-white dark:bg-gray-900 rounded-2xl max-w-2xl w-full max-h-[95vh] overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-700">
+        <div className="flex justify-between items-center p-4 md:p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
+          <h2 id="testimonial-modal-title" className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">
             {testimonial ? 'Edit Testimonial' : 'Add New Testimonial'}
           </h2>
-          <Button variant="ghost" size="sm" onClick={onClose}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full"
+            aria-label="Close modal"
+          >
             <X className="h-4 w-4" />
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div>
-            <Label htmlFor="author">Author Name</Label>
-            <Input
-              id="author"
-              value={formData.author}
-              onChange={(e) => setFormData(prev => ({ ...prev, author: e.target.value }))}
-              required
-            />
-          </div>
+        <div className="overflow-y-auto max-h-[calc(95vh-80px)]">
 
-          <div>
-            <Label htmlFor="position">Position/Title</Label>
-            <Input
-              id="position"
-              value={formData.position}
-              onChange={(e) => setFormData(prev => ({ ...prev, position: e.target.value }))}
-              required
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <div>
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                required
+              />
+            </div>
 
-          <div>
-            <Label htmlFor="company">Company (Optional)</Label>
-            <Input
-              id="company"
-              value={formData.company}
-              onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
-            />
-          </div>
+            <div>
+              <Label htmlFor="role">Role/Position</Label>
+              <Input
+                id="role"
+                value={formData.role}
+                onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value }))}
+                required
+              />
+            </div>
 
-          <div>
-            <Label htmlFor="content">Testimonial Content</Label>
-            <textarea
-              id="content"
-              className="w-full p-2 border rounded-md"
-              rows={4}
-              value={formData.content}
-              onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-              required
-            />
-          </div>
+            <div>
+              <Label htmlFor="company">Company (Optional)</Label>
+              <Input
+                id="company"
+                value={formData.company}
+                onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
+              />
+            </div>
 
-          <div>
-            <Label htmlFor="image">Image URL (Optional)</Label>
-            <Input
-              id="image"
-              value={formData.image}
-              onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-            />
-          </div>
+            <div>
+              <Label htmlFor="content">Testimonial Content</Label>
+              <textarea
+                id="content"
+                className="w-full p-2 border rounded-md"
+                rows={4}
+                value={formData.content}
+                onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                required
+              />
+            </div>
 
-          <div>
-            <Label>Rating</Label>
-            <div className="flex items-center space-x-1 mt-1">
-              {[1, 2, 3, 4, 5].map((rating) => (
-                <button
-                  key={rating}
-                  type="button"
-                  onClick={() => handleRatingChange(rating)}
-                  className="focus:outline-none"
-                >
-                  <Star
-                    className={`h-6 w-6 ${
-                      rating <= formData.rating
+            <div>
+              <Label htmlFor="avatar">Avatar URL (Optional)</Label>
+              <Input
+                id="avatar"
+                value={formData.avatar}
+                onChange={(e) => setFormData(prev => ({ ...prev, avatar: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <Label>Rating</Label>
+              <div className="flex items-center space-x-1 mt-1">
+                {[1, 2, 3, 4, 5].map((rating) => (
+                  <button
+                    key={rating}
+                    type="button"
+                    onClick={() => handleRatingChange(rating)}
+                    className="focus:outline-none"
+                  >
+                    <Star
+                      className={`h-6 w-6 ${rating <= formData.rating
                         ? 'text-yellow-400 fill-current'
                         : 'text-gray-300'
-                    }`}
-                  />
-                </button>
-              ))}
+                        }`}
+                    />
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div>
-            <Label htmlFor="order_index">Order Index</Label>
-            <Input
-              id="order_index"
-              type="number"
-              value={formData.order_index}
-              onChange={(e) => setFormData(prev => ({ ...prev, order_index: parseInt(e.target.value) || 0 }))}
-            />
-          </div>
+            <div>
+              <Label htmlFor="order_index">Order Index</Label>
+              <Input
+                id="order_index"
+                type="number"
+                value={formData.order_index}
+                onChange={(e) => setFormData(prev => ({ ...prev, order_index: parseInt(e.target.value) || 0 }))}
+              />
+            </div>
 
-          <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="featured"
-              checked={formData.featured}
-              onChange={(e) => setFormData(prev => ({ ...prev, featured: e.target.checked }))}
-              className="rounded"
-            />
-            <Label htmlFor="featured">Featured Testimonial</Label>
-          </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="featured"
+                checked={formData.featured}
+                onChange={(e) => setFormData(prev => ({ ...prev, featured: e.target.checked }))}
+                className="rounded"
+              />
+              <Label htmlFor="featured">Featured Testimonial</Label>
+            </div>
 
-          <div className="flex justify-end space-x-4 pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit" className="bg-purple-600 hover:bg-purple-700">
-              {testimonial ? 'Update' : 'Create'} Testimonial
-            </Button>
-          </div>
-        </form>
+            <div className="flex justify-end space-x-4 pt-4">
+              <Button type="button" variant="outline" onClick={onClose}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-purple-600 hover:bg-purple-700">
+                {testimonial ? 'Update' : 'Create'} Testimonial
+              </Button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

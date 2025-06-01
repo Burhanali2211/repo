@@ -11,8 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { supabase } from '@/lib/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
-// Import testimonial data for fallback
-import { testimonials as initialTestimonialsData } from '@/components/sections/Testimonials';
+// No fallback data - load from database only
 
 // Testimonial type definition for UI
 type Testimonial = {
@@ -27,20 +26,10 @@ type Testimonial = {
 };
 
 const TestimonialsManagement = () => {
-  // Ensure initial testimonials have the right structure
-  const defaultTestimonials = initialTestimonialsData.map(testimonial => ({
-    id: crypto.randomUUID(),
-    name: testimonial.name,
-    role: testimonial.role,
-    company: '',
-    image: testimonial.image,
-    content: testimonial.content,
-    rating: testimonial.rating,
-    featured: false
-  }));
-  
+  // No default testimonials - load from database only
+
   // State management
-  const [testimonials, setTestimonials] = useState<Testimonial[]>(defaultTestimonials);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -66,17 +55,17 @@ const TestimonialsManagement = () => {
     const fetchTestimonials = async () => {
       try {
         setIsLoading(true);
-        
+
         // Get testimonials from Supabase
         const { data, error } = await supabase
           .from('testimonials')
           .select('*')
           .order('created_at', { ascending: false });
-        
+
         if (error) {
           throw error;
         }
-        
+
         if (data && data.length > 0) {
           // Map database records to our Testimonial type
           const mappedTestimonials: Testimonial[] = data.map(item => ({
@@ -89,7 +78,7 @@ const TestimonialsManagement = () => {
             rating: item.rating || 5,
             featured: item.featured || false,
           }));
-          
+
           setTestimonials(mappedTestimonials);
         } else {
           // Fallback to initial testimonials if no data
@@ -108,12 +97,12 @@ const TestimonialsManagement = () => {
         setIsLoading(false);
       }
     };
-    
+
     fetchTestimonials();
   }, [toast]);
-  
+
   // Filter testimonials based on search term
-  const filteredTestimonials = testimonials.filter(testimonial => 
+  const filteredTestimonials = testimonials.filter(testimonial =>
     testimonial.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     testimonial.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
     testimonial.content.toLowerCase().includes(searchTerm.toLowerCase())
@@ -135,7 +124,7 @@ const TestimonialsManagement = () => {
       rating: value[0]
     });
   };
-  
+
   // Handle featured toggle
   const handleFeaturedChange = (checked: boolean) => {
     setFormData({
@@ -194,12 +183,12 @@ const TestimonialsManagement = () => {
       });
       return;
     }
-    
+
     try {
       setIsLoading(true);
-      
+
       const newId = crypto.randomUUID();
-      
+
       // Add to Supabase
       const { error } = await supabase
         .from('testimonials')
@@ -217,11 +206,11 @@ const TestimonialsManagement = () => {
             user_id: user.id
           }
         ]);
-      
+
       if (error) {
         throw error;
       }
-      
+
       const newTestimonial: Testimonial = {
         id: newId,
         name: formData.name,
@@ -232,14 +221,14 @@ const TestimonialsManagement = () => {
         rating: formData.rating,
         featured: formData.featured,
       };
-      
+
       setTestimonials([...testimonials, newTestimonial]);
-      
+
       toast({
         title: "Testimonial added",
         description: `Testimonial from ${formData.name} has been added successfully.`,
       });
-      
+
       setIsAddDialogOpen(false);
       resetFormData();
     } catch (error) {
@@ -257,10 +246,10 @@ const TestimonialsManagement = () => {
   // Update existing testimonial
   const handleUpdateTestimonial = async () => {
     if (!currentTestimonial || !user) return;
-    
+
     try {
       setIsLoading(true);
-      
+
       // Update in Supabase
       const { error } = await supabase
         .from('testimonials')
@@ -275,33 +264,33 @@ const TestimonialsManagement = () => {
           updated_at: new Date().toISOString()
         })
         .eq('id', currentTestimonial.id);
-      
+
       if (error) {
         throw error;
       }
 
-      const updatedTestimonials = testimonials.map(testimonial => 
-        testimonial.id === currentTestimonial.id 
+      const updatedTestimonials = testimonials.map(testimonial =>
+        testimonial.id === currentTestimonial.id
           ? {
-              ...testimonial,
-              name: formData.name,
-              role: formData.role,
-              company: formData.company,
-              image: formData.image,
-              content: formData.content,
-              rating: formData.rating,
-              featured: formData.featured,
-            } 
+            ...testimonial,
+            name: formData.name,
+            role: formData.role,
+            company: formData.company,
+            image: formData.image,
+            content: formData.content,
+            rating: formData.rating,
+            featured: formData.featured,
+          }
           : testimonial
       );
 
       setTestimonials(updatedTestimonials);
-      
+
       toast({
         title: "Testimonial updated",
         description: `Testimonial from ${formData.name} has been updated successfully.`,
       });
-      
+
       setIsEditDialogOpen(false);
       resetFormData();
     } catch (error) {
@@ -319,28 +308,28 @@ const TestimonialsManagement = () => {
   // Delete testimonial
   const handleDeleteTestimonial = async () => {
     if (!currentTestimonial || !user) return;
-    
+
     try {
       setIsLoading(true);
-      
+
       // Delete from Supabase
       const { error } = await supabase
         .from('testimonials')
         .delete()
         .eq('id', currentTestimonial.id);
-      
+
       if (error) {
         throw error;
       }
-      
+
       // Remove testimonial from state
       setTestimonials(testimonials.filter(t => t.id !== currentTestimonial.id));
-      
+
       toast({
         title: "Testimonial deleted",
         description: `Testimonial from ${currentTestimonial.name} has been deleted successfully.`,
       });
-      
+
       setIsDeleteDialogOpen(false);
       setCurrentTestimonial(null);
     } catch (error) {
@@ -359,8 +348,8 @@ const TestimonialsManagement = () => {
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Manage Testimonials</h1>
-        <Button 
-          onClick={handleAddClick} 
+        <Button
+          onClick={handleAddClick}
           className="bg-purple-600 hover:bg-purple-700"
           disabled={isLoading}
         >
@@ -387,14 +376,14 @@ const TestimonialsManagement = () => {
       {/* Testimonials Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredTestimonials.map((testimonial) => (
-          <div 
-            key={testimonial.id} 
+          <div
+            key={testimonial.id}
             className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-all duration-300 group relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
               <div className="flex space-x-1">
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   size="sm"
                   onClick={() => handleEditClick(testimonial)}
                   aria-label={`Edit testimonial from ${testimonial.name}`}
@@ -403,8 +392,8 @@ const TestimonialsManagement = () => {
                 >
                   <Edit className="h-4 w-4" />
                 </Button>
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   size="sm"
                   onClick={() => handleDeleteClick(testimonial)}
                   aria-label={`Delete testimonial from ${testimonial.name}`}
@@ -415,20 +404,20 @@ const TestimonialsManagement = () => {
                 </Button>
               </div>
             </div>
-            
+
             <div className="flex items-center mb-4">
               {[...Array(testimonial.rating)].map((_, i) => (
                 <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
               ))}
             </div>
-            
+
             <Quote className="h-8 w-8 text-yellow-400 mb-4" />
-            
+
             <p className="text-gray-700 mb-6 italic">"{testimonial.content}"</p>
-            
+
             <div className="flex items-center">
               <div className="relative overflow-hidden rounded-full w-12 h-12 mr-4">
-                <img 
+                <img
                   src={testimonial.image}
                   alt={testimonial.name}
                   className="w-full h-full object-cover"
@@ -440,7 +429,7 @@ const TestimonialsManagement = () => {
                       '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316'
                     ];
                     const color = colors[initial.charCodeAt(0) % colors.length];
-                    
+
                     const canvas = document.createElement('canvas');
                     canvas.width = 100;
                     canvas.height = 100;
@@ -465,7 +454,7 @@ const TestimonialsManagement = () => {
             </div>
           </div>
         ))}
-        
+
         {filteredTestimonials.length === 0 && (
           <div className="col-span-full py-12 text-center text-gray-500 bg-white rounded-lg shadow">
             <div className="mb-3">
@@ -506,7 +495,7 @@ const TestimonialsManagement = () => {
                 />
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="company">Company</Label>
@@ -529,7 +518,7 @@ const TestimonialsManagement = () => {
                 />
               </div>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="content">Testimonial</Label>
               <Textarea
@@ -541,7 +530,7 @@ const TestimonialsManagement = () => {
                 rows={4}
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label>Rating (1-5)</Label>
               <Slider
@@ -563,7 +552,7 @@ const TestimonialsManagement = () => {
                 ))}
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Switch
                 id="featured"
@@ -619,7 +608,7 @@ const TestimonialsManagement = () => {
                 />
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-company">Company</Label>
@@ -640,7 +629,7 @@ const TestimonialsManagement = () => {
                 />
               </div>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="edit-content">Testimonial</Label>
               <Textarea
@@ -651,7 +640,7 @@ const TestimonialsManagement = () => {
                 rows={4}
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label>Rating (1-5)</Label>
               <Slider
@@ -673,7 +662,7 @@ const TestimonialsManagement = () => {
                 ))}
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Switch
                 id="edit-featured"

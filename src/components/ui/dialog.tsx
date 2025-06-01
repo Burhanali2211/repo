@@ -31,9 +31,10 @@ const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { description?: string }
 >(({ className, children, description, ...props }, ref) => {
-  // Generate a unique ID for aria-describedby if description is provided
-  const descriptionId = description ? `dialog-description-${React.useId()}` : undefined;
-  
+  // Generate a unique ID for aria-describedby - always call useId
+  const uniqueId = React.useId();
+  const descriptionId = description ? `dialog-description-${uniqueId}` : undefined;
+
   return (
     <DialogPortal>
       <DialogOverlay />

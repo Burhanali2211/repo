@@ -30,19 +30,19 @@ const SupabaseInitializer: React.FC<SupabaseInitializerProps> = ({ children }) =
 
         // Verify the required tables exist by querying them
         const tables = ['services', 'testimonials', 'projects'];
-        let missingTables = [];
+        const missingTables: Array<{ table: string, issue: string }> = [];
 
         for (const table of tables) {
           try {
             const { error } = await supabase.from(table).select('count').limit(1);
-            
+
             // CORS errors will typically appear as network errors
             if (error && error.message && (error.message.includes('Failed to fetch') || error.message.includes('NetworkError'))) {
               console.warn(`CORS issue detected when accessing ${table}:`, error);
               missingTables.push({ table, issue: 'CORS' });
               continue;
             }
-            
+
             // Code PGRST116 is just an empty result, which is fine
             // Any other error typically means the table doesn't exist
             if (error && error.code !== 'PGRST116') {
@@ -58,9 +58,9 @@ const SupabaseInitializer: React.FC<SupabaseInitializerProps> = ({ children }) =
         if (missingTables.length > 0) {
           // Check specifically for CORS issues
           const corsIssues = missingTables.some(t => t.issue === 'CORS');
-          
+
           console.warn('Database initialization issues:', { missingTables, corsIssues });
-          
+
           if (corsIssues) {
             toast({
               title: 'CORS Configuration Issue',
@@ -88,7 +88,7 @@ const SupabaseInitializer: React.FC<SupabaseInitializerProps> = ({ children }) =
         console.error('Failed to initialize Supabase:', error);
         setIsInitialized(true); // We'll continue anyway, but log the error
         setShowLoading(false);
-        
+
         toast({
           title: 'Database Connection Error',
           description: 'Failed to connect to the database. Please check your Supabase configuration and network connection.',

@@ -1,12 +1,11 @@
 import { useSupabaseData } from './useSupabaseData';
-import { 
-  getAllServices, 
-  createService, 
-  updateService, 
+import {
+  getAllServices,
+  createService,
+  updateService,
   deleteService,
-  type Service as SupabaseService 
+  type Service as SupabaseService
 } from '../services';
-import { services as initialServicesData } from '@/components/sections/Services';
 import { Globe } from 'lucide-react';
 
 // Available icons for selection (same as in the Services component)
@@ -34,7 +33,7 @@ const serviceMapper = (item: SupabaseService): Service => {
     option => option.name === item.iconName
   );
   const iconComponent = iconOption ? iconOption.component : Globe;
-  
+
   return {
     id: item.id,
     icon: iconComponent,
@@ -47,12 +46,8 @@ const serviceMapper = (item: SupabaseService): Service => {
   };
 };
 
-// Default services
-const defaultServices = initialServicesData.map(service => ({
-  ...service,
-  id: crypto.randomUUID(),
-  iconName: 'Globe' // Ensure iconName is included
-}));
+// No default services - load from database only
+const defaultServices: Service[] = [];
 
 // Create a hook for working with services
 export const useServices = () => {

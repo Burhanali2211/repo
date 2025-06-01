@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useAboutContent } from '@/hooks/useAboutContent';
+import { useAboutContent, type AboutContent } from '@/hooks/useAboutContent';
 import AboutContentModal from '@/components/dashboard/AboutContentModal';
 
 const AboutContentManager = () => {
   const { aboutContent, loading, deleteAboutContent } = useAboutContent();
-  const [selectedContent, setSelectedContent] = useState(null);
+  const [selectedContent, setSelectedContent] = useState<AboutContent | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -17,7 +17,7 @@ const AboutContentManager = () => {
     (content.description && content.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  const handleEdit = (content: any) => {
+  const handleEdit = (content: AboutContent) => {
     setSelectedContent(content);
     setIsModalOpen(true);
   };

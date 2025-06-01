@@ -2,58 +2,35 @@
 import React, { useState, useEffect } from 'react';
 import { ExternalLink, ArrowRight, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import { usePortfolio } from '@/lib/supabase/hooks/usePortfolio';
 import ImageWithFallback from '@/components/ui/image-with-fallback';
 import ProjectPreviewModal from '@/components/ProjectPreviewModal';
 
-// Fallback projects for when Supabase data is not available
-const fallbackProjects = [
-  {
-    id: '1',
-    title: 'E-commerce Platform',
-    category: 'Web Development',
-    image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop',
-    description: 'A modern e-commerce solution with advanced features',
-    technologies: ['React', 'Node.js', 'MongoDB'],
-    year: 2024,
-    results: 'Increased sales by 150%',
-    link: 'https://example.com'
-  },
-  {
-    id: '2',
-    title: 'Brand Identity',
-    category: 'Design',
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
-    description: 'Complete brand redesign for a tech startup',
-    technologies: ['Adobe Creative Suite', 'Figma'],
-    year: 2024,
-    results: 'Brand recognition increased by 200%',
-    link: 'https://example.com'
-  },
-  {
-    id: '3',
-    title: 'Mobile App',
-    category: 'Development',
-    image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop',
-    description: 'Cross-platform mobile application',
-    technologies: ['React Native', 'Firebase'],
-    year: 2024,
-    results: '50K+ downloads in first month',
-    link: 'https://example.com'
-  }
-];
+// Project interface
+interface Project {
+  id: string;
+  title: string;
+  category: string;
+  image: string;
+  description: string;
+  technologies?: string[];
+  year?: number;
+  results?: string;
+  link?: string;
+}
+
+// No fallback projects - show empty state when no data
 
 const Work = () => {
   const { data: portfolioProjects, isLoading } = usePortfolio();
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Use Supabase data if available, otherwise fallback to hardcoded projects
-  const projects = portfolioProjects && portfolioProjects.length > 0
-    ? portfolioProjects.slice(0, 3) // Show only first 3 projects
-    : fallbackProjects;
+  // Use only Supabase data - no fallbacks
+  const projects = portfolioProjects ? portfolioProjects.slice(0, 3) : [];
 
-  const handleProjectClick = (project: any) => {
+  const handleProjectClick = (project: Project) => {
     setSelectedProject(project);
     setIsModalOpen(true);
   };
@@ -87,55 +64,69 @@ const Work = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8 mb-12">
-          {projects.map((project, index) => (
-            <div
-              key={project.id || index}
-              className="group cursor-pointer"
-              onClick={() => handleProjectClick(project)}
-            >
-              <div className="relative overflow-hidden rounded-xl mb-6">
-                <ImageWithFallback
-                  src={project.image}
-                  fallbackSrc={`https://via.placeholder.com/800x600/6366f1/ffffff?text=${encodeURIComponent(project.title)}`}
-                  alt={project.title}
-                  className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-4">
-                  <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-full p-3">
-                    <Eye className="h-6 w-6 text-white" />
-                  </div>
-                  <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-full p-3">
-                    <ExternalLink className="h-6 w-6 text-white" />
+        {projects.length === 0 ? (
+          <div className="text-center py-16">
+            <div className="text-gray-400 mb-4">
+              <svg className="mx-auto h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Projects Available</h3>
+            <p className="text-gray-500">Projects will appear here once they are added to the database.</p>
+          </div>
+        ) : (
+          <div className="grid lg:grid-cols-3 gap-8 mb-12">
+            {projects.map((project, index) => (
+              <div
+                key={project.id || index}
+                className="group cursor-pointer"
+                onClick={() => handleProjectClick(project)}
+              >
+                <div className="relative overflow-hidden rounded-xl mb-6">
+                  <ImageWithFallback
+                    src={project.image}
+                    fallbackSrc={`https://via.placeholder.com/800x600/6366f1/ffffff?text=${encodeURIComponent(project.title)}`}
+                    alt={project.title}
+                    className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-4">
+                    <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-full p-3">
+                      <Eye className="h-6 w-6 text-white" />
+                    </div>
+                    <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-full p-3">
+                      <ExternalLink className="h-6 w-6 text-white" />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="text-sm text-purple-600 font-medium mb-2">{project.category}</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{project.title}</h3>
-              <p className="text-gray-600 line-clamp-2">{project.description}</p>
+                <div className="text-sm text-purple-600 font-medium mb-2">{project.category}</div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{project.title}</h3>
+                <p className="text-gray-600 line-clamp-2">{project.description}</p>
 
-              {/* View Project Button */}
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-4 w-full group-hover:bg-purple-600 group-hover:text-white group-hover:border-purple-600 transition-all duration-300"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleProjectClick(project);
-                }}
-              >
-                <Eye className="mr-2 h-4 w-4" />
-                View Project
-              </Button>
-            </div>
-          ))}
-        </div>
+                {/* View Project Button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-4 w-full group-hover:bg-purple-600 group-hover:text-white group-hover:border-purple-600 transition-all duration-300"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleProjectClick(project);
+                  }}
+                >
+                  <Eye className="mr-2 h-4 w-4" />
+                  View Project
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="text-center">
-          <Button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg">
-            View All Projects
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
+          <Link to="/our-work">
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg">
+              View All Projects
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
         </div>
       </div>
 

@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 // Icon mapping for dynamic icon rendering
 const iconMap = {
   Cpu: () => (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
       <rect x="4" y="4" width="16" height="16" rx="2" />
       <rect x="9" y="9" width="6" height="6" />
       <line x1="9" y1="1" x2="9" y2="4" />
@@ -21,26 +21,37 @@ const iconMap = {
     </svg>
   ),
   TrendingUp: () => (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
       <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
       <polyline points="17 6 23 6 23 12" />
     </svg>
   ),
   Leaf: () => (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
       <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
       <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
     </svg>
   ),
   Cloud: () => (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
       <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
     </svg>
   ),
   Smartphone: () => (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
       <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
       <line x1="12" y1="18" x2="12.01" y2="18" />
+    </svg>
+  ),
+  Building2: () => (
+    <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+      <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
+      <path d="M6 12H4a2 2 0 0 0-2 2v8h20v-8a2 2 0 0 0-2-2h-2" />
+    </svg>
+  ),
+  Zap: () => (
+    <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+      <polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2" />
     </svg>
   ),
 };
@@ -159,46 +170,54 @@ const HeroCarousel: React.FC = () => {
   const IconComponent = iconMap[currentItem.icon_name as keyof typeof iconMap];
 
   return (
-    <div className="relative w-full h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl border border-gray-200/50 dark:border-gray-700/50">
-      {/* Background with gradient */}
-      <div 
-        className="absolute inset-0 bg-gradient-to-br transition-all duration-1000 ease-in-out"
+    <div className="relative w-full h-80 md:h-96 rounded-3xl overflow-hidden shadow-2xl border border-white/30 backdrop-blur-sm group hover:shadow-purple-500/25 transition-all duration-500">
+      {/* Enhanced Background with gradient using website colors */}
+      <div
+        className="absolute inset-0 bg-gradient-to-br transition-all duration-1000 ease-in-out group-hover:scale-105"
         style={{
-          background: `linear-gradient(135deg, ${currentItem.gradient_from}, ${currentItem.gradient_to})`
+          background: `linear-gradient(135deg, ${currentItem.gradient_from}30, ${currentItem.gradient_to}60)`
         }}
       />
-      
-      {/* Overlay for better text readability */}
-      <div className="absolute inset-0 bg-black/20" />
 
-      {/* Content */}
-      <div className="relative z-10 h-full flex items-center justify-between p-8">
+      {/* Enhanced Overlay for better text readability */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black/40 to-black/60 group-hover:from-black/30 group-hover:to-black/50 transition-all duration-500" />
+
+      {/* Enhanced Content */}
+      <div className="relative z-10 h-full flex items-center justify-between p-8 md:p-10">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
             className="flex-1 text-white"
           >
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                {IconComponent && <IconComponent />}
+            <div className="flex items-center gap-5 mb-6">
+              <div className="relative w-16 h-16 rounded-3xl bg-white/30 backdrop-blur-md flex items-center justify-center group-hover:bg-white/45 transition-all duration-500 shadow-xl group-hover:shadow-2xl group-hover:scale-110 group-hover:rotate-3 overflow-hidden">
+                {/* Enhanced icon glow effects */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute inset-0 bg-white/10 blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+
+                {/* Enhanced icon with better styling */}
+                {IconComponent && (
+                  <IconComponent className="relative z-10 w-8 h-8 text-white drop-shadow-lg group-hover:scale-110 transition-all duration-500" />
+                )}
               </div>
               <div>
-                <h3 className="text-2xl md:text-3xl font-bold">{currentItem.title}</h3>
-                <p className="text-lg opacity-90">{currentItem.subtitle}</p>
+                <h3 className="text-2xl md:text-3xl font-bold mb-1 group-hover:text-white/95 transition-colors">{currentItem.title}</h3>
+                <p className="text-lg opacity-90 group-hover:opacity-100 transition-opacity">{currentItem.subtitle}</p>
               </div>
             </div>
-            
-            <p className="text-base md:text-lg opacity-80 mb-6 max-w-2xl leading-relaxed">
+
+            <p className="text-base md:text-lg opacity-85 mb-6 max-w-2xl leading-relaxed group-hover:opacity-95 transition-opacity">
               {currentItem.description}
             </p>
-            
+
             <Button
               variant="secondary"
-              className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-300"
+              size="lg"
+              className="bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm transition-all duration-300 shadow-lg hover:shadow-xl px-6 py-3 text-base font-semibold rounded-xl group-hover:scale-105"
               onClick={() => window.location.href = currentItem.link_url}
             >
               {currentItem.link_text}
@@ -206,14 +225,14 @@ const HeroCarousel: React.FC = () => {
           </motion.div>
         </AnimatePresence>
 
-        {/* Navigation Controls */}
+        {/* Enhanced Navigation Controls */}
         <div className="flex flex-col items-center gap-4 ml-8">
           {/* Previous/Next Buttons */}
           <div className="flex gap-2">
             <Button
               variant="ghost"
               size="icon"
-              className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
+              className="w-10 h-10 rounded-full bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
               onClick={goToPrevious}
             >
               <ChevronLeft className="w-5 h-5" />
@@ -221,7 +240,7 @@ const HeroCarousel: React.FC = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
+              className="w-10 h-10 rounded-full bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
               onClick={goToNext}
             >
               <ChevronRight className="w-5 h-5" />
@@ -232,22 +251,21 @@ const HeroCarousel: React.FC = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
+            className="w-10 h-10 rounded-full bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
             onClick={togglePlayPause}
           >
             {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
           </Button>
 
-          {/* Dot Indicators */}
+          {/* Enhanced Dot Indicators */}
           <div className="flex flex-col gap-2">
             {items.map((_, index) => (
               <button
                 key={index}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  index === currentIndex 
-                    ? 'bg-white scale-125' 
-                    : 'bg-white/50 hover:bg-white/70'
-                }`}
+                className={`w-2 h-2 rounded-full transition-all duration-300 shadow-sm ${index === currentIndex
+                  ? 'bg-white scale-150 shadow-white/50'
+                  : 'bg-white/60 hover:bg-white/80 hover:scale-125'
+                  }`}
                 onClick={() => goToSlide(index)}
               />
             ))}
@@ -255,11 +273,11 @@ const HeroCarousel: React.FC = () => {
         </div>
       </div>
 
-      {/* Progress Bar */}
+      {/* Enhanced Progress Bar */}
       {isPlaying && (
-        <div className="absolute bottom-0 left-0 w-full h-1 bg-white/20">
+        <div className="absolute bottom-0 left-0 w-full h-1.5 bg-white/25 backdrop-blur-sm">
           <motion.div
-            className="h-full bg-white"
+            className="h-full bg-gradient-to-r from-white to-white/90 shadow-sm"
             initial={{ width: "0%" }}
             animate={{ width: "100%" }}
             transition={{ duration: 5, ease: "linear" }}
@@ -267,6 +285,10 @@ const HeroCarousel: React.FC = () => {
           />
         </div>
       )}
+
+      {/* Decorative Elements */}
+      <div className="absolute top-4 right-4 w-20 h-20 bg-white/10 rounded-full blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-500"></div>
+      <div className="absolute bottom-4 left-4 w-16 h-16 bg-white/5 rounded-full blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-500"></div>
     </div>
   );
 };

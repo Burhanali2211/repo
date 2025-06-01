@@ -1,0 +1,77 @@
+<svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="50%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+    <linearGradient id="logoGradientDark" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#818cf8" />
+      <stop offset="50%" stop-color="#a78bfa" />
+      <stop offset="100%" stop-color="#60a5fa" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle for logo mark -->
+  <circle cx="25" cy="30" r="20" fill="url(#logoGradient)" opacity="0.1"/>
+  
+  <!-- Logo mark - stylized "E" for EasyIo -->
+  <g transform="translate(10, 15)">
+    <!-- Main "E" shape -->
+    <path d="M5 5 L5 25 L20 25 M5 15 L15 15 M5 5 L20 5" 
+          stroke="url(#logoGradient)" 
+          stroke-width="3" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" 
+          fill="none"/>
+    
+    <!-- Tech circuit pattern -->
+    <circle cx="22" cy="8" r="1.5" fill="url(#logoGradient)" opacity="0.6"/>
+    <circle cx="22" cy="22" r="1.5" fill="url(#logoGradient)" opacity="0.6"/>
+    <path d="M20 8 L22 8 M20 22 L22 22" 
+          stroke="url(#logoGradient)" 
+          stroke-width="1" 
+          opacity="0.6"/>
+  </g>
+  
+  <!-- Company name -->
+  <text x="55" y="25" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="700" fill="url(#logoGradient)">
+    EasyIo
+  </text>
+  <text x="125" y="25" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="400" fill="#374151">
+    .tech
+  </text>
+  
+  <!-- Tagline -->
+  <text x="55" y="42" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="400" fill="#6b7280" opacity="0.8">
+    Simplifying Technology
+  </text>
+  
+  <!-- Dark mode version (hidden by default, shown via CSS) -->
+  <g class="dark-logo" style="display: none;">
+    <circle cx="25" cy="30" r="20" fill="url(#logoGradientDark)" opacity="0.1"/>
+    <g transform="translate(10, 15)">
+      <path d="M5 5 L5 25 L20 25 M5 15 L15 15 M5 5 L20 5" 
+            stroke="url(#logoGradientDark)" 
+            stroke-width="3" 
+            stroke-linecap="round" 
+            stroke-linejoin="round" 
+            fill="none"/>
+      <circle cx="22" cy="8" r="1.5" fill="url(#logoGradientDark)" opacity="0.6"/>
+      <circle cx="22" cy="22" r="1.5" fill="url(#logoGradientDark)" opacity="0.6"/>
+      <path d="M20 8 L22 8 M20 22 L22 22" 
+            stroke="url(#logoGradientDark)" 
+            stroke-width="1" 
+            opacity="0.6"/>
+    </g>
+    <text x="55" y="25" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="700" fill="url(#logoGradientDark)">
+      EasyIo
+    </text>
+    <text x="125" y="25" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="400" fill="#f3f4f6">
+      .tech
+    </text>
+    <text x="55" y="42" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="400" fill="#9ca3af" opacity="0.8">
+      Simplifying Technology
+    </text>
+  </g>
+</svg>

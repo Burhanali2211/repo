@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import ImageWithFallback from '@/components/ui/image-with-fallback';
 
 interface Project {
-  id: string;
+  id: string | number;
   title: string;
   category: string;
   image: string;
@@ -64,9 +64,9 @@ const ProjectPreviewModal: React.FC<ProjectPreviewModalProps> = ({
                   className="w-full h-full object-cover"
                 />
               </div>
-              
+
               {/* Project Link */}
-              {project.link && (
+              {project.link && project.link !== '/our-work' && (
                 <Button
                   asChild
                   className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
@@ -143,7 +143,7 @@ const ProjectPreviewModal: React.FC<ProjectPreviewModalProps> = ({
           <Button variant="outline" onClick={onClose}>
             Close
           </Button>
-          {project.link && (
+          {project.link && project.link !== '/our-work' && (
             <Button asChild className="bg-purple-600 hover:bg-purple-700">
               <a
                 href={project.link}

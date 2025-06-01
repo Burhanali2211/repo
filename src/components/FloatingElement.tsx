@@ -16,27 +16,27 @@ const FloatingElement: React.FC<FloatingElementProps> = ({
   phase = 0,
 }) => {
   const [position, setPosition] = useState(0);
-  
+
   useEffect(() => {
     let animationFrameId: number;
-    let startTime = Date.now();
-    
+    const startTime = Date.now();
+
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const newPosition = amplitude * Math.sin(frequency * elapsed + phase);
       setPosition(newPosition);
       animationFrameId = requestAnimationFrame(animate);
     };
-    
+
     animate();
-    
+
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
   }, [amplitude, frequency, phase]);
-  
+
   return (
-    <div 
+    <div
       className={`transition-transform ${className}`}
       style={{ transform: `translateY(${position}px)` }}
     >

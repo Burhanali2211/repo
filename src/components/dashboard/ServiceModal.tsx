@@ -29,21 +29,21 @@ const ServiceModal = ({ service, isOpen, onClose }: ServiceModalProps) => {
 
   // Generate a slug from title
   const generateSlug = (title: string) => {
-    let slug = title
+    const slug = title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '');
-    
+
     // Ensure slug is unique by appending a number if needed
     const existingSlugs = services.map(s => s.slug);
     let uniqueSlug = slug;
     let counter = 1;
-    
+
     while (existingSlugs.includes(uniqueSlug)) {
       uniqueSlug = `${slug}-${counter}`;
       counter++;
     }
-    
+
     return uniqueSlug;
   };
 
@@ -91,7 +91,7 @@ const ServiceModal = ({ service, isOpen, onClose }: ServiceModalProps) => {
       }
 
       // Check for duplicate slug
-      const isDuplicateSlug = services.some(s => 
+      const isDuplicateSlug = services.some(s =>
         s.slug === formData.slug && (!service || s.id !== service.id)
       );
 
@@ -109,13 +109,13 @@ const ServiceModal = ({ service, isOpen, onClose }: ServiceModalProps) => {
       } else {
         await createService(formData);
       }
-      
+
       toast({
         title: service ? "Service Updated" : "Service Created",
         description: `Successfully ${service ? 'updated' : 'created'} ${formData.title}`,
         variant: "default"
       });
-      
+
       onClose();
     } catch (error) {
       console.error('Error saving service:', error);
@@ -137,7 +137,7 @@ const ServiceModal = ({ service, isOpen, onClose }: ServiceModalProps) => {
       });
       return;
     }
-    
+
     const newSlug = generateSlug(formData.title);
     setFormData(prev => ({ ...prev, slug: newSlug }));
   };
@@ -145,97 +145,112 @@ const ServiceModal = ({ service, isOpen, onClose }: ServiceModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-xl font-semibold">
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="service-modal-title"
+    >
+      <div className="bg-white dark:bg-gray-900 rounded-2xl max-w-2xl w-full max-h-[95vh] overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-700">
+        <div className="flex justify-between items-center p-4 md:p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
+          <h2 id="service-modal-title" className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">
             {service ? 'Edit Service' : 'Add New Service'}
           </h2>
-          <Button variant="ghost" size="sm" onClick={onClose}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full"
+            aria-label="Close modal"
+          >
             <X className="h-4 w-4" />
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div>
-            <Label htmlFor="title">Title</Label>
-            <Input
-              id="title"
-              value={formData.title}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-              required
-            />
-          </div>
+        <div className="overflow-y-auto max-h-[calc(95vh-80px)]">
 
-          <div>
-            <Label htmlFor="slug">Slug</Label>
-            <div className="flex gap-2">
+          <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <div>
+              <Label htmlFor="title">Title</Label>
               <Input
-                id="slug"
-                value={formData.slug}
-                onChange={(e) => {
-                  setFormData(prev => ({ ...prev, slug: e.target.value }));
-                  setSlugEdited(true);
-                }}
+                id="title"
+                value={formData.title}
+                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                 required
-                className="flex-grow"
               />
-              <Button 
-                type="button" 
-                variant="outline" 
-                size="icon"
-                onClick={regenerateSlug}
-                title="Generate unique slug"
-              >
-                <RefreshCwIcon className="h-4 w-4" />
+            </div>
+
+            <div>
+              <Label htmlFor="slug">Slug</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="slug"
+                  value={formData.slug}
+                  onChange={(e) => {
+                    setFormData(prev => ({ ...prev, slug: e.target.value }));
+                    setSlugEdited(true);
+                  }}
+                  required
+                  className="flex-grow"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={regenerateSlug}
+                  title="Generate unique slug"
+                >
+                  <RefreshCwIcon className="h-4 w-4" />
+                </Button>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">URL-friendly identifier (automatically generated from title)</p>
+            </div>
+
+            <div>
+              <Label htmlFor="description">Description</Label>
+              <textarea
+                id="description"
+                className="w-full p-2 border rounded-md"
+                rows={3}
+                value={formData.description}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="icon">Icon</Label>
+              <Input
+                id="icon"
+                value={formData.icon}
+                onChange={(e) => setFormData(prev => ({ ...prev, icon: e.target.value }))}
+                placeholder="e.g., 'code' or 'phone'"
+              />
+              <p className="text-xs text-gray-500 mt-1">Enter a Lucide icon name</p>
+            </div>
+
+            <div>
+              <Label htmlFor="image">Image URL</Label>
+              <Input
+                id="image"
+                value={formData.image}
+                onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
+              />
+            </div>
+
+            {/* Removed order_index and featured fields as they don't exist in the database */}
+
+            <div className="flex justify-end space-x-4 pt-4">
+              <Button type="button" variant="outline" onClick={onClose}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-purple-600 hover:bg-purple-700">
+                {service ? 'Update' : 'Create'} Service
               </Button>
             </div>
-            <p className="text-xs text-gray-500 mt-1">URL-friendly identifier (automatically generated from title)</p>
-          </div>
-
-          <div>
-            <Label htmlFor="description">Description</Label>
-            <textarea
-              id="description"
-              className="w-full p-2 border rounded-md"
-              rows={3}
-              value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="icon">Icon</Label>
-            <Input
-              id="icon"
-              value={formData.icon}
-              onChange={(e) => setFormData(prev => ({ ...prev, icon: e.target.value }))}
-              placeholder="e.g., 'code' or 'phone'"
-            />
-            <p className="text-xs text-gray-500 mt-1">Enter a Lucide icon name</p>
-          </div>
-
-          <div>
-            <Label htmlFor="image">Image URL</Label>
-            <Input
-              id="image"
-              value={formData.image}
-              onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-            />
-          </div>
-
-          {/* Removed order_index and featured fields as they don't exist in the database */}
-
-          <div className="flex justify-end space-x-4 pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit" className="bg-purple-600 hover:bg-purple-700">
-              {service ? 'Update' : 'Create'} Service
-            </Button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

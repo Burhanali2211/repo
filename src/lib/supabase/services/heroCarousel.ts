@@ -143,7 +143,7 @@ export const reorderHeroCarouselItems = async (
 ): Promise<{ success: boolean; error?: PostgrestError }> => {
   try {
     // Update each item's order_index
-    const updates = items.map(item => 
+    const updates = items.map(item =>
       supabase
         .from(TABLE_NAME)
         .update({ order_index: item.order_index })
@@ -152,7 +152,7 @@ export const reorderHeroCarouselItems = async (
 
     // Execute all updates
     const results = await Promise.all(updates);
-    
+
     // Check if any updates failed
     const hasError = results.some(result => result.error);
     if (hasError) {
@@ -162,9 +162,9 @@ export const reorderHeroCarouselItems = async (
 
     return { success: true };
   } catch (error) {
-    return { 
-      success: false, 
-      error: error as PostgrestError 
+    return {
+      success: false,
+      error: error as PostgrestError
     };
   }
 };
@@ -201,7 +201,7 @@ export const bulkUpdateHeroCarouselItems = async (
     );
 
     const results = await Promise.all(updatePromises);
-    
+
     // Check if any updates failed
     const hasError = results.some(result => result.error);
     if (hasError) {
@@ -211,52 +211,11 @@ export const bulkUpdateHeroCarouselItems = async (
 
     return { success: true };
   } catch (error) {
-    return { 
-      success: false, 
-      error: error as PostgrestError 
+    return {
+      success: false,
+      error: error as PostgrestError
     };
   }
 };
 
-// Default hero carousel items for fallback
-export const defaultHeroCarouselItems: Omit<HeroCarouselItem, 'id' | 'created_at' | 'updated_at'>[] = [
-  {
-    title: 'IoT & Automation',
-    subtitle: 'Smart Solutions',
-    description: 'Transform your business with intelligent IoT systems and automation that streamline operations and boost efficiency.',
-    image_url: null,
-    icon_name: 'Cpu',
-    gradient_from: '#3b82f6',
-    gradient_to: '#1d4ed8',
-    link_url: '/services/iot',
-    link_text: 'Learn More',
-    is_active: true,
-    order_index: 1,
-  },
-  {
-    title: 'Business Solutions',
-    subtitle: 'Digital Transformation',
-    description: 'Comprehensive business solutions that drive growth, optimize processes, and deliver measurable results.',
-    image_url: null,
-    icon_name: 'TrendingUp',
-    gradient_from: '#10b981',
-    gradient_to: '#059669',
-    link_url: '/services/business',
-    link_text: 'Learn More',
-    is_active: true,
-    order_index: 2,
-  },
-  {
-    title: 'Smart Agriculture',
-    subtitle: 'Sustainable Farming',
-    description: 'Revolutionary agricultural technology that increases yield while promoting environmental sustainability.',
-    image_url: null,
-    icon_name: 'Leaf',
-    gradient_from: '#f59e0b',
-    gradient_to: '#d97706',
-    link_url: '/services/agriculture',
-    link_text: 'Learn More',
-    is_active: true,
-    order_index: 3,
-  },
-];
+// No default hero carousel items - load from database only

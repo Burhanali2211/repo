@@ -37,17 +37,18 @@ const NavigationItem = React.memo(({
           onClick={(e: React.MouseEvent) => toggleDropdown(e, link.id!)}
           className={`
             relative text-sm lg:text-base font-semibold px-3 py-2 rounded-lg
-            transition-all duration-300 ease-out flex items-center
+            transition-all duration-200 ease-out flex items-center
             hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50
             dark:hover:from-purple-900/20 dark:hover:to-blue-900/20
-            hover:shadow-md hover:scale-105
+            hover:shadow-sm
             ${activeDropdown === link.id
               ? 'text-purple-600 dark:text-purple-400 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20'
               : 'text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400'
             }
           `}
           whileHover={{ y: -1 }}
-          whileTap={{ scale: 0.98 }}
+          whileTap={{ scale: 0.995 }}
+          transition={{ duration: 0.15, ease: [0.25, 1, 0.5, 1] }}
           aria-expanded={activeDropdown === link.id}
           aria-haspopup="true"
         >
@@ -101,16 +102,17 @@ const NavigationItem = React.memo(({
   return (
     <motion.div
       whileHover={{ y: -1 }}
-      whileTap={{ scale: 0.98 }}
+      whileTap={{ scale: 0.995 }}
+      transition={{ duration: 0.15, ease: [0.25, 1, 0.5, 1] }}
     >
       <Link
         to={link.path || '/'}
         className={`
           relative text-sm lg:text-base font-semibold px-3 py-2 rounded-lg
-          transition-all duration-300 ease-out block
+          transition-all duration-200 ease-out block
           hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50
           dark:hover:from-purple-900/20 dark:hover:to-blue-900/20
-          hover:shadow-md hover:scale-105
+          hover:shadow-sm
           ${isActive(link.path || '/')
             ? 'text-purple-600 dark:text-purple-400 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20'
             : 'text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400'
@@ -123,7 +125,7 @@ const NavigationItem = React.memo(({
             layoutId="activeTab"
             className="absolute inset-0 bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-800/30 dark:to-blue-800/30 rounded-lg"
             initial={false}
-            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            transition={{ type: "tween", duration: 0.25, ease: [0.25, 1, 0.5, 1] }}
           />
         )}
       </Link>
@@ -280,14 +282,12 @@ export const Navbar = () => {
       initial={{ y: 0 }}
       animate={{
         y: isScrolled && !isScrollingUp ? -100 : 0,
-        scale: isScrolled ? 0.99 : 1
+        scale: isScrolled ? 0.995 : 1
       }}
       transition={{
-        duration: 0.25,
-        ease: "easeInOut",
-        type: "spring",
-        stiffness: 120,
-        damping: 25
+        duration: 0.3,
+        ease: [0.25, 1, 0.5, 1],
+        type: "tween"
       }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 navbar-optimized ${isScrolled
         ? 'pt-2 px-2 md:pt-3 md:px-4'
@@ -408,10 +408,10 @@ export const Navbar = () => {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0, y: -20 }}
+            initial={{ opacity: 0, height: 0, y: -10 }}
             animate={{ opacity: 1, height: 'auto', y: 0 }}
-            exit={{ opacity: 0, height: 0, y: -20 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
+            exit={{ opacity: 0, height: 0, y: -10 }}
+            transition={{ duration: 0.25, ease: [0.25, 1, 0.5, 1] }}
             className={`lg:hidden overflow-hidden ${isScrolled
               ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-b-2xl border-t border-white/20 dark:border-gray-700/50'
               : 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg'
@@ -429,19 +429,20 @@ export const Navbar = () => {
                   {navLinks.map((link: NavItem, index: number) => (
                     <motion.div
                       key={index}
-                      initial={{ opacity: 0, x: -20 }}
+                      initial={{ opacity: 0, x: -15 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1, duration: 0.3 }}
+                      transition={{ delay: index * 0.05, duration: 0.2, ease: [0.25, 1, 0.5, 1] }}
                     >
                       {link.dropdown ? (
                         <div className="space-y-3">
                           <motion.button
                             onClick={(e: React.MouseEvent) => toggleDropdown(e, link.id!)}
-                            className={`flex justify-between items-center w-full py-3 px-4 text-base font-semibold transition-all duration-300 rounded-xl hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 dark:hover:from-purple-900/20 dark:hover:to-blue-900/20 ${activeDropdown === link.id
+                            className={`flex justify-between items-center w-full py-3 px-4 text-base font-semibold transition-all duration-200 rounded-xl hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 dark:hover:from-purple-900/20 dark:hover:to-blue-900/20 ${activeDropdown === link.id
                               ? 'text-purple-600 dark:text-purple-400 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20'
                               : 'text-gray-700 dark:text-gray-300'
                               }`}
-                            whileTap={{ scale: 0.98 }}
+                            whileTap={{ scale: 0.995 }}
+                            transition={{ duration: 0.15, ease: [0.25, 1, 0.5, 1] }}
                           >
                             <span>{link.label}</span>
                             <motion.svg

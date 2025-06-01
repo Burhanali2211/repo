@@ -62,107 +62,34 @@ export const useData = () => {
   if (context === undefined) {
     throw new Error('useData must be used within a DataProvider');
   }
-  return context;
+
+  // Ensure context has all required properties with safe defaults
+  return {
+    projects: context.projects || [],
+    documents: context.documents || [],
+    invoices: context.invoices || [],
+    messages: context.messages || [],
+    updateProject: context.updateProject || (() => { }),
+    addDocument: context.addDocument || (() => { }),
+    deleteDocument: context.deleteDocument || (() => { }),
+    sendMessage: context.sendMessage || (() => { }),
+    markMessageAsRead: context.markMessageAsRead || (() => { }),
+    refreshData: context.refreshData || (() => { }),
+    ...context
+  };
 };
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [projects, setProjects] = useState<Project[]>([
-    {
-      id: '1',
-      name: 'Website Redesign',
-      status: 'in-progress',
-      progress: 75,
-      client: 'TechCorp',
-      description: 'Complete website overhaul with modern design',
-      startDate: '2024-01-15',
-      budget: 15000
-    },
-    {
-      id: '2',
-      name: 'Mobile App Development',
-      status: 'completed',
-      progress: 100,
-      client: 'StartupXYZ',
-      description: 'React Native mobile application',
-      startDate: '2023-12-01',
-      endDate: '2024-01-20',
-      budget: 25000
-    },
-    {
-      id: '3',
-      name: 'Brand Identity',
-      status: 'pending',
-      progress: 20,
-      client: 'Fashion Co',
-      description: 'Complete brand identity and logo design',
-      startDate: '2024-01-25',
-      budget: 8000
-    }
-  ]);
+  const [projects, setProjects] = useState<Project[]>([]);
 
-  const [documents, setDocuments] = useState<Document[]>([
-    {
-      id: '1',
-      name: 'Project Brief.pdf',
-      type: 'PDF',
-      size: '2.4 MB',
-      uploadDate: '2024-01-15',
-      projectId: '1',
-      url: '#'
-    },
-    {
-      id: '2',
-      name: 'Design Mockups.fig',
-      type: 'Figma',
-      size: '15.2 MB',
-      uploadDate: '2024-01-18',
-      projectId: '1',
-      url: '#'
-    }
-  ]);
+  const [documents, setDocuments] = useState<Document[]>([]);
 
-  const [invoices, setInvoices] = useState<Invoice[]>([
-    {
-      id: 'INV-001',
-      projectId: '1',
-      projectName: 'Website Redesign',
-      amount: 7500,
-      status: 'pending',
-      dueDate: '2024-02-15',
-      issueDate: '2024-01-15'
-    },
-    {
-      id: 'INV-002',
-      projectId: '2',
-      projectName: 'Mobile App Development',
-      amount: 25000,
-      status: 'paid',
-      dueDate: '2024-01-25',
-      issueDate: '2024-01-20'
-    }
-  ]);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
 
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      from: 'Project Manager',
-      to: 'Client',
-      content: 'The website design review is scheduled for tomorrow at 2 PM. Please review the latest mockups.',
-      timestamp: '2024-01-22T10:30:00Z',
-      read: false
-    },
-    {
-      id: '2',
-      from: 'Admin',
-      to: 'Client',
-      content: 'Invoice #INV-001 has been generated and sent to your email.',
-      timestamp: '2024-01-21T15:45:00Z',
-      read: true
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const updateProject = (id: string, updates: Partial<Project>) => {
-    setProjects(prev => prev.map(project => 
+    setProjects(prev => prev.map(project =>
       project.id === id ? { ...project, ...updates } : project
     ));
   };
@@ -192,7 +119,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const markMessageAsRead = (id: string) => {
-    setMessages(prev => prev.map(msg => 
+    setMessages(prev => prev.map(msg =>
       msg.id === id ? { ...msg, read: true } : msg
     ));
   };

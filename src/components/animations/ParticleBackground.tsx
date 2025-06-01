@@ -70,7 +70,8 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
   // Update particle positions
   const updateParticles = () => {
     return particles.map(particle => {
-      let { x, y, directionX, directionY, size, color } = particle;
+      let { x, y, directionX, directionY } = particle;
+      const { size, color } = particle;
 
       // Bounce off edges
       if (x + size > dimensions.width || x - size < 0) {

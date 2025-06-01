@@ -11,7 +11,9 @@ import {
   Heart,
   Star,
   AlertCircle,
-  Shield
+  Shield,
+  FormInput,
+  Award
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,9 +27,12 @@ import { useNavigate } from 'react-router-dom';
 import ProjectsManager from '@/components/dashboard/ProjectsManager';
 import ServicesManager from '@/components/dashboard/ServicesManager';
 import TestimonialsManager from '@/components/dashboard/TestimonialsManager';
-import WhatWeDoManager from '@/components/dashboard/WhatWeDoManager';
+
 import AboutContentManager from '@/components/dashboard/AboutContentManager';
 import SettingsManager from '@/components/dashboard/SettingsManager';
+import MessagesManager from '@/components/dashboard/MessagesManager';
+import ContactFormFieldsManager from '@/components/dashboard/ContactFormFieldsManager';
+import SuccessStoriesManager from '@/components/dashboard/SuccessStoriesManager';
 
 /**
  * Dashboard Component
@@ -94,11 +99,13 @@ const Dashboard = () => {
   // Sidebar navigation items
   const sidebarItems = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'messages', label: 'Messages', icon: MessageSquare },
+    { id: 'contact-fields', label: 'Contact Form', icon: FormInput },
+    { id: 'success-stories', label: 'Success Stories', icon: Award },
     { id: 'services', label: 'Services', icon: FileText },
     { id: 'projects', label: 'Portfolio', icon: FolderOpen },
-    { id: 'testimonials', label: 'Testimonials', icon: MessageSquare },
-    { id: 'whatwedo', label: 'What We Do', icon: Heart },
-    { id: 'about', label: 'About Content', icon: Star },
+    { id: 'testimonials', label: 'Testimonials', icon: Heart },
+    { id: 'about', label: 'About Content', icon: AlertCircle },
     { id: 'settings', label: 'Website Settings', icon: Settings }
   ];
 
@@ -287,10 +294,12 @@ const Dashboard = () => {
           )}
 
           {/* Content Management Tabs - Using components from components/dashboard folder */}
+          {activeTab === 'messages' && <MessagesManager />}
+          {activeTab === 'contact-fields' && <ContactFormFieldsManager />}
+          {activeTab === 'success-stories' && <SuccessStoriesManager />}
           {activeTab === 'projects' && <ProjectsManager />}
           {activeTab === 'services' && <ServicesManager />}
           {activeTab === 'testimonials' && <TestimonialsManager />}
-          {activeTab === 'whatwedo' && <WhatWeDoManager />}
           {activeTab === 'about' && <AboutContentManager />}
 
           {/* Settings Tab */}
@@ -300,9 +309,4 @@ const Dashboard = () => {
 
       {/* Decorative elements */}
       <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-yellow-500/20 rounded-full blur-3xl"></div>
-      <div className="absolute -top-10 -left-10 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl"></div>
-    </div>
-  );
-};
-
-export default Dashboard;
+      <di

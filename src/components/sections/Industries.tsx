@@ -54,60 +54,73 @@ const Industries = () => {
   const duplicatedIndustries = [...industries, ...industries];
 
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
+    <section
       className="w-full overflow-hidden"
+      aria-labelledby="industries-heading"
     >
-      {/* Continuous Horizontal Carousel */}
-      <div className="relative">
-        {/* Left gradient fade */}
-        <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-white dark:from-black to-transparent z-10 pointer-events-none"></div>
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        className="w-full"
+      >
+        {/* Continuous Horizontal Carousel */}
+        <div className="relative" role="region" aria-label="Industries we serve carousel">
 
-        {/* Right gradient fade */}
-        <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-white dark:from-black to-transparent z-10 pointer-events-none"></div>
+          <motion.div
+            className="flex gap-6 min-w-max"
+            role="list"
+            aria-label="Industries we serve"
+            animate={{
+              x: [0, -(160 + 24) * industries.length] // Move by exact width: card width (160px) + gap (24px)
+            }}
+            transition={{
+              x: {
+                duration: 20, // Optimized scrolling speed
+                ease: "linear",
+                repeat: Infinity,
+                repeatType: "loop"
+              }
+            }}
+          >
+            {duplicatedIndustries.map((industry, index) => (
+              <motion.div
+                key={`${industry.name}-${index}`}
+                variants={itemVariants}
+                className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md hover:bg-white dark:hover:bg-gray-800 border border-gray-200/60 dark:border-gray-700/60 hover:border-purple-400/60 dark:hover:border-purple-500/60 rounded-2xl p-6 flex flex-col items-center justify-center text-center transition-all duration-250 hover:transform hover:scale-105 group shadow-lg hover:shadow-xl dark:shadow-gray-900/20 w-[160px] h-[140px] flex-shrink-0 relative overflow-hidden"
+                whileHover={{ y: -4, scale: 1.02 }}
+                transition={{ duration: 0.2, ease: [0.25, 1, 0.5, 1] }}
+                role="listitem"
+                aria-label={`${industry.name} industry`}
+              >
+                {/* Enhanced background gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-blue-500/5 to-indigo-500/5 dark:from-purple-500/10 dark:via-blue-500/10 dark:to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-        <motion.div
-          className="flex gap-6 min-w-max"
-          animate={{
-            x: [0, -(160 + 24) * industries.length] // Move by exact width: card width (160px) + gap (24px)
-          }}
-          transition={{
-            x: {
-              duration: 30, // Smooth scrolling speed
-              ease: "linear",
-              repeat: Infinity,
-              repeatType: "loop"
-            }
-          }}
-        >
-          {duplicatedIndustries.map((industry, index) => (
-            <motion.div
-              key={`${industry.name}-${index}`}
-              variants={itemVariants}
-              className="bg-gray-100 dark:bg-gray-800/50 backdrop-blur-sm hover:bg-gray-200 dark:hover:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:border-purple-500/50 rounded-xl p-6 flex flex-col items-center justify-center text-center transition-all duration-300 hover:transform hover:scale-105 group shadow-sm dark:shadow-none w-[160px] h-[140px] flex-shrink-0"
-              whileHover={{ y: -5 }}
-            >
-              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-600/10 to-blue-600/10 dark:from-purple-600/20 dark:to-blue-600/20 group-hover:from-purple-600/20 group-hover:to-blue-600/20 dark:group-hover:from-purple-600/30 dark:group-hover:to-blue-600/30 flex items-center justify-center mb-4 transition-all duration-300">
-                <industry.icon className="h-7 w-7 text-gray-500 dark:text-gray-300 group-hover:text-gray-700 dark:group-hover:text-white transition-colors duration-300" />
-              </div>
-              <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-300 leading-tight">
-                {industry.name}
-              </h3>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
+                {/* Enhanced icon container with better styling */}
+                <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500/15 via-blue-500/15 to-indigo-500/15 dark:from-purple-500/25 dark:via-blue-500/25 dark:to-indigo-500/25 group-hover:from-purple-500/25 group-hover:via-blue-500/25 group-hover:to-indigo-500/25 dark:group-hover:from-purple-500/40 dark:group-hover:via-blue-500/40 dark:group-hover:to-indigo-500/40 flex items-center justify-center mb-4 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-lg group-hover:shadow-xl">
+                  {/* Icon glow effect */}
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-400/20 to-blue-400/20 blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-      {/* Bottom accent */}
-      <div className="mt-16 text-center">
-        <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-          We tailor our expertise to meet the unique requirements of various industries, ensuring specialized solutions that drive success across diverse sectors.
-        </p>
-      </div>
-    </motion.div>
+                  {/* Enhanced icon with better sizing and colors */}
+                  <industry.icon className="relative z-10 h-8 w-8 text-gray-600 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-all duration-500 group-hover:scale-110" />
+                </div>
+                <h3 className="relative z-10 text-sm font-semibold text-gray-700 dark:text-gray-200 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-all duration-500 leading-tight text-center">
+                  {industry.name}
+                </h3>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Bottom accent */}
+        <div className="mt-16 text-center">
+          <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            We tailor our expertise to meet the unique requirements of various industries, ensuring specialized solutions that drive success across diverse sectors.
+          </p>
+        </div>
+      </motion.div>
+    </section>
   );
 };
 

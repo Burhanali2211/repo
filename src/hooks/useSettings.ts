@@ -32,8 +32,26 @@ export interface ExtendedSiteSettings extends Tables<'site_settings'> {
   line_height?: string;
   font_weight?: string;
   contact_phone_secondary?: string;
+  emergency_contact_phone?: string;
+  emergency_contact_email?: string;
   address?: string;
+  address_line_2?: string;
+  city?: string;
+  state_province?: string;
+  postal_code?: string;
+  country?: string;
   business_hours?: BusinessHours;
+  timezone?: string;
+  map_latitude?: number;
+  map_longitude?: number;
+  map_zoom_level?: number;
+  map_embed_url?: string;
+  location_description?: string;
+  contact_form_title?: string;
+  contact_form_subtitle?: string;
+  response_time_promise?: string;
+  office_hours_display?: string;
+  contact_cta_text?: string;
   meta_keywords?: string;
   google_analytics_id?: string;
   google_tag_manager_id?: string;
@@ -124,8 +142,15 @@ export const useSettings = (): UseSettingsReturn => {
         font_weight: '400',
         contact_email: 'hello@easyio.tech',
         contact_phone: '+1 (555) 123-4567',
-        contact_phone_secondary: '',
-        address: '123 Tech Street, Innovation City, IC 12345',
+        contact_phone_secondary: '+1 (555) 123-4568',
+        emergency_contact_phone: '+1 (555) 911-0000',
+        emergency_contact_email: 'emergency@easyio.tech',
+        address: '123 Innovation Drive',
+        address_line_2: 'Suite 100',
+        city: 'Tech Valley',
+        state_province: 'California',
+        postal_code: '94043',
+        country: 'United States',
         business_hours: {
           monday: { open: '09:00', close: '17:00', closed: false },
           tuesday: { open: '09:00', close: '17:00', closed: false },
@@ -135,6 +160,17 @@ export const useSettings = (): UseSettingsReturn => {
           saturday: { open: '10:00', close: '14:00', closed: false },
           sunday: { open: '10:00', close: '14:00', closed: true }
         },
+        timezone: 'America/Los_Angeles',
+        map_latitude: 37.4419,
+        map_longitude: -122.1430,
+        map_zoom_level: 15,
+        map_embed_url: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3168.639!2d-122.1430!3d37.4419!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDI2JzMwLjgiTiAxMjLCsDA4JzM0LjgiVw!5e0!3m2!1sen!2sus!4v1234567890',
+        location_description: 'Located in the heart of Silicon Valley, our office is easily accessible and designed for innovation.',
+        contact_form_title: 'Get In Touch',
+        contact_form_subtitle: 'We\'d love to hear from you',
+        response_time_promise: 'We respond within 24 hours',
+        office_hours_display: 'Monday - Friday: 9:00 AM - 5:00 PM PST',
+        contact_cta_text: 'Contact Us Today',
         meta_title: 'EasyIo.tech - Simplifying Technology',
         meta_description: 'Founded in 2023, EasyIo.tech simplifies technology to make it more accessible, sustainable, and meaningful. From IoT to Digital transformation, we\'re your creative tech partner.',
         meta_keywords: 'technology, IoT, digital transformation, sustainable tech, business solutions',
@@ -143,7 +179,13 @@ export const useSettings = (): UseSettingsReturn => {
         facebook_pixel_id: '',
         custom_css: '',
         footer_text: '© 2024 EasyIo.tech. All rights reserved.',
-        social_links: {},
+        social_links: {
+          facebook: 'https://facebook.com/easyiotech',
+          twitter: 'https://twitter.com/easyiotech',
+          linkedin: 'https://linkedin.com/company/easyiotech',
+          instagram: 'https://instagram.com/easyiotech',
+          github: 'https://github.com/easyiotech'
+        },
         is_maintenance_mode: false
       };
 
@@ -263,8 +305,15 @@ export const useSettings = (): UseSettingsReturn => {
         font_weight: '400',
         contact_email: 'hello@easyio.tech',
         contact_phone: '+1 (555) 123-4567',
-        contact_phone_secondary: '',
-        address: '123 Tech Street, Innovation City, IC 12345',
+        contact_phone_secondary: '+1 (555) 123-4568',
+        emergency_contact_phone: '+1 (555) 911-0000',
+        emergency_contact_email: 'emergency@easyio.tech',
+        address: '123 Innovation Drive',
+        address_line_2: 'Suite 100',
+        city: 'Tech Valley',
+        state_province: 'California',
+        postal_code: '94043',
+        country: 'United States',
         business_hours: {
           monday: { open: '09:00', close: '17:00', closed: false },
           tuesday: { open: '09:00', close: '17:00', closed: false },
@@ -274,6 +323,17 @@ export const useSettings = (): UseSettingsReturn => {
           saturday: { open: '10:00', close: '14:00', closed: false },
           sunday: { open: '10:00', close: '14:00', closed: true }
         },
+        timezone: 'America/Los_Angeles',
+        map_latitude: 37.4419,
+        map_longitude: -122.1430,
+        map_zoom_level: 15,
+        map_embed_url: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3168.639!2d-122.1430!3d37.4419!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzfCsDI2JzMwLjgiTiAxMjLCsDA4JzM0LjgiVw!5e0!3m2!1sen!2sus!4v1234567890',
+        location_description: 'Located in the heart of Silicon Valley, our office is easily accessible and designed for innovation.',
+        contact_form_title: 'Get In Touch',
+        contact_form_subtitle: 'We\'d love to hear from you',
+        response_time_promise: 'We respond within 24 hours',
+        office_hours_display: 'Monday - Friday: 9:00 AM - 5:00 PM PST',
+        contact_cta_text: 'Contact Us Today',
         meta_title: 'EasyIo.tech - Simplifying Technology',
         meta_description: 'Founded in 2023, EasyIo.tech simplifies technology to make it more accessible, sustainable, and meaningful. From IoT to Digital transformation, we\'re your creative tech partner.',
         meta_keywords: 'technology, IoT, digital transformation, sustainable tech, business solutions',
@@ -282,7 +342,13 @@ export const useSettings = (): UseSettingsReturn => {
         facebook_pixel_id: '',
         custom_css: '',
         footer_text: '© 2024 EasyIo.tech. All rights reserved.',
-        social_links: {},
+        social_links: {
+          facebook: 'https://facebook.com/easyiotech',
+          twitter: 'https://twitter.com/easyiotech',
+          linkedin: 'https://linkedin.com/company/easyiotech',
+          instagram: 'https://instagram.com/easyiotech',
+          github: 'https://github.com/easyiotech'
+        },
         is_maintenance_mode: false
       };
 

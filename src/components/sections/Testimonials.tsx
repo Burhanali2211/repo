@@ -4,32 +4,10 @@ import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 import AnimatedSection from '@/components/AnimatedSection';
 import FloatingElement from '@/components/FloatingElement';
 import { Button } from '@/components/ui/button';
-
-export const testimonials = [
-  {
-    name: 'Sarah Johnson',
-    role: 'CEO, TechStart',
-    image: 'https://images.unsplash.com/photo-1494790108755-2616b612b65c?w=100&h=100&fit=crop&crop=face',
-    content: "easyio transformed our digital presence completely. Their strategic approach and attention to detail exceeded our expectations.",
-    rating: 5
-  },
-  {
-    name: 'Michael Chen',
-    role: 'CTO, InnovateCorp',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
-    content: "The team's expertise in digital strategy helped us achieve a 300% increase in online conversions. Highly recommended!",
-    rating: 5
-  },
-  {
-    name: 'Emily Davis',
-    role: 'Marketing Director, GrowthLab',
-    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
-    content: "Working with easyio was a game-changer for our business. Their innovative solutions delivered exceptional results.",
-    rating: 5
-  }
-];
+import { useTestimonials } from '@/hooks/useTestimonials';
 
 const Testimonials = () => {
+  const { testimonials, loading, error } = useTestimonials();
   const [activeIndex, setActiveIndex] = useState(0);
 
   const handlePrevious = () => {
@@ -43,10 +21,53 @@ const Testimonials = () => {
   const handleDotClick = (index: number) => {
     setActiveIndex(index);
   };
+
+  // Loading state
+  if (loading) {
+    return (
+      <section className="py-20 bg-white dark:bg-black text-gray-900 dark:text-white relative overflow-hidden">
+        <div className="container mx-auto px-6">
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-600"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <section className="py-20 bg-white dark:bg-black text-gray-900 dark:text-white relative overflow-hidden">
+        <div className="container mx-auto px-6">
+          <div className="text-center py-20">
+            <p className="text-red-500 dark:text-red-400">Error loading testimonials: {error}</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // No testimonials state
+  if (!testimonials || testimonials.length === 0) {
+    return (
+      <section className="py-20 bg-white dark:bg-black text-gray-900 dark:text-white relative overflow-hidden">
+        <div className="container mx-auto px-6">
+          <div className="text-center py-20">
+            <p className="text-gray-500 dark:text-gray-400">No testimonials available at the moment.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="py-20 bg-white dark:bg-black text-gray-900 dark:text-white relative overflow-hidden">
+    <section
+      className="py-20 bg-white dark:bg-black text-gray-900 dark:text-white relative overflow-hidden"
+      aria-labelledby="testimonials-heading"
+    >
       {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden opacity-10 dark:opacity-30 pointer-events-none">
+      <div className="absolute inset-0 overflow-hidden opacity-10 dark:opacity-30 pointer-events-none" aria-hidden="true">
         <div className="absolute top-0 left-0 w-full h-full">
           <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500 rounded-full blur-3xl animate-pulse"
             style={{ animationDuration: '8s' }}></div>
@@ -56,28 +77,29 @@ const Testimonials = () => {
       </div>
       <div className="container mx-auto px-6">
         <AnimatedSection threshold={0.2}>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 relative inline-block">
+          <header className="text-center mb-16">
+            <h2 id="testimonials-heading" className="text-4xl md:text-5xl font-bold mb-6 relative inline-block">
               Don't just take our word for it
-              <div className="absolute -bottom-3 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full"></div>
+              <div className="absolute -bottom-3 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full" aria-hidden="true"></div>
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               See what our clients have to say about their experience working with us.
             </p>
-          </div>
+          </header>
         </AnimatedSection>
 
         {/* Desktop view: Grid */}
-        <div className="hidden lg:grid lg:grid-cols-3 gap-8">
+        <div className="hidden lg:grid lg:grid-cols-3 gap-8" role="list" aria-label="Customer testimonials">
           {testimonials.map((testimonial, index) => (
             <AnimatedSection key={index} delay={index * 200} threshold={0.1}>
-              <div
+              <article
                 className="bg-gray-100 dark:bg-white/10 backdrop-blur-sm rounded-xl p-8 hover:bg-gray-200 dark:hover:bg-white/20 transition-all duration-500 group relative overflow-hidden h-full shadow-md dark:shadow-none"
+                role="listitem"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative z-10">
                   <div className="flex items-center mb-6">
-                    {[...Array(testimonial.rating)].map((_, i) => (
+                    {[...Array(testimonial.rating || 5)].map((_, i) => (
                       <FloatingElement key={i} amplitude={2} frequency={0.003} phase={i * 0.5}>
                         <Star className="h-5 w-5 text-yellow-400 fill-current" />
                       </FloatingElement>
@@ -92,27 +114,36 @@ const Testimonials = () => {
 
                   <div className="flex items-center space-x-4">
                     <div className="relative overflow-hidden rounded-full w-12 h-12 group-hover:ring-2 group-hover:ring-yellow-400 transition-all duration-300">
-                      <img
-                        src={testimonial.image}
-                        alt={testimonial.name}
-                        className="w-12 h-12 rounded-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
+                      {testimonial.avatar ? (
+                        <img
+                          src={testimonial.avatar}
+                          alt={`${testimonial.name}, ${testimonial.role}${testimonial.company ? `, ${testimonial.company}` : ''}`}
+                          className="w-12 h-12 rounded-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold">
+                          {testimonial.name?.charAt(0) || 'T'}
+                        </div>
+                      )}
                     </div>
                     <div>
                       <h4 className="font-bold text-gray-900 dark:text-white">{testimonial.name}</h4>
-                      <p className="text-gray-600 dark:text-gray-400 text-sm">{testimonial.role}</p>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm">
+                        {testimonial.role}{testimonial.company ? `, ${testimonial.company}` : ''}
+                      </p>
                     </div>
                   </div>
                 </div>
-              </div>
+              </article>
             </AnimatedSection>
           ))}
         </div>
 
         {/* Mobile view: Carousel */}
-        <div className="lg:hidden relative">
+        <div className="lg:hidden relative" role="region" aria-label="Testimonials carousel" aria-live="polite">
           <AnimatedSection threshold={0.1}>
-            <div className="bg-gray-100 dark:bg-white/10 backdrop-blur-sm rounded-xl p-8 relative overflow-hidden mb-8 shadow-md dark:shadow-none">
+            <article className="bg-gray-100 dark:bg-white/10 backdrop-blur-sm rounded-xl p-8 relative overflow-hidden mb-8 shadow-md dark:shadow-none">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-blue-500/10 opacity-30 dark:opacity-50"></div>
               <div className="relative z-10">
                 <div className="flex items-center mb-6">
@@ -131,19 +162,28 @@ const Testimonials = () => {
 
                 <div className="flex items-center space-x-4">
                   <div className="relative overflow-hidden rounded-full w-12 h-12 ring-2 ring-yellow-400/50">
-                    <img
-                      src={testimonials[activeIndex].image}
-                      alt={testimonials[activeIndex].name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
+                    {testimonials[activeIndex].avatar ? (
+                      <img
+                        src={testimonials[activeIndex].avatar}
+                        alt={`${testimonials[activeIndex].name}, ${testimonials[activeIndex].role}${testimonials[activeIndex].company ? `, ${testimonials[activeIndex].company}` : ''}`}
+                        className="w-12 h-12 rounded-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold">
+                        {testimonials[activeIndex].name?.charAt(0) || 'T'}
+                      </div>
+                    )}
                   </div>
                   <div>
                     <h4 className="font-bold text-gray-900 dark:text-white">{testimonials[activeIndex].name}</h4>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm">{testimonials[activeIndex].role}</p>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm">
+                      {testimonials[activeIndex].role}{testimonials[activeIndex].company ? `, ${testimonials[activeIndex].company}` : ''}
+                    </p>
                   </div>
                 </div>
               </div>
-            </div>
+            </article>
 
             <div className="flex justify-between items-center">
               <Button

@@ -5,9 +5,12 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 // Import router configuration to handle React Router v7 warnings
 import { configureRouterOptions, ROUTER_FUTURE_FLAGS } from "@/lib/router-config";
 import ErrorBoundary from "@/components/ErrorBoundary";
+// Import performance monitoring
+import { measureWebVitals, sendPerformanceToAnalytics, trackUserInteractions } from "@/utils/performanceMonitor";
 
 // Configure React Router v7 future flags on app startup
 if (typeof window !== 'undefined') {
@@ -47,6 +50,11 @@ const TermsPage = lazy(() => import("./pages/Terms"));
 const CookiesPage = lazy(() => import("./pages/Cookies"));
 const SetupSettingsPage = lazy(() => import("./pages/SetupSettings"));
 
+// New pages for missing routes
+const IndustriesPage = lazy(() => import("./pages/Industries"));
+const CaseStudiesPage = lazy(() => import("./pages/CaseStudies"));
+const SitemapPage = lazy(() => import("./pages/Sitemap"));
+
 // Service Pages
 const WebDevelopmentPage = lazy(() => import("./pages/services/WebDevelopment"));
 const SEOPage = lazy(() => import("./pages/services/SEO"));
@@ -55,11 +63,23 @@ const BrandDesignPage = lazy(() => import("./pages/services/BrandDesign"));
 const CloudServicesPage = lazy(() => import("./pages/services/CloudServices"));
 const AppDevelopmentPage = lazy(() => import("./pages/services/AppDevelopment"));
 
+// New Service Pages
+const AgricultureTechPage = lazy(() => import("./pages/services/AgricultureTech"));
+const SchoolManagementPage = lazy(() => import("./pages/services/SchoolManagement"));
+const BusinessSolutionsPage = lazy(() => import("./pages/services/BusinessSolutions"));
+const StudentProgramsPage = lazy(() => import("./pages/services/StudentPrograms"));
+const TechnicalServicesPage = lazy(() => import("./pages/services/TechnicalServices"));
+const DigitalTransformationPage = lazy(() => import("./pages/services/DigitalTransformation"));
+
+// Dynamic Service Detail Page
+const ServiceDetailPage = lazy(() => import("./pages/ServiceDetail"));
+
 // No longer needed - Dashboard now handles its own routing
 
 // Animation and common components
 import { CustomCursor, ParticleBackground } from "./components/animations";
 import { ScrollProgress } from "./components/common/";
+import { safeExecute } from "@/lib/utils/safe-access";
 
 // Create a loading component for Suspense fallback
 const PageLoader = () => (
@@ -92,112 +112,157 @@ const App = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Initialize performance monitoring
+  useEffect(() => {
+    safeExecute(() => {
+      if (typeof window !== 'undefined') {
+        // Start measuring Web Vitals
+        safeExecute(() => measureWebVitals(sendPerformanceToAnalytics), undefined, 'measureWebVitals');
+
+        // Track user interactions
+        safeExecute(() => trackUserInteractions(), undefined, 'trackUserInteractions');
+
+        // Preload critical resources
+        const criticalResources = [
+          '/fonts/inter-var.woff2',
+          '/images/hero-bg.webp'
+        ];
+
+        criticalResources.forEach(resource => {
+          safeExecute(() => {
+            const link = document.createElement('link');
+            link.rel = 'preload';
+            link.href = resource;
+            link.as = resource.includes('font') ? 'font' : 'image';
+            if (resource.includes('font')) {
+              link.crossOrigin = 'anonymous';
+            }
+            document.head.appendChild(link);
+          }, undefined, `preload-${resource}`);
+        });
+      }
+    }, undefined, 'performance-monitoring-init');
+  }, []);
+
   return (
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <ThemeProvider defaultTheme="light">
-            <SupabaseProvider>
-              <SupabaseInitializer>
-                <AuthProvider>
-                  <AdminAuthProvider>
-                    <SettingsProvider>
-                      <SettingsStyleProvider />
-                      <SettingsScriptInjector />
-                      <FaviconInjector />
-                      <MaintenanceMode>
-                        <DataProvider>
-                          {/* Toast notifications */}
-                          <Toaster />
-                          <Sonner />
+      <HelmetProvider>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <ThemeProvider defaultTheme="light">
+              <SupabaseProvider>
+                <SupabaseInitializer>
+                  <AuthProvider>
+                    <AdminAuthProvider>
+                      <SettingsProvider>
+                        <SettingsStyleProvider />
+                        <SettingsScriptInjector />
+                        <FaviconInjector />
+                        <MaintenanceMode>
+                          <DataProvider>
+                            {/* Toast notifications */}
+                            <Toaster />
+                            <Sonner />
 
-                          {/* Animation and interactive components */}
-                          <CustomCursor
-                            size={16}
-                            color="rgba(138, 43, 226, 0.6)"
-                            trailColor="rgba(138, 43, 226, 0.2)"
-                            showOnMobile={false}
-                            trailLength={3}
-                          />
+                            {/* Animation and interactive components */}
+                            <CustomCursor
+                              size={16}
+                              color="rgba(138, 43, 226, 0.6)"
+                              trailColor="rgba(138, 43, 226, 0.2)"
+                              showOnMobile={false}
+                              trailLength={3}
+                            />
 
-                          <ScrollProgress
-                            color="bg-gradient-to-r from-yellow-400 to-purple-600"
-                            height={3}
-                            position="top"
-                          />
+                            <ScrollProgress
+                              color="bg-gradient-to-r from-yellow-400 to-purple-600"
+                              height={3}
+                              position="top"
+                            />
 
-                          <ParticleBackground
-                            particleCount={30}
-                            connectParticles={true}
-                            connectDistance={100}
-                            particleSpeed={0.3}
-                            maxFPS={30}
-                          />
+                            <ParticleBackground
+                              particleCount={30}
+                              connectParticles={true}
+                              connectDistance={100}
+                              particleSpeed={0.3}
+                              maxFPS={30}
+                            />
 
-                          {/* Main content with transition */}
-                          <div className={`transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
-                            <BrowserRouter>
-                              <Suspense fallback={<PageLoader />}>
-                                <Routes>
-                                  {/* Main Layout Routes */}
-                                  <Route element={<MainLayout />}>
-                                    <Route path="/" element={<HomePage />} />
-                                    <Route path="/about" element={<AboutPage />} />
-                                    <Route path="/services" element={<ServicesPage />} />
-                                    <Route path="/services/web-development" element={<WebDevelopmentPage />} />
-                                    <Route path="/services/seo" element={<SEOPage />} />
-                                    <Route path="/services/digital-marketing" element={<DigitalMarketingPage />} />
-                                    <Route path="/services/brand-design" element={<BrandDesignPage />} />
-                                    <Route path="/services/cloud-services" element={<CloudServicesPage />} />
-                                    <Route path="/services/app-development" element={<AppDevelopmentPage />} />
-                                    <Route path="/portfolio" element={<PortfolioPage />} />
-                                    <Route path="/our-work" element={<OurWorkPage />} />
-                                    <Route path="/contact" element={<ContactPage />} />
-                                    <Route path="/blog" element={<BlogPage />} />
-                                    <Route path="/blog/:id" element={<BlogPostPage />} />
-                                    <Route path="/careers" element={<CareersPage />} />
-                                    <Route path="/privacy" element={<PrivacyPage />} />
-                                    <Route path="/terms" element={<TermsPage />} />
-                                    <Route path="/cookies" element={<CookiesPage />} />
-                                    <Route path="/login" element={<LoginPage />} />
-                                    <Route path="/register" element={<RegisterPage />} />
-                                    <Route path="/admin/login" element={<AdminLoginPage />} />
-                                    <Route path="/admin/signup" element={<AdminSignupPage />} />
-                                  </Route>
+                            {/* Main content with transition */}
+                            <div className={`transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+                              <BrowserRouter>
+                                <Suspense fallback={<PageLoader />}>
+                                  <Routes>
+                                    {/* Main Layout Routes */}
+                                    <Route element={<MainLayout />}>
+                                      <Route path="/" element={<HomePage />} />
+                                      <Route path="/about" element={<AboutPage />} />
+                                      <Route path="/services" element={<ServicesPage />} />
+                                      <Route path="/services/web-development" element={<WebDevelopmentPage />} />
+                                      <Route path="/services/seo" element={<SEOPage />} />
+                                      <Route path="/services/digital-marketing" element={<DigitalMarketingPage />} />
+                                      <Route path="/services/brand-design" element={<BrandDesignPage />} />
+                                      <Route path="/services/cloud-services" element={<CloudServicesPage />} />
+                                      <Route path="/services/app-development" element={<AppDevelopmentPage />} />
+                                      <Route path="/services/agriculture-tech" element={<AgricultureTechPage />} />
+                                      <Route path="/services/school-management" element={<SchoolManagementPage />} />
+                                      <Route path="/services/business-solutions" element={<BusinessSolutionsPage />} />
+                                      <Route path="/services/student-programs" element={<StudentProgramsPage />} />
+                                      <Route path="/services/technical-services" element={<TechnicalServicesPage />} />
+                                      <Route path="/services/digital-transformation" element={<DigitalTransformationPage />} />
+                                      {/* Dynamic service detail route */}
+                                      <Route path="/services/:slug" element={<ServiceDetailPage />} />
+                                      <Route path="/portfolio" element={<PortfolioPage />} />
+                                      <Route path="/our-work" element={<OurWorkPage />} />
+                                      <Route path="/contact" element={<ContactPage />} />
+                                      <Route path="/blog" element={<BlogPage />} />
+                                      <Route path="/blog/:id" element={<BlogPostPage />} />
+                                      <Route path="/careers" element={<CareersPage />} />
+                                      <Route path="/industries" element={<IndustriesPage />} />
+                                      <Route path="/case-studies" element={<CaseStudiesPage />} />
+                                      <Route path="/sitemap" element={<SitemapPage />} />
+                                      <Route path="/privacy" element={<PrivacyPage />} />
+                                      <Route path="/terms" element={<TermsPage />} />
+                                      <Route path="/cookies" element={<CookiesPage />} />
+                                      <Route path="/login" element={<LoginPage />} />
+                                      <Route path="/register" element={<RegisterPage />} />
+                                      <Route path="/admin/login" element={<AdminLoginPage />} />
+                                      <Route path="/admin/signup" element={<AdminSignupPage />} />
+                                    </Route>
 
-                                  {/* Dashboard Route */}
-                                  <Route path="/dashboard" element={
-                                    <ProtectedRoute>
-                                      <DashboardLayout />
-                                    </ProtectedRoute>
-                                  } />
+                                    {/* Dashboard Route */}
+                                    <Route path="/dashboard" element={
+                                      <ProtectedRoute>
+                                        <DashboardLayout />
+                                      </ProtectedRoute>
+                                    } />
 
-                                  {/* Setup Settings Route */}
-                                  <Route path="/setup-settings" element={
-                                    <ProtectedRoute>
-                                      <SetupSettingsPage />
-                                    </ProtectedRoute>
-                                  } />
+                                    {/* Setup Settings Route */}
+                                    <Route path="/setup-settings" element={
+                                      <ProtectedRoute>
+                                        <SetupSettingsPage />
+                                      </ProtectedRoute>
+                                    } />
 
-                                  {/* Redirect legacy Index to Home */}
-                                  <Route path="/index" element={<Navigate to="/" replace />} />
+                                    {/* Redirect legacy Index to Home */}
+                                    <Route path="/index" element={<Navigate to="/" replace />} />
 
-                                  {/* 404 Route */}
-                                  <Route path="*" element={<NotFoundPage />} />
-                                </Routes>
-                              </Suspense>
-                            </BrowserRouter>
-                          </div>
-                        </DataProvider>
-                      </MaintenanceMode>
-                    </SettingsProvider>
-                  </AdminAuthProvider>
-                </AuthProvider>
-              </SupabaseInitializer>
-            </SupabaseProvider>
-          </ThemeProvider>
-        </TooltipProvider>
-      </QueryClientProvider>
+                                    {/* 404 Route */}
+                                    <Route path="*" element={<NotFoundPage />} />
+                                  </Routes>
+                                </Suspense>
+                              </BrowserRouter>
+                            </div>
+                          </DataProvider>
+                        </MaintenanceMode>
+                      </SettingsProvider>
+                    </AdminAuthProvider>
+                  </AuthProvider>
+                </SupabaseInitializer>
+              </SupabaseProvider>
+            </ThemeProvider>
+          </TooltipProvider>
+        </QueryClientProvider>
+      </HelmetProvider>
     </ErrorBoundary>
   );
 };

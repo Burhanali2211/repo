@@ -14,11 +14,11 @@ const TestimonialsManager = () => {
 
   const filteredTestimonials = testimonials.filter(testimonial => {
     // Add safety checks for all properties
-    const authorMatch = testimonial?.author ? testimonial.author.toLowerCase().includes(searchTerm.toLowerCase()) : false;
+    const nameMatch = testimonial?.name ? testimonial.name.toLowerCase().includes(searchTerm.toLowerCase()) : false;
     const companyMatch = testimonial?.company ? testimonial.company.toLowerCase().includes(searchTerm.toLowerCase()) : false;
     const contentMatch = testimonial?.content ? testimonial.content.toLowerCase().includes(searchTerm.toLowerCase()) : false;
-    
-    return authorMatch || companyMatch || contentMatch;
+
+    return nameMatch || companyMatch || contentMatch;
   });
 
   const handleEdit = (testimonial: any) => {
@@ -70,23 +70,22 @@ const TestimonialsManager = () => {
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">{testimonial?.author || 'Unknown Author'}</h3>
+                        <h3 className="text-lg font-semibold text-gray-900">{testimonial?.name || 'Unknown Author'}</h3>
                         {testimonial?.featured && (
                           <Star className="h-4 w-4 text-yellow-500 fill-current" />
                         )}
                       </div>
                       <p className="text-sm text-gray-600 mb-2">
-                        {testimonial?.position || ''}{testimonial?.company ? `, ${testimonial.company}` : ''}
+                        {testimonial?.role || ''}{testimonial?.company ? `, ${testimonial.company}` : ''}
                       </p>
                       <div className="flex items-center mb-2">
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}
-                            className={`h-4 w-4 ${
-                              i < (testimonial?.rating || 5)
-                                ? 'text-yellow-400 fill-current'
-                                : 'text-gray-300'
-                            }`}
+                            className={`h-4 w-4 ${i < (testimonial?.rating || 5)
+                              ? 'text-yellow-400 fill-current'
+                              : 'text-gray-300'
+                              }`}
                           />
                         ))}
                       </div>

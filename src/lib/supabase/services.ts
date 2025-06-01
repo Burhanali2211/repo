@@ -103,11 +103,16 @@ export const getFeaturedTestimonials = async () => {
 export type Service = {
   id: string;
   title: string;
+  slug: string;
   description: string;
   link: string;
   iconName: string;
   color: string;
   gradient: string;
+  icon?: string; // Database field for icon
+  image?: string; // Database field for image
+  featured?: boolean; // Database field for featured
+  order_index?: number; // Database field for order
   created_at?: string;
   updated_at?: string;
   user_id?: string;
@@ -165,6 +170,25 @@ export const getServiceById = async (id: string) => {
       .single();
   } catch (error) {
     console.error(`Error getting service ${id}:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Get a single service by slug
+ * Public access - no authentication required
+ */
+export const getServiceBySlug = async (slug: string) => {
+  try {
+    console.log('Fetching service by slug:', slug);
+
+    return supabase
+      .from('services')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+  } catch (error) {
+    console.error(`Error getting service by slug ${slug}:`, error);
     throw error;
   }
 };
