@@ -4,7 +4,7 @@ interface Window {
   __REACT_INITIALIZED__?: boolean;
   __storeRealReactMethods?: () => void;
   __restoreRealReactMethods?: () => boolean;
-  
+
   // Module registry
   __MODULE_REGISTRY__?: {
     modules: Record<string, boolean>;
@@ -13,15 +13,15 @@ interface Window {
     isModuleLoaded: (name: string) => boolean;
     onModuleLoaded: (name: string, callback: () => void) => void;
   };
-  
+
   // React preloader
   reactPreloader?: {
     modules: Record<string, boolean>;
     ensureReact: () => void;
     onReactReady: (callback: () => void) => void;
   };
-  
+
   // React globals
-  React: any;
-  ReactDOM: any;
+  React: typeof import('react');
+  ReactDOM: typeof import('react-dom');
 }

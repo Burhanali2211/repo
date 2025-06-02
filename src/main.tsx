@@ -7,8 +7,8 @@ import './styles/animations.css'
 
 // Ensure React is available globally
 if (typeof window !== 'undefined') {
-    (window as any).React = React;
-    (globalThis as any).React = React;
+    (window as typeof window & { React: typeof React }).React = React;
+    (globalThis as typeof globalThis & { React: typeof React }).React = React;
 }
 
 // Simple app rendering

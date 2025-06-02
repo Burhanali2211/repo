@@ -64,10 +64,6 @@ const ContactFormFieldsManager = () => {
     { value: 'radio', label: 'Radio Button', icon: Circle }
   ];
 
-  useEffect(() => {
-    loadFields();
-  }, [loadFields]);
-
   const loadFields = useCallback(async () => {
     try {
       setLoading(true);
@@ -84,6 +80,10 @@ const ContactFormFieldsManager = () => {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    loadFields();
+  }, [loadFields]);
 
   const resetFormData = () => {
     setFormData({

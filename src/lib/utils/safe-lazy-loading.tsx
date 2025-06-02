@@ -15,7 +15,7 @@ interface SafeLazyOptions {
 /**
  * Creates a safe lazy-loaded component with error handling and retry logic
  */
-export function safeLazy<T extends ComponentType<any>>(
+export function safeLazy<T extends ComponentType<Record<string, unknown>>>(
   importFn: () => Promise<{ default: T }>,
   options: SafeLazyOptions = {}
 ): ComponentType {
@@ -55,7 +55,7 @@ export function safeLazy<T extends ComponentType<any>>(
   // Create the lazy component with retry logic
   const LazyComponent = lazy(async () => {
     let lastError: Error | null = null;
-    
+
     for (let attempt = 1; attempt <= retryAttempts; attempt++) {
       try {
         const module = await importFn();
@@ -63,19 +63,19 @@ export function safeLazy<T extends ComponentType<any>>(
       } catch (error) {
         lastError = error as Error;
         console.warn(`Lazy loading attempt ${attempt}/${retryAttempts} failed:`, error);
-        
+
         // If this is a chunk loading error, wait before retrying
         if (attempt < retryAttempts && isChunkLoadError(error as Error)) {
           await new Promise(resolve => setTimeout(resolve, attempt * 1000));
         }
       }
     }
-    
+
     // If all attempts failed, call onError callback
     if (onError && lastError) {
       onError(lastError);
     }
-    
+
     // Return a fallback component
     return {
       default: FallbackComponent || DefaultFallback
@@ -83,7 +83,7 @@ export function safeLazy<T extends ComponentType<any>>(
   });
 
   // Return the wrapped component
-  return function SafeLazyWrapper(props: any) {
+  return function SafeLazyWrapper(props: Record<string, unknown>) {
     return (
       <DynamicImportErrorBoundary
         fallback={FallbackComponent ? <FallbackComponent /> : <DefaultFallback />}
@@ -115,7 +115,7 @@ function isChunkLoadError(error: Error): boolean {
  */
 export function safeLazyIcon(iconName: string) {
   return safeLazy(
-    () => import('lucide-react').then(module => ({ default: (module as any)[iconName] })),
+    () => import('lucide-react').then(module => ({ default: (module as Record<string, unknown>)[iconName] as ComponentType })),
     {
       fallback: () => (
         <div className="w-6 h-6 bg-gray-200 rounded animate-pulse" />
@@ -135,7 +135,7 @@ export function safeLazyIcon(iconName: string) {
  * Safe lazy loading for page components
  */
 export function safeLazyPage(
-  importFn: () => Promise<{ default: ComponentType<any> }>,
+  importFn: () => Promise<{ default: ComponentType<Record<string, unknown>> }>,
   pageName: string
 ) {
   return safeLazy(importFn, {
@@ -181,7 +181,7 @@ export function safeLazyPage(
  * Safe lazy loading for section components
  */
 export function safeLazySection(
-  importFn: () => Promise<{ default: ComponentType<any> }>,
+  importFn: () => Promise<{ default: ComponentType<Record<string, unknown>> }>,
   sectionName: string
 ) {
   return safeLazy(importFn, {

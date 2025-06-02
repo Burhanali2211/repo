@@ -38,7 +38,7 @@ class AssetLoadingManager {
   private initializeErrorHandling(): void {
     // Handle script loading errors
     window.addEventListener('error', (event) => {
-      if (event.target && (event.target as any).tagName === 'SCRIPT') {
+      if (event.target && (event.target as HTMLElement).tagName === 'SCRIPT') {
         const script = event.target as HTMLScriptElement;
         this.handleAssetLoadError(script.src, 'script');
       }
@@ -46,7 +46,7 @@ class AssetLoadingManager {
 
     // Handle CSS loading errors
     window.addEventListener('error', (event) => {
-      if (event.target && (event.target as any).tagName === 'LINK') {
+      if (event.target && (event.target as HTMLElement).tagName === 'LINK') {
         const link = event.target as HTMLLinkElement;
         if (link.rel === 'stylesheet') {
           this.handleAssetLoadError(link.href, 'stylesheet');
@@ -57,7 +57,7 @@ class AssetLoadingManager {
     // Handle module loading errors
     window.addEventListener('unhandledrejection', (event) => {
       if (event.reason && typeof event.reason === 'object') {
-        const error = event.reason as any;
+        const error = event.reason as Error;
         if (error.message && error.message.includes('Failed to fetch')) {
           console.warn('Module loading failed, attempting recovery:', error);
           this.handleModuleLoadError(error);
@@ -71,15 +71,15 @@ class AssetLoadingManager {
    */
   private async handleAssetLoadError(assetUrl: string, assetType: 'script' | 'stylesheet'): Promise<void> {
     const attempts = this.loadingAttempts.get(assetUrl) || 0;
-    
+
     if (attempts < this.config.retryAttempts) {
       this.loadingAttempts.set(assetUrl, attempts + 1);
-      
+
       console.warn(`Asset loading failed (attempt ${attempts + 1}/${this.config.retryAttempts}):`, assetUrl);
-      
+
       // Wait before retry
       await this.delay(this.config.retryDelay * (attempts + 1));
-      
+
       // Retry loading the asset
       try {
         await this.loadAsset(assetUrl, assetType);
@@ -89,7 +89,7 @@ class AssetLoadingManager {
     } else {
       this.failedAssets.add(assetUrl);
       console.error(`Asset loading failed permanently after ${this.config.retryAttempts} attempts:`, assetUrl);
-      
+
       if (this.config.fallbackEnabled) {
         this.handleAssetFallback(assetUrl, assetType);
       }
@@ -99,13 +99,13 @@ class AssetLoadingManager {
   /**
    * Handle module loading errors (for dynamic imports)
    */
-  private async handleModuleLoadError(error: any): Promise<void> {
+  private async handleModuleLoadError(error: Error): Promise<void> {
     // Extract module path from error if possible
     const modulePath = this.extractModulePathFromError(error);
-    
+
     if (modulePath) {
       console.warn('Attempting to recover from module loading error:', modulePath);
-      
+
       // Try to reload the page as a last resort
       if (this.shouldReloadPage()) {
         this.reloadPageWithDelay();
@@ -158,7 +158,7 @@ class AssetLoadingManager {
    */
   private handleAssetFallback(assetUrl: string, assetType: 'script' | 'stylesheet'): void {
     console.warn(`Implementing fallback for failed asset:`, assetUrl);
-    
+
     // For critical assets, try alternative CDN or local fallback
     if (assetUrl.includes('data-layer') || assetUrl.includes('react-core')) {
       this.implementCriticalAssetFallback(assetUrl);
@@ -204,7 +204,7 @@ class AssetLoadingManager {
   /**
    * Extract module path from error object
    */
-  private extractModulePathFromError(error: any): string | null {
+  private extractModulePathFromError(error: Error): string | null {
     if (error.stack) {
       const match = error.stack.match(/\/assets\/[^)]+\.js/);
       return match ? match[0] : null;
@@ -218,12 +218,12 @@ class AssetLoadingManager {
   private shouldReloadPage(): boolean {
     const reloadKey = 'asset-loading-reload-count';
     const reloadCount = parseInt(sessionStorage.getItem(reloadKey) || '0');
-    
+
     if (reloadCount < 2) {
       sessionStorage.setItem(reloadKey, (reloadCount + 1).toString());
       return true;
     }
-    
+
     return false;
   }
 

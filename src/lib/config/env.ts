@@ -80,7 +80,7 @@ let envInstance: {
 } | null = null;
 
 // Export validated environment variables with safe access and lazy initialization
-export const env = new Proxy({} as any, {
+export const env = new Proxy({} as Record<string, unknown>, {
   get(target, prop) {
     if (envInstance === null) {
       // Initialize environment on first access
