@@ -11,9 +11,9 @@ interface SEOHeadProps {
 }
 
 const SEOHead: React.FC<SEOHeadProps> = ({
-  title = 'EasyIo.tech - Simplifying Technology',
-  description = 'EasyIo.tech specializes in sustainable agriculture, school management, business solutions, student programs, and technical services. Making technology accessible, sustainable, and meaningful.',
-  keywords = 'technology solutions, sustainable agriculture, school management, business solutions, student programs, technical services, EasyIo.tech',
+  title = 'EasyIo.tech - Simplifying Technology | EasyIoTech Solutions',
+  description = 'EasyIo.tech (EasyIoTech) - Leading technology company specializing in IoT, automation, digital transformation, and innovative solutions. EasyIoTechnology makes complex tech accessible and sustainable.',
+  keywords = 'easyio, easyiotech, easylotech, easyiot, easyiotechnology, easyio technologies, easyiotechnologies, easyiotech, technology solutions, IoT, automation, digital transformation, sustainable tech, EasyIo.tech',
   image = '/og-image.jpg',
   url = 'https://easyio.tech',
   type = 'website',
@@ -27,14 +27,16 @@ const SEOHead: React.FC<SEOHeadProps> = ({
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "EasyIo.tech",
+    "alternateName": ["EasyIoTech", "EasyIoTechnology", "EasyIo Technologies"],
     "description": description,
     "url": "https://easyio.tech",
     "logo": "https://easyio.tech/logo.png",
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+1-XXX-XXX-XXXX",
+      "telephone": "+91-XXX-XXX-XXXX",
       "contactType": "customer service",
-      "availableLanguage": "English"
+      "availableLanguage": ["English", "Hindi"],
+      "areaServed": "Global"
     },
     "sameAs": [
       "https://linkedin.com/company/easyiotech",
@@ -42,8 +44,12 @@ const SEOHead: React.FC<SEOHeadProps> = ({
     ],
     "address": {
       "@type": "PostalAddress",
-      "addressCountry": "US"
-    }
+      "addressCountry": "IN",
+      "addressRegion": "India"
+    },
+    "keywords": "easyio, easyiotech, easylotech, easyiot, easyiotechnology, IoT, automation, digital transformation",
+    "foundingDate": "2023",
+    "industry": "Technology Services"
   };
 
   return (
@@ -56,10 +62,10 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       <meta name="robots" content="index, follow" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta name="theme-color" content="#6366f1" />
-      
+
       {/* Canonical URL */}
       <link rel="canonical" href={fullUrl} />
-      
+
       {/* Open Graph Meta Tags */}
       <meta property="og:type" content={type} />
       <meta property="og:title" content={fullTitle} />
@@ -68,7 +74,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       <meta property="og:url" content={fullUrl} />
       <meta property="og:site_name" content="EasyIo.tech" />
       <meta property="og:locale" content="en_US" />
-      
+
       {/* Twitter Card Meta Tags */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
@@ -76,23 +82,23 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       <meta name="twitter:image" content={fullImage} />
       <meta name="twitter:site" content="@easyiotech" />
       <meta name="twitter:creator" content="@easyiotech" />
-      
+
       {/* Additional Meta Tags */}
       <meta name="format-detection" content="telephone=no" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       <meta name="apple-mobile-web-app-title" content="EasyIo.tech" />
-      
+
       {/* Preconnect to external domains */}
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       <link rel="preconnect" href="https://images.unsplash.com" />
-      
+
       {/* Structured Data */}
       <script type="application/ld+json">
         {JSON.stringify(structuredData || defaultStructuredData)}
       </script>
-      
+
       {/* Favicon and Icons */}
       <link rel="icon" type="image/x-icon" href="/favicon.ico" />
       <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />

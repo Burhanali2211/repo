@@ -20,9 +20,9 @@ interface EnhancedSEOProps {
 }
 
 const EnhancedSEO: React.FC<EnhancedSEOProps> = ({
-  title = 'EasyIo.tech - Simplifying Technology',
-  description = 'EasyIo.tech specializes in sustainable agriculture, school management, business solutions, student programs, and technical services. Making technology accessible, sustainable, and meaningful.',
-  keywords = 'technology solutions, sustainable agriculture, school management, business solutions, student programs, technical services, EasyIo.tech, IoT, digital transformation',
+  title = 'EasyIo.tech - Simplifying Technology | EasyIoTech Solutions',
+  description = 'EasyIo.tech (EasyIoTech) - Leading technology company specializing in IoT, automation, digital transformation, and innovative solutions. EasyIoTechnology makes complex tech accessible and sustainable.',
+  keywords = 'easyio, easyiotech, easylotech, easyiot, easyiotechnology, easyio technologies, easyiotechnologies, easyiotech, technology solutions, IoT, automation, digital transformation, sustainable tech, EasyIo.tech',
   image = '/og-image.jpg',
   url = 'https://easyio.tech',
   type = 'website',
@@ -46,6 +46,7 @@ const EnhancedSEO: React.FC<EnhancedSEOProps> = ({
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "EasyIo.tech",
+    "alternateName": ["EasyIoTech", "EasyIoTechnology", "EasyIo Technologies"],
     "description": description,
     "url": "https://easyio.tech",
     "logo": {
@@ -71,16 +72,23 @@ const EnhancedSEO: React.FC<EnhancedSEOProps> = ({
       "https://twitter.com/easyiotech",
       "https://github.com/easyiotech"
     ],
+    "keywords": "easyio, easyiotech, easylotech, easyiot, easyiotechnology, IoT, automation, digital transformation",
     "foundingDate": "2023",
     "numberOfEmployees": "10-50",
     "industry": "Technology Services",
     "services": [
-      "Sustainable Agriculture Technology",
-      "School Management Systems", 
-      "Business Solutions",
-      "Student Programs",
-      "Technical Services"
-    ]
+      "IoT Solutions",
+      "Digital Transformation",
+      "Automation Services",
+      "Web Development",
+      "Mobile App Development",
+      "Cloud Services",
+      "SEO & Digital Marketing"
+    ],
+    "areaServed": {
+      "@type": "Place",
+      "name": "Global"
+    }
   };
 
   // Enhanced structured data for services
@@ -124,7 +132,7 @@ const EnhancedSEO: React.FC<EnhancedSEOProps> = ({
         "item": "https://easyio.tech"
       },
       {
-        "@type": "ListItem", 
+        "@type": "ListItem",
         "position": 2,
         "name": title.replace(' | EasyIo.tech', ''),
         "item": fullUrl
@@ -132,10 +140,10 @@ const EnhancedSEO: React.FC<EnhancedSEOProps> = ({
     ]
   } : null;
 
-  const finalStructuredData = structuredData || 
-    (type === 'service' ? serviceStructuredData : 
-     type === 'website' ? [defaultStructuredData, websiteStructuredData] :
-     defaultStructuredData);
+  const finalStructuredData = structuredData ||
+    (type === 'service' ? serviceStructuredData :
+      type === 'website' ? [defaultStructuredData, websiteStructuredData] :
+        defaultStructuredData);
 
   return (
     <Helmet>
@@ -144,11 +152,11 @@ const EnhancedSEO: React.FC<EnhancedSEOProps> = ({
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
       <link rel="canonical" href={canonical} />
-      
+
       {/* Robots Meta Tags */}
       <meta name="robots" content={`${noindex ? 'noindex' : 'index'},${nofollow ? 'nofollow' : 'follow'}`} />
       <meta name="googlebot" content={`${noindex ? 'noindex' : 'index'},${nofollow ? 'nofollow' : 'follow'}`} />
-      
+
       {/* Open Graph Meta Tags */}
       <meta property="og:type" content={type} />
       <meta property="og:title" content={fullTitle} />
@@ -160,7 +168,7 @@ const EnhancedSEO: React.FC<EnhancedSEOProps> = ({
       <meta property="og:url" content={fullUrl} />
       <meta property="og:site_name" content="EasyIo.tech" />
       <meta property="og:locale" content="en_US" />
-      
+
       {/* Article specific Open Graph tags */}
       {type === 'article' && author && <meta property="article:author" content={author} />}
       {type === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime} />}
@@ -169,7 +177,7 @@ const EnhancedSEO: React.FC<EnhancedSEOProps> = ({
       {type === 'article' && tags.map((tag, index) => (
         <meta key={index} property="article:tag" content={tag} />
       ))}
-      
+
       {/* Twitter Card Meta Tags */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
@@ -178,7 +186,7 @@ const EnhancedSEO: React.FC<EnhancedSEOProps> = ({
       <meta name="twitter:image:alt" content={title} />
       <meta name="twitter:site" content="@easyiotech" />
       <meta name="twitter:creator" content="@easyiotech" />
-      
+
       {/* Additional Meta Tags */}
       <meta name="format-detection" content="telephone=no" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -186,22 +194,22 @@ const EnhancedSEO: React.FC<EnhancedSEOProps> = ({
       <meta name="apple-mobile-web-app-title" content="EasyIo.tech" />
       <meta name="theme-color" content="#8B5CF6" />
       <meta name="msapplication-TileColor" content="#8B5CF6" />
-      
+
       {/* Preconnect to external domains for performance */}
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       <link rel="preconnect" href="https://images.unsplash.com" />
       <link rel="preconnect" href="https://api.easyio.tech" />
-      
+
       {/* DNS Prefetch for performance */}
       <link rel="dns-prefetch" href="https://www.google-analytics.com" />
       <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-      
+
       {/* Structured Data */}
       <script type="application/ld+json">
         {JSON.stringify(finalStructuredData)}
       </script>
-      
+
       {/* Breadcrumb Structured Data */}
       {breadcrumbStructuredData && (
         <script type="application/ld+json">

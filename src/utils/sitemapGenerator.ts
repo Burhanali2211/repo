@@ -24,19 +24,19 @@ export function generateSitemapXML(urls: SitemapUrl[]): string {
 
   const urlElements = urls.map(url => {
     let urlElement = `  <url>\n    <loc>${url.loc}</loc>`;
-    
+
     if (url.lastmod) {
       urlElement += `\n    <lastmod>${url.lastmod}</lastmod>`;
     }
-    
+
     if (url.changefreq) {
       urlElement += `\n    <changefreq>${url.changefreq}</changefreq>`;
     }
-    
+
     if (url.priority !== undefined) {
       urlElement += `\n    <priority>${url.priority}</priority>`;
     }
-    
+
     urlElement += '\n  </url>';
     return urlElement;
   }).join('\n');
@@ -45,7 +45,7 @@ export function generateSitemapXML(urls: SitemapUrl[]): string {
 }
 
 /**
- * Get static pages for sitemap
+ * Get static pages for sitemap with enhanced SEO focus
  */
 export function getStaticPages(): SitemapUrl[] {
   const baseUrl = 'https://easyio.tech';
@@ -134,25 +134,27 @@ export function getStaticPages(): SitemapUrl[] {
 }
 
 /**
- * Get service pages for sitemap
+ * Get service pages for sitemap with keyword optimization
  */
 export function getServicePages(): SitemapUrl[] {
   const baseUrl = 'https://easyio.tech';
   const currentDate = new Date().toISOString().split('T')[0];
 
   const services = [
-    'sustainable-agriculture',
-    'school-management',
-    'business-solutions',
-    'student-programs',
-    'technical-services',
+    'iot-solutions',
+    'automation-services',
+    'digital-transformation',
     'web-development',
     'app-development',
     'digital-marketing',
     'seo',
     'brand-design',
     'cloud-services',
-    'digital-transformation'
+    'sustainable-agriculture',
+    'school-management',
+    'business-solutions',
+    'student-programs',
+    'technical-services'
   ];
 
   return services.map(service => ({
@@ -169,7 +171,7 @@ export function getServicePages(): SitemapUrl[] {
 export async function generateCompleteSitemap(): Promise<string> {
   const staticPages = getStaticPages();
   const servicePages = getServicePages();
-  
+
   // Combine all URLs
   const allUrls = [
     ...staticPages,
@@ -192,7 +194,7 @@ export async function generateCompleteSitemap(): Promise<string> {
  */
 export function generateRobotsTxt(): string {
   const baseUrl = 'https://easyio.tech';
-  
+
   return `User-agent: *
 Allow: /
 
@@ -235,7 +237,7 @@ export function downloadSitemap(content: string, filename: string = 'sitemap.xml
  */
 export function validateSitemapUrls(urls: SitemapUrl[]): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
-  
+
   urls.forEach((url, index) => {
     // Check if URL is valid
     try {
@@ -243,18 +245,18 @@ export function validateSitemapUrls(urls: SitemapUrl[]): { valid: boolean; error
     } catch {
       errors.push(`Invalid URL at index ${index}: ${url.loc}`);
     }
-    
+
     // Check priority range
     if (url.priority !== undefined && (url.priority < 0 || url.priority > 1)) {
       errors.push(`Invalid priority at index ${index}: ${url.priority} (must be between 0 and 1)`);
     }
-    
+
     // Check lastmod format
     if (url.lastmod && !/^\d{4}-\d{2}-\d{2}$/.test(url.lastmod)) {
       errors.push(`Invalid lastmod format at index ${index}: ${url.lastmod} (must be YYYY-MM-DD)`);
     }
   });
-  
+
   return {
     valid: errors.length === 0,
     errors
@@ -269,7 +271,7 @@ export function submitSitemapToSearchEngines(sitemapUrl: string): void {
     `https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`,
     `https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`
   ];
-  
+
   searchEngines.forEach(url => {
     // Open in new tab for manual submission
     window.open(url, '_blank');

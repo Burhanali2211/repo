@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { SectionErrorBoundary } from '@/components/ErrorBoundary/ErrorBoundary';
+import ComprehensiveSEO from '@/components/SEO/ComprehensiveSEO';
 import { safeLazySection, safeLazyIcon } from '@/lib/utils/safe-lazy-loading';
 
 // Safe lazy load ALL heavy components for better initial performance
@@ -26,45 +27,12 @@ const SectionLoader = () => (
 const Home = () => {
   return (
     <>
-      <Helmet>
-        <title>EasyIo.tech - Simplifying Technology | Sustainable Agriculture, School Management & Business Solutions</title>
-        <meta name="description" content="EasyIo.tech specializes in sustainable agriculture, school management, business solutions, student programs, and technical services. Making technology accessible, sustainable, and meaningful for businesses worldwide." />
-        <meta name="keywords" content="technology solutions, sustainable agriculture, school management, business solutions, student programs, technical services, web development, digital marketing, cloud services, app development" />
-        <meta property="og:title" content="EasyIo.tech - Simplifying Technology" />
-        <meta property="og:description" content="Making technology accessible, sustainable, and meaningful with specialized solutions for diverse industries." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://easyio.tech" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="EasyIo.tech - Simplifying Technology" />
-        <meta name="twitter:description" content="Making technology accessible, sustainable, and meaningful with specialized solutions for diverse industries." />
-        <link rel="canonical" href="https://easyio.tech" />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": "EasyIo.tech",
-            "description": "Technology solutions company specializing in sustainable agriculture, school management, business solutions, student programs, and technical services.",
-            "url": "https://easyio.tech",
-            "logo": "https://easyio.tech/logo.png",
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "contactType": "customer service",
-              "availableLanguage": "English"
-            },
-            "sameAs": [
-              "https://linkedin.com/company/easyiotech",
-              "https://twitter.com/easyiotech"
-            ],
-            "address": {
-              "@type": "PostalAddress",
-              "addressCountry": "US"
-            },
-            "foundingDate": "2024",
-            "numberOfEmployees": "10-50",
-            "industry": "Technology Services"
-          })}
-        </script>
-      </Helmet>
+      <ComprehensiveSEO
+        title="EasyIo.tech - Simplifying Technology"
+        description="EasyIo.tech (EasyIoTech) - Leading technology company specializing in IoT, automation, digital transformation, and innovative solutions. EasyIoTechnology makes complex tech accessible and sustainable for businesses worldwide."
+        pageType="home"
+        keywords={['easyio', 'easyiotech', 'easylotech', 'easyiot', 'easyiotechnology', 'technology solutions', 'IoT solutions', 'automation services', 'digital transformation']}
+      />
 
       <main className="flex flex-col w-full">
         {/* Hero Section - Full screen with dynamic elements */}
