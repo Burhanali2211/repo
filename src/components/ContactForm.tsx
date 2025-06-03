@@ -69,12 +69,12 @@ const ContactForm = () => {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-900 p-8 rounded-xl shadow-md dark:shadow-gray-800/30">
-      <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Send us a Message</h3>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid md:grid-cols-2 gap-6">
+    <div className="bg-white dark:bg-gray-900 card-responsive rounded-xl shadow-md dark:shadow-gray-800/30">
+      <h3 className="text-responsive-xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">Send us a Message</h3>
+      <form onSubmit={handleSubmit} className="space-responsive-sm">
+        <div className="grid-responsive-1-2 gap-responsive-sm">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
+            <label className="block text-responsive-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
               Name *
             </label>
             <Input
@@ -82,13 +82,13 @@ const ContactForm = () => {
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className={`w-full ${errors.name ? 'border-red-500' : ''}`}
+              className={`w-full touch-target ${errors.name ? 'border-red-500' : ''}`}
               disabled={isSubmitting}
             />
-            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+            {errors.name && <p className="text-red-500 text-responsive-xs mt-1">{errors.name}</p>}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
+            <label className="block text-responsive-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
               Email *
             </label>
             <Input
@@ -96,49 +96,49 @@ const ContactForm = () => {
               required
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className={`w-full ${errors.email ? 'border-red-500' : ''}`}
+              className={`w-full touch-target ${errors.email ? 'border-red-500' : ''}`}
               disabled={isSubmitting}
             />
-            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+            {errors.email && <p className="text-red-500 text-responsive-xs mt-1">{errors.email}</p>}
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
+          <label className="block text-responsive-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
             Company
           </label>
           <Input
             type="text"
             value={formData.company}
             onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-            className="w-full"
+            className="w-full touch-target"
             disabled={isSubmitting}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
+          <label className="block text-responsive-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
             Message *
           </label>
           <Textarea
             required
-            rows={5}
+            rows={4}
             value={formData.message}
             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-            className={`w-full ${errors.message ? 'border-red-500' : ''}`}
+            className={`w-full touch-target min-h-[120px] sm:min-h-[140px] ${errors.message ? 'border-red-500' : ''}`}
             placeholder="Tell us about your project..."
             disabled={isSubmitting}
           />
-          {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
+          {errors.message && <p className="text-red-500 text-responsive-xs mt-1">{errors.message}</p>}
         </div>
 
         <Button
           type="submit"
-          className="w-full bg-purple-600 hover:bg-purple-700 text-white py-4"
+          className="w-full bg-purple-600 hover:bg-purple-700 text-white btn-responsive touch-target"
           disabled={isSubmitting}
         >
           {isSubmitting ? 'Sending...' : 'Send Message'}
-          <Send className="ml-2 h-5 w-5" />
+          <Send className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
         </Button>
       </form>
     </div>

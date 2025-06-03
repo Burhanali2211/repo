@@ -109,7 +109,7 @@ export const Footer = () => {
   return (
     <footer className="bg-gray-100 dark:bg-gray-950 pt-20 pb-8 text-gray-700 dark:text-gray-300">
       {/* Newsletter subscription section */}
-      <div className="container mx-auto px-4 md:px-6 mb-16">
+      <div className="container-safe mx-auto px-3 sm:px-4 md:px-6 mb-16 mobile-safe">
         <div className="bg-white dark:bg-gray-900/50 backdrop-blur-sm border border-gray-200 dark:border-gray-800 rounded-2xl p-8 md:p-12 shadow-md">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
@@ -134,7 +134,7 @@ export const Footer = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 md:px-6">
+      <div className="container-safe mx-auto px-3 sm:px-4 md:px-6 mobile-safe">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
           <div className="lg:col-span-4">
             <Logo size="lg" />

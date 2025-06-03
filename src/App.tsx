@@ -7,6 +7,11 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { safeLazyPage, safeLazySection } from "@/lib/utils/safe-lazy-loading";
+import { createLazyRoute } from "@/lib/lazy-routes";
+import { preloadCommonIcons } from "@/lib/icons";
+import { initializePerformanceMonitoring } from "@/lib/performance/monitor";
+import PerformanceDashboard from "@/components/PerformanceDashboard";
+import { runPerformanceTests } from "@/lib/performance/tests";
 
 // Import React Query directly to avoid lazy loading conflicts
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -25,51 +30,59 @@ import { SupabaseProvider, SupabaseInitializer } from "./lib/supabase/context";
 import MainLayout from "./layouts/MainLayout";
 import DashboardLayout from "./pages/Dashboard";
 
-// Pages - Safe lazy loaded for better performance and error handling
-const HomePage = safeLazyPage(() => import("./pages/Home"), "Home");
-const AboutPage = safeLazyPage(() => import("./pages/About"), "About");
-const ServicesPage = safeLazyPage(() => import("./pages/Services"), "Services");
-const PortfolioPage = safeLazyPage(() => import("./pages/Portfolio"), "Portfolio");
-const OurWorkPage = safeLazyPage(() => import("./pages/OurWork"), "Our Work");
-const ContactPage = safeLazyPage(() => import("./pages/Contact"), "Contact");
-const EnhancedContactPage = safeLazyPage(() => import("./pages/EnhancedContact"), "Enhanced Contact");
-const LoginPage = safeLazyPage(() => import("./pages/Login"), "Login");
-const RegisterPage = safeLazyPage(() => import("./pages/Register"), "Register");
-const AdminLoginPage = safeLazyPage(() => import("./pages/AdminLogin"), "Admin Login");
-const AdminSignupPage = safeLazyPage(() => import("./pages/AdminSignup"), "Admin Signup");
-const SettingsPage = safeLazyPage(() => import("./pages/Settings"), "Settings");
-const NotFoundPage = safeLazyPage(() => import("./pages/NotFound"), "Not Found");
-const BlogPage = safeLazyPage(() => import("./pages/Blog"), "Blog");
-const BlogPostPage = safeLazyPage(() => import("./pages/BlogPost"), "Blog Post");
-const CareersPage = safeLazyPage(() => import("./pages/Careers"), "Careers");
-const PrivacyPage = safeLazyPage(() => import("./pages/Privacy"), "Privacy Policy");
-const TermsPage = safeLazyPage(() => import("./pages/Terms"), "Terms of Service");
-const CookiesPage = safeLazyPage(() => import("./pages/Cookies"), "Cookie Policy");
-const SetupSettingsPage = safeLazyPage(() => import("./pages/SetupSettings"), "Setup Settings");
+// Core Pages - Optimized lazy loading with intelligent chunking
+const HomePage = createLazyRoute(() => import("./pages/Home"), "Home", { preload: true });
+const AboutPage = createLazyRoute(() => import("./pages/About"), "About", { preload: true });
+const ServicesPage = createLazyRoute(() => import("./pages/Services"), "Services", { preload: true });
+const ContactPage = createLazyRoute(() => import("./pages/Contact"), "Contact", { preload: true });
 
-// New pages for missing routes
-const IndustriesPage = safeLazyPage(() => import("./pages/Industries"), "Industries");
-const CaseStudiesPage = safeLazyPage(() => import("./pages/CaseStudies"), "Case Studies");
-const SitemapPage = safeLazyPage(() => import("./pages/Sitemap"), "Sitemap");
+// Secondary Pages - Standard loading
+const PortfolioPage = createLazyRoute(() => import("./pages/Portfolio"), "Portfolio");
+const OurWorkPage = createLazyRoute(() => import("./pages/OurWork"), "Our Work");
+const EnhancedContactPage = createLazyRoute(() => import("./pages/EnhancedContact"), "Enhanced Contact");
+const LoginPage = createLazyRoute(() => import("./pages/Login"), "Login");
+const RegisterPage = createLazyRoute(() => import("./pages/Register"), "Register");
+const BlogPage = createLazyRoute(() => import("./pages/Blog"), "Blog");
+const BlogPostPage = createLazyRoute(() => import("./pages/BlogPost"), "Blog Post");
+const CareersPage = createLazyRoute(() => import("./pages/Careers"), "Careers");
+const NotFoundPage = createLazyRoute(() => import("./pages/NotFound"), "Not Found");
 
-// Service Pages
-const WebDevelopmentPage = safeLazyPage(() => import("./pages/services/WebDevelopment"), "Web Development");
-const SEOPage = safeLazyPage(() => import("./pages/services/SEO"), "SEO Services");
-const DigitalMarketingPage = safeLazyPage(() => import("./pages/services/DigitalMarketing"), "Digital Marketing");
-const BrandDesignPage = safeLazyPage(() => import("./pages/services/BrandDesign"), "Brand Design");
-const CloudServicesPage = safeLazyPage(() => import("./pages/services/CloudServices"), "Cloud Services");
-const AppDevelopmentPage = safeLazyPage(() => import("./pages/services/AppDevelopment"), "App Development");
+// Legal Pages - Low priority
+const PrivacyPage = createLazyRoute(() => import("./pages/Privacy"), "Privacy Policy");
+const TermsPage = createLazyRoute(() => import("./pages/Terms"), "Terms of Service");
+const CookiesPage = createLazyRoute(() => import("./pages/Cookies"), "Cookie Policy");
 
-// New Service Pages
-const AgricultureTechPage = safeLazyPage(() => import("./pages/services/AgricultureTech"), "Agriculture Tech");
-const SchoolManagementPage = safeLazyPage(() => import("./pages/services/SchoolManagement"), "School Management");
-const BusinessSolutionsPage = safeLazyPage(() => import("./pages/services/BusinessSolutions"), "Business Solutions");
-const StudentProgramsPage = safeLazyPage(() => import("./pages/services/StudentPrograms"), "Student Programs");
-const TechnicalServicesPage = safeLazyPage(() => import("./pages/services/TechnicalServices"), "Technical Services");
-const DigitalTransformationPage = safeLazyPage(() => import("./pages/services/DigitalTransformation"), "Digital Transformation");
+// Admin Pages - Separate chunk
+const AdminLoginPage = createLazyRoute(() => import("./pages/AdminLogin"), "Admin Login");
+const AdminSignupPage = createLazyRoute(() => import("./pages/AdminSignup"), "Admin Signup");
+
+// Settings Pages - Dashboard chunk
+const SettingsPage = createLazyRoute(() => import("./pages/Settings"), "Settings");
+const SetupSettingsPage = createLazyRoute(() => import("./pages/SetupSettings"), "Setup Settings");
+
+// Additional Pages - Industry focused
+const IndustriesPage = createLazyRoute(() => import("./pages/Industries"), "Industries");
+const CaseStudiesPage = createLazyRoute(() => import("./pages/CaseStudies"), "Case Studies");
+const SitemapPage = createLazyRoute(() => import("./pages/Sitemap"), "Sitemap");
+
+// Service Pages - Grouped for better chunking
+const WebDevelopmentPage = createLazyRoute(() => import("./pages/services/WebDevelopment"), "Web Development");
+const SEOPage = createLazyRoute(() => import("./pages/services/SEO"), "SEO Services");
+const DigitalMarketingPage = createLazyRoute(() => import("./pages/services/DigitalMarketing"), "Digital Marketing");
+const BrandDesignPage = createLazyRoute(() => import("./pages/services/BrandDesign"), "Brand Design");
+const CloudServicesPage = createLazyRoute(() => import("./pages/services/CloudServices"), "Cloud Services");
+const AppDevelopmentPage = createLazyRoute(() => import("./pages/services/AppDevelopment"), "App Development");
+
+// Industry Service Pages - Separate chunk
+const AgricultureTechPage = createLazyRoute(() => import("./pages/services/AgricultureTech"), "Agriculture Tech");
+const SchoolManagementPage = createLazyRoute(() => import("./pages/services/SchoolManagement"), "School Management");
+const BusinessSolutionsPage = createLazyRoute(() => import("./pages/services/BusinessSolutions"), "Business Solutions");
+const StudentProgramsPage = createLazyRoute(() => import("./pages/services/StudentPrograms"), "Student Programs");
+const TechnicalServicesPage = createLazyRoute(() => import("./pages/services/TechnicalServices"), "Technical Services");
+const DigitalTransformationPage = createLazyRoute(() => import("./pages/services/DigitalTransformation"), "Digital Transformation");
 
 // Dynamic Service Detail Page
-const ServiceDetailPage = safeLazyPage(() => import("./pages/ServiceDetail"), "Service Details");
+const ServiceDetailPage = createLazyRoute(() => import("./pages/ServiceDetail"), "Service Details");
 
 // No longer needed - Dashboard now handles its own routing
 
@@ -98,8 +111,10 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-
   const [isLoaded, setIsLoaded] = useState(false);
+  const [showPerformanceDashboard, setShowPerformanceDashboard] = useState(
+    process.env.NODE_ENV === 'development'
+  );
 
   // Set loaded state after initial render to enable animations
   useEffect(() => {
@@ -111,10 +126,25 @@ const App = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Simple performance monitoring
+  // Preload common icons and initialize performance monitoring
   useEffect(() => {
+    // Preload commonly used icons immediately
+    preloadCommonIcons();
+
+    // Initialize performance monitoring
+    initializePerformanceMonitoring();
+
     const timer = setTimeout(() => {
-      // Optional performance monitoring
+      // Run performance tests in development
+      if (process.env.NODE_ENV === 'development') {
+        runPerformanceTests().then(results => {
+          console.log('🎯 Performance test results:', results);
+        }).catch(error => {
+          console.warn('Performance tests failed:', error);
+        });
+      }
+
+      // Optional legacy performance monitoring
       try {
         import("@/utils/performanceMonitor").then(({ measureWebVitals, sendPerformanceToAnalytics }) => {
           measureWebVitals(sendPerformanceToAnalytics);
@@ -243,6 +273,14 @@ const App = () => {
                                   </Suspense>
                                 </BrowserRouter>
                               </div>
+
+                              {/* Performance Dashboard - Development only */}
+                              {showPerformanceDashboard && (
+                                <PerformanceDashboard
+                                  isVisible={showPerformanceDashboard}
+                                  onToggle={() => setShowPerformanceDashboard(!showPerformanceDashboard)}
+                                />
+                              )}
                             </DataProvider>
                           </MaintenanceMode>
                         </SettingsProvider>

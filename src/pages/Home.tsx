@@ -88,7 +88,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
+          <div className="container-safe mx-auto px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl relative z-10 mobile-safe">
             {/* Enhanced Header Section with Psychological Elements */}
             <div className="text-center mb-10 sm:mb-12 md:mb-16">
               {/* Trust Badge with Social Proof */}
@@ -196,9 +196,9 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
+          <div className="container-safe mx-auto px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl relative z-10 mobile-safe">
             <div className="text-center mb-10 sm:mb-12 md:mb-16">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 text-mobile-safe">
                 Our Work
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-4">
@@ -231,9 +231,9 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
+          <div className="container-safe mx-auto px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl relative z-10 mobile-safe">
             <div className="text-center mb-10 sm:mb-12 md:mb-16">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 text-mobile-safe">
                 Industries We Serve
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-4">
@@ -271,7 +271,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
+          <div className="container-safe mx-auto px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl relative z-10 mobile-safe">
             <Suspense fallback={<SectionLoader />}>
               <FAQ />
             </Suspense>

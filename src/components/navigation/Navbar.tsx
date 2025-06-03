@@ -303,8 +303,8 @@ export const Navbar = () => {
           transition-all duration-500 ease-out
         `}>
           <div className={`
-            ${isScrolled ? 'max-w-6xl mx-auto' : 'container mx-auto'}
-            px-4 md:px-6 lg:px-8 py-3 md:py-4 flex items-center justify-between
+            ${isScrolled ? 'max-w-6xl mx-auto' : 'container-safe mx-auto'}
+            px-3 sm:px-4 md:px-6 lg:px-8 py-3 md:py-4 flex items-center justify-between mobile-safe
           `}>
             {/* Logo */}
             <Logo size="md" />
@@ -423,8 +423,8 @@ export const Navbar = () => {
                 transition-all duration-500 ease-out
               `}>
                 <div className={`
-                ${isScrolled ? 'max-w-6xl mx-auto' : 'container mx-auto'}
-                px-4 md:px-6 py-6 space-y-4
+                ${isScrolled ? 'max-w-6xl mx-auto' : 'container-safe mx-auto'}
+                px-3 sm:px-4 md:px-6 py-6 space-y-4 mobile-safe
               `}>
                   {navLinks.map((link: NavItem, index: number) => (
                     <motion.div
@@ -507,6 +507,17 @@ export const Navbar = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5, duration: 0.3 }}
                   >
+                    {/* Theme Toggle for Mobile */}
+                    <motion.div
+                      className="flex items-center justify-between py-3 px-4 rounded-xl bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20"
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <span className="text-base font-semibold text-gray-700 dark:text-gray-300">
+                        Theme
+                      </span>
+                      <ThemeToggle />
+                    </motion.div>
+
                     <motion.div whileTap={{ scale: 0.98 }}>
                       <Link
                         to="/contact"

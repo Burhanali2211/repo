@@ -37,7 +37,7 @@ const Hero = () => {
       </div>
 
       {/* Main hero content */}
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 lg:pt-32 pb-16 sm:pb-20 lg:pb-24">
+      <div className="relative z-10 container-safe mx-auto px-3 sm:px-4 md:px-6 lg:px-8 pt-20 sm:pt-24 lg:pt-32 pb-16 sm:pb-20 lg:pb-24 mobile-safe">
         <div className="max-w-7xl mx-auto">
 
 

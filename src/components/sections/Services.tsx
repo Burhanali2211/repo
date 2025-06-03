@@ -1,6 +1,10 @@
 
 import React, { useState, useMemo } from 'react';
-import { Search, Palette, TrendingUp, Code, Megaphone, Shield, ArrowRight, Globe, Cloud, Smartphone, Leaf, GraduationCap, Building2, Users, Wrench, Star, Zap, Award, CheckCircle } from 'lucide-react';
+import {
+  Search, Palette, TrendingUp, Code, Megaphone, Shield, ArrowRight, Globe,
+  Cloud, Smartphone, Leaf, GraduationCap, Building2, Users, Wrench,
+  Star, Zap, Award, CheckCircle
+} from '@/lib/icons';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -161,11 +165,11 @@ const Services = React.memo(() => {
               role="list"
               aria-label="Our services"
               animate={{
-                x: [0, -(380 + 24) * services.length] // Move by exact width: card width (380px) + gap (24px)
+                x: [0, -(320 + 24) * services.length] // Move by responsive width: average card width (320px) + gap (24px)
               }}
               transition={{
                 x: {
-                  duration: 45, // Slightly slower for better readability with larger cards
+                  duration: 40, // Adjusted for responsive card sizes
                   ease: "linear",
                   repeat: Infinity,
                   repeatType: "loop"
@@ -181,7 +185,7 @@ const Services = React.memo(() => {
                   <motion.div
                     key={`${service.id}-${index}`}
                     variants={itemVariants}
-                    className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-white/5 dark:to-white/10 backdrop-blur-sm hover:from-white hover:to-gray-50 dark:hover:from-white/15 dark:hover:to-white/25 rounded-2xl p-6 flex flex-col transition-all duration-500 group relative overflow-hidden shadow-lg hover:shadow-2xl dark:shadow-none w-[380px] h-[300px] flex-shrink-0 border border-gray-200/50 dark:border-white/10 hover:border-purple-500/50 dark:hover:border-purple-400/50"
+                    className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-white/5 dark:to-white/10 backdrop-blur-sm hover:from-white hover:to-gray-50 dark:hover:from-white/15 dark:hover:to-white/25 rounded-2xl p-4 sm:p-6 flex flex-col transition-all duration-500 group relative overflow-hidden shadow-lg hover:shadow-2xl dark:shadow-none w-[280px] sm:w-[320px] lg:w-[380px] h-[280px] sm:h-[300px] flex-shrink-0 border border-gray-200/50 dark:border-white/10 hover:border-purple-500/50 dark:hover:border-purple-400/50 mobile-safe"
                     whileHover={{ y: -12, scale: 1.03 }}
                     onHoverStart={() => handleServiceHover(index)}
                     onHoverEnd={handleServiceLeave}

@@ -89,35 +89,36 @@ const Contact = () => {
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s', animationDelay: '2s' }}></div>
         </div>
 
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-12">
+        <div className="container mx-auto container-responsive relative z-10">
+          <div className="text-center mb-8 sm:mb-12">
             {/* Trust Signals */}
-            <div className="flex flex-wrap justify-center gap-4 mb-8">
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-6 sm:mb-8">
               {trustSignals.map((signal, index) => (
-                <Badge key={index} className="bg-white/20 backdrop-blur-sm text-white border-white/30 px-4 py-2 text-sm font-medium">
-                  <signal.icon className={`h-4 w-4 mr-2 ${signal.color}`} />
-                  {signal.text}
+                <Badge key={index} className="bg-white/20 backdrop-blur-sm text-white border-white/30 px-2 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium">
+                  <signal.icon className={`h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 ${signal.color}`} />
+                  <span className="hidden sm:inline">{signal.text}</span>
+                  <span className="sm:hidden">{signal.text.split(' ')[0]}</span>
                 </Badge>
               ))}
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-yellow-200 to-white bg-clip-text text-transparent">
+            <h1 className="text-responsive-3xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-white via-yellow-200 to-white bg-clip-text text-transparent">
               Let's Build Something
               <span className="block text-yellow-300 animate-pulse">Extraordinary</span>
             </h1>
 
-            <p className="text-xl md:text-2xl text-gray-200 max-w-4xl mx-auto mb-8 leading-relaxed">
+            <p className="text-responsive-lg text-gray-200 max-w-4xl mx-auto mb-6 sm:mb-8 leading-relaxed px-4">
               Join <span className="font-bold text-yellow-300">{activeClients}+ successful clients</span> who've transformed their digital presence.
               We respond in <span className="font-bold text-green-300">{responseTime}</span> and deliver results that exceed expectations.
             </p>
 
             {/* Urgency Indicators */}
-            <div className="flex flex-wrap justify-center gap-4 mb-8">
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-6 sm:mb-8">
               {urgencyIndicators.map((indicator, index) => (
-                <div key={index} className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/20">
-                  <div className="flex items-center space-x-2">
-                    <indicator.icon className="h-5 w-5 text-yellow-300" />
-                    <span className="text-white font-medium">{indicator.text}</span>
+                <div key={index} className="bg-white/10 backdrop-blur-sm rounded-lg px-2 sm:px-4 py-2 sm:py-3 border border-white/20 max-w-xs sm:max-w-none">
+                  <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2">
+                    <indicator.icon className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-300 flex-shrink-0" />
+                    <span className="text-white font-medium text-xs sm:text-sm text-center sm:text-left">{indicator.text}</span>
                     <Badge className="bg-yellow-400 text-black text-xs font-bold">
                       {indicator.badge}
                     </Badge>
@@ -128,35 +129,37 @@ const Contact = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-black font-bold px-8 py-4 text-lg rounded-full shadow-2xl transform hover:scale-105 transition-all duration-300">
-                <Zap className="mr-2 h-5 w-5" />
-                Start Your Project Now
+              <Button className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-black font-bold px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg rounded-full shadow-2xl transform hover:scale-105 transition-all duration-300">
+                <Zap className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="hidden sm:inline">Start Your Project Now</span>
+                <span className="sm:hidden">Start Project</span>
               </Button>
-              <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm px-8 py-4 text-lg rounded-full">
-                <MessageSquare className="mr-2 h-5 w-5" />
-                Free Consultation
+              <Button variant="outline-light" className="backdrop-blur-sm px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg rounded-full border-2 border-white/70 text-white hover:bg-white hover:text-black">
+                <MessageSquare className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="hidden sm:inline">Free Consultation</span>
+                <span className="sm:hidden">Get Quote</span>
               </Button>
             </div>
           </div>
 
           {/* Live Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="grid-responsive-1-2-3 gap-responsive-sm max-w-4xl mx-auto">
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-center">
-              <CardContent className="p-6">
-                <div className="text-3xl font-bold text-yellow-300 mb-2">{projectsCompleted}+</div>
-                <div className="text-white/80">Projects Completed</div>
+              <CardContent className="card-responsive">
+                <div className="text-responsive-2xl font-bold text-yellow-300 mb-2">{projectsCompleted}+</div>
+                <div className="text-white/80 text-responsive-sm">Projects Completed</div>
               </CardContent>
             </Card>
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-center">
-              <CardContent className="p-6">
-                <div className="text-3xl font-bold text-green-300 mb-2">{responseTime}</div>
-                <div className="text-white/80">Average Response Time</div>
+              <CardContent className="card-responsive">
+                <div className="text-responsive-2xl font-bold text-green-300 mb-2">{responseTime}</div>
+                <div className="text-white/80 text-responsive-sm">Average Response Time</div>
               </CardContent>
             </Card>
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-center">
-              <CardContent className="p-6">
-                <div className="text-3xl font-bold text-blue-300 mb-2">100%</div>
-                <div className="text-white/80">Client Satisfaction</div>
+              <CardContent className="card-responsive">
+                <div className="text-responsive-2xl font-bold text-blue-300 mb-2">100%</div>
+                <div className="text-white/80 text-responsive-sm">Client Satisfaction</div>
               </CardContent>
             </Card>
           </div>
@@ -167,22 +170,22 @@ const Contact = () => {
       </section>
 
       {/* Enhanced Contact Info & Form Section */}
-      <section className="py-20 bg-gradient-to-b from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-black">
-        <div className="container mx-auto px-6">
+      <section className="section-responsive bg-gradient-to-b from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-black">
+        <div className="container mx-auto container-responsive">
           {/* Section Header with Social Proof */}
-          <div className="text-center mb-16">
-            <div className="flex justify-center items-center space-x-2 mb-4">
-              <Star className="h-5 w-5 text-yellow-500 fill-current" />
-              <Star className="h-5 w-5 text-yellow-500 fill-current" />
-              <Star className="h-5 w-5 text-yellow-500 fill-current" />
-              <Star className="h-5 w-5 text-yellow-500 fill-current" />
-              <Star className="h-5 w-5 text-yellow-500 fill-current" />
-              <span className="text-gray-600 dark:text-gray-400 ml-2">4.9/5 from 50+ reviews</span>
+          <div className="text-center mb-12 sm:mb-16">
+            <div className="flex justify-center items-center space-x-1 sm:space-x-2 mb-4">
+              <Star className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500 fill-current" />
+              <Star className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500 fill-current" />
+              <Star className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500 fill-current" />
+              <Star className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500 fill-current" />
+              <Star className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-500 fill-current" />
+              <span className="text-gray-600 dark:text-gray-400 ml-2 text-responsive-sm">4.9/5 from 50+ reviews</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-responsive-2xl font-bold text-gray-900 dark:text-white mb-4">
               Ready to <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">Transform</span> Your Business?
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            <p className="text-responsive-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
               Join the ranks of successful businesses that chose EasyIo.tech. Get your free consultation and project estimate today.
             </p>
           </div>
@@ -355,98 +358,100 @@ const Contact = () => {
           </div>
         </div>
 
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+        <div className="container mx-auto container-responsive relative z-10">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-responsive-2xl font-bold mb-4 sm:mb-6">
               Don't Wait - Your Competition Won't
             </h2>
-            <p className="text-xl text-gray-200 max-w-3xl mx-auto mb-8">
+            <p className="text-responsive-lg text-gray-200 max-w-3xl mx-auto mb-6 sm:mb-8">
               Every day you delay is a day your competitors get ahead. Join the digital revolution today and watch your business soar.
             </p>
 
             {/* Urgency Timer */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 max-w-md mx-auto mb-8 border border-white/20">
-              <h3 className="text-lg font-semibold mb-4">Limited Time Offer</h3>
-              <div className="grid grid-cols-3 gap-4 text-center">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-6 max-w-sm sm:max-w-md mx-auto mb-6 sm:mb-8 border border-white/20">
+              <h3 className="text-responsive-base font-semibold mb-3 sm:mb-4">Limited Time Offer</h3>
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-yellow-300">03</div>
-                  <div className="text-sm text-gray-300">Days</div>
+                  <div className="text-responsive-xl font-bold text-yellow-300">03</div>
+                  <div className="text-responsive-xs text-gray-300">Days</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-yellow-300">14</div>
-                  <div className="text-sm text-gray-300">Hours</div>
+                  <div className="text-responsive-xl font-bold text-yellow-300">14</div>
+                  <div className="text-responsive-xs text-gray-300">Hours</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-yellow-300">27</div>
-                  <div className="text-sm text-gray-300">Minutes</div>
+                  <div className="text-responsive-xl font-bold text-yellow-300">27</div>
+                  <div className="text-responsive-xs text-gray-300">Minutes</div>
                 </div>
               </div>
-              <p className="text-sm text-gray-300 mt-4">Get 20% off your first project</p>
+              <p className="text-responsive-xs text-gray-300 mt-3 sm:mt-4">Get 20% off your first project</p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Button className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-black font-bold px-8 py-4 text-lg rounded-full shadow-2xl transform hover:scale-105 transition-all duration-300">
-                <Zap className="mr-2 h-5 w-5" />
-                Claim Your Discount Now
+              <Button className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-black font-bold px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg rounded-full shadow-2xl transform hover:scale-105 transition-all duration-300">
+                <Zap className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="hidden sm:inline">Claim Your Discount Now</span>
+                <span className="sm:hidden">Claim Discount</span>
               </Button>
-              <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm px-8 py-4 text-lg rounded-full">
-                <Phone className="mr-2 h-5 w-5" />
-                Call Now: +1 (555) 123-4567
+              <Button variant="outline-light" className="backdrop-blur-sm px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg rounded-full border-2 border-white/70 text-white hover:bg-white hover:text-black">
+                <Phone className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="hidden sm:inline">Call Now: +1 (555) 123-4567</span>
+                <span className="sm:hidden">Call Now</span>
               </Button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <div className="grid-responsive-1-2-3 gap-responsive-md mb-12 sm:mb-16">
             {/* Enhanced Service Cards */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-center hover:bg-white/20 transition-all duration-300 group">
-              <CardContent className="p-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <MessageSquare className="h-8 w-8 text-white" />
+              <CardContent className="card-responsive">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Instant Support</h3>
-                <p className="text-gray-300 mb-4">Get immediate help from our expert team</p>
-                <Badge className="bg-green-500 text-white">Available 24/7</Badge>
+                <h3 className="text-responsive-lg font-semibold mb-2">Instant Support</h3>
+                <p className="text-gray-300 mb-3 sm:mb-4 text-responsive-sm">Get immediate help from our expert team</p>
+                <Badge className="bg-green-500 text-white text-xs sm:text-sm">Available 24/7</Badge>
               </CardContent>
             </Card>
 
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-center hover:bg-white/20 transition-all duration-300 group">
-              <CardContent className="p-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <Timer className="h-8 w-8 text-white" />
+              <CardContent className="card-responsive">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <Timer className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Lightning Fast</h3>
-                <p className="text-gray-300 mb-4">Projects delivered in record time</p>
-                <Badge className="bg-yellow-500 text-black">2x Faster</Badge>
+                <h3 className="text-responsive-lg font-semibold mb-2">Lightning Fast</h3>
+                <p className="text-gray-300 mb-3 sm:mb-4 text-responsive-sm">Projects delivered in record time</p>
+                <Badge className="bg-yellow-500 text-black text-xs sm:text-sm">2x Faster</Badge>
               </CardContent>
             </Card>
 
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-center hover:bg-white/20 transition-all duration-300 group">
-              <CardContent className="p-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <Award className="h-8 w-8 text-white" />
+              <CardContent className="card-responsive">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <Award className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Guaranteed Results</h3>
-                <p className="text-gray-300 mb-4">100% satisfaction or money back</p>
-                <Badge className="bg-purple-500 text-white">Risk-Free</Badge>
+                <h3 className="text-responsive-lg font-semibold mb-2">Guaranteed Results</h3>
+                <p className="text-gray-300 mb-3 sm:mb-4 text-responsive-sm">100% satisfaction or money back</p>
+                <Badge className="bg-purple-500 text-white text-xs sm:text-sm">Risk-Free</Badge>
               </CardContent>
             </Card>
           </div>
 
           {/* Social Links */}
           <div className="text-center">
-            <h3 className="text-xl font-semibold mb-6">Follow Our Journey</h3>
-            <div className="flex justify-center space-x-6">
-              <a href="#" className="group flex items-center justify-center w-12 h-12 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300">
-                <Facebook className="h-6 w-6 text-white group-hover:scale-110 transition-transform duration-300" />
+            <h3 className="text-responsive-lg font-semibold mb-4 sm:mb-6">Follow Our Journey</h3>
+            <div className="flex justify-center space-x-4 sm:space-x-6">
+              <a href="#" className="group flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 touch-target">
+                <Facebook className="h-5 w-5 sm:h-6 sm:w-6 text-white group-hover:scale-110 transition-transform duration-300" />
               </a>
-              <a href="#" className="group flex items-center justify-center w-12 h-12 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300">
-                <Twitter className="h-6 w-6 text-white group-hover:scale-110 transition-transform duration-300" />
+              <a href="#" className="group flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 touch-target">
+                <Twitter className="h-5 w-5 sm:h-6 sm:w-6 text-white group-hover:scale-110 transition-transform duration-300" />
               </a>
-              <a href="#" className="group flex items-center justify-center w-12 h-12 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300">
-                <Instagram className="h-6 w-6 text-white group-hover:scale-110 transition-transform duration-300" />
+              <a href="#" className="group flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 touch-target">
+                <Instagram className="h-5 w-5 sm:h-6 sm:w-6 text-white group-hover:scale-110 transition-transform duration-300" />
               </a>
-              <a href="#" className="group flex items-center justify-center w-12 h-12 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300">
-                <Linkedin className="h-6 w-6 text-white group-hover:scale-110 transition-transform duration-300" />
+              <a href="#" className="group flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-white/10 rounded-full hover:bg-white/20 transition-all duration-300 touch-target">
+                <Linkedin className="h-5 w-5 sm:h-6 sm:w-6 text-white group-hover:scale-110 transition-transform duration-300" />
               </a>
             </div>
           </div>
