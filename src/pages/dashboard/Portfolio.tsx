@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/components/ui/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { useImageUpload } from '@/hooks/useImageUpload';
 
 // No fallback data - load from database only
 
@@ -66,12 +67,33 @@ const PortfolioManagement = () => {
     link: '',
   });
 
-  // File upload state
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
+  // Image upload hook
+  const {
+    uploadImage,
+    isUploading,
+    uploadProgress,
+    fileInputRef,
+    triggerFileSelect,
+    validateFile
+  } = useImageUpload({
+    folder: 'projects',
+    onSuccess: (url) => {
+      setFormData(prev => ({ ...prev, image: url }));
+      toast({
+        title: "Image uploaded",
+        description: "Your project image has been uploaded successfully.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Upload failed",
+        description: error,
+        variant: "destructive"
+      });
+    }
+  });
+
   const [imagePreview, setImagePreview] = useState<string>('');
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load projects from Supabase on component mount
   useEffect(() => {
@@ -148,74 +170,37 @@ const PortfolioManagement = () => {
       results: '',
       link: '',
     });
-    setSelectedFile(null);
     setImagePreview('');
-    setUploadProgress(0);
   };
 
   // Handle file selection
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setSelectedFile(file);
+
+      // Validate file first
+      const validation = validateFile(file);
+      if (!validation.valid) {
+        toast({
+          title: "Invalid file",
+          description: validation.error,
+          variant: "destructive"
+        });
+        return;
+      }
 
       // Create a preview URL
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
 
-      // We don't set formData.image here because we'll upload the file later
+      // Upload the file immediately
+      await uploadImage(file);
     }
   };
 
   // Trigger file input click
   const handleUploadClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
-  // Upload file to Supabase Storage
-  const handleFileUpload = async (): Promise<string> => {
-    if (!selectedFile) {
-      // If no file selected but we have an image URL, return it
-      if (formData.image) {
-        return formData.image;
-      }
-      return '';
-    }
-
-    try {
-      setIsUploading(true);
-
-      // Simulate progress for better UX (actual upload doesn't provide progress)
-      let progress = 0;
-      const progressInterval = setInterval(() => {
-        progress += 5;
-        if (progress >= 90) {
-          clearInterval(progressInterval);
-        }
-        setUploadProgress(progress);
-      }, 100);
-
-      // Upload file to Supabase Storage
-      const imageUrl = await uploadFile('images', `projects/${selectedFile.name}`, selectedFile);
-
-      // Complete progress
-      clearInterval(progressInterval);
-      setUploadProgress(100);
-
-      return imageUrl.publicUrl;
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      toast({
-        title: "Upload failed",
-        description: "There was a problem uploading your image. Please try again.",
-        variant: "destructive"
-      });
-      return '';
-    } finally {
-      setIsUploading(false);
-    }
+    triggerFileSelect();
   };
 
   // Open add dialog
@@ -269,15 +254,12 @@ const PortfolioManagement = () => {
     try {
       setIsLoading(true);
 
-      // First upload the image if there is one
-      const imageUrl = await handleFileUpload();
-
       const technologies = parseTechnologies(formData.technologiesInput);
 
       const newProjectData = {
         title: formData.title,
         category: formData.category,
-        image: imageUrl || formData.image, // Use uploaded image URL or existing URL
+        image: formData.image, // Image URL is already set by the upload hook
         description: formData.description,
         technologies,
         year: formData.year,
@@ -363,15 +345,12 @@ const PortfolioManagement = () => {
     try {
       setIsLoading(true);
 
-      // First upload the image if there is one
-      const imageUrl = await handleFileUpload();
-
       const technologies = parseTechnologies(formData.technologiesInput);
 
       const updatedProjectData = {
         title: formData.title,
         category: formData.category,
-        image: imageUrl || formData.image, // Use uploaded image URL or existing URL
+        image: formData.image, // Image URL is already set by the upload hook
         description: formData.description,
         technologies,
         year: formData.year,
@@ -686,33 +665,55 @@ const PortfolioManagement = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div className="space-y-2">
-                <Label htmlFor="image">Image</Label>
-                <div className="flex items-center space-x-2">
-                  <Input
-                    id="image"
-                    name="image"
-                    value={formData.image}
-                    onChange={handleInputChange}
-                    placeholder="Enter image URL or upload a file"
-                    className="flex-1"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleUploadClick}
-                    className="whitespace-nowrap"
-                    disabled={isUploading}
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Upload
-                  </Button>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    accept="image/*"
-                    className="hidden"
-                  />
+                <Label htmlFor="image">Project Image</Label>
+                <div className="space-y-2">
+                  {/* Upload Button - Primary Option */}
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      type="button"
+                      onClick={handleUploadClick}
+                      className="flex-1"
+                      disabled={isUploading}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      {isUploading ? 'Uploading...' : 'Upload Image'}
+                    </Button>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      accept="image/*"
+                      className="hidden"
+                    />
+                  </div>
+
+                  {/* URL Input - Secondary Option */}
+                  <div className="relative">
+                    <Input
+                      id="image"
+                      name="image"
+                      value={formData.image}
+                      onChange={handleInputChange}
+                      placeholder="Or enter image URL"
+                      className="text-sm"
+                    />
+                  </div>
+
+                  {/* Image Preview */}
+                  {formData.image && (
+                    <div className="mt-2">
+                      <div className="w-full h-32 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
+                        <img
+                          src={formData.image}
+                          alt="Preview"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Image upload progress */}

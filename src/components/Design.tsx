@@ -9,11 +9,13 @@ const Design = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="relative">
             <div className="bg-gradient-to-br from-orange-400 to-yellow-400 rounded-3xl p-8 transform rotate-3">
-              <img 
-                src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=500&h=300&fit=crop" 
-                alt="Design process"
-                className="rounded-2xl w-full h-64 object-cover transform -rotate-3"
-              />
+              <div className="rounded-2xl w-full h-64 bg-gradient-to-br from-purple-600 to-blue-600 transform -rotate-3 flex items-center justify-center">
+                <div className="text-white text-center">
+                  <div className="text-4xl mb-2">🎨</div>
+                  <div className="text-lg font-semibold">Design Process</div>
+                  <div className="text-sm opacity-80">Creative Solutions</div>
+                </div>
+              </div>
             </div>
             <div className="absolute -bottom-4 -right-4 bg-white rounded-2xl p-6 shadow-xl">
               <div className="flex items-center space-x-4">
@@ -35,7 +37,7 @@ const Design = () => {
             <p className="text-lg text-gray-600 mb-8">
               We believe powerful design and unique storytelling create emotional connections that drive business success. Every pixel has a purpose.
             </p>
-            
+
             <div className="space-y-6">
               <div className="flex items-start space-x-4">
                 <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
@@ -46,7 +48,7 @@ const Design = () => {
                   <p className="text-gray-600">Designs that capture attention and communicate your brand's essence at first glance.</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start space-x-4">
                 <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
                   <Heart className="h-6 w-6 text-red-600" />
@@ -56,7 +58,7 @@ const Design = () => {
                   <p className="text-gray-600">Storytelling that resonates with your audience and builds lasting relationships.</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start space-x-4">
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
                   <Sparkles className="h-6 w-6 text-green-600" />

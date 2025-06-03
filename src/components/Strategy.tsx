@@ -15,7 +15,7 @@ const Strategy = () => {
             <p className="text-lg text-gray-300 mb-8">
               Our strategic approach combines deep market analysis with innovative thinking to create experiences that drive business growth and customer engagement.
             </p>
-            
+
             <div className="grid grid-cols-2 gap-6">
               <div className="text-center">
                 <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -47,15 +47,17 @@ const Strategy = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="relative">
             <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-3xl p-8">
-              <img 
-                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=300&fit=crop" 
-                alt="Strategy dashboard"
-                className="rounded-2xl w-full h-64 object-cover"
-              />
-              <div className="mt-6 space-y-4">
+              <div className="rounded-2xl w-full h-64 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center mb-6">
+                <div className="text-white text-center">
+                  <div className="text-4xl mb-2">📊</div>
+                  <div className="text-lg font-semibold">Analytics Dashboard</div>
+                  <div className="text-sm opacity-80">Data-Driven Insights</div>
+                </div>
+              </div>
+              <div className="space-y-4">
                 <div className="flex items-center justify-between text-white">
                   <span>Conversion Rate</span>
                   <span className="font-bold">+24%</span>

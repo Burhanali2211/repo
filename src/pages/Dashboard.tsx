@@ -13,7 +13,8 @@ import {
   AlertCircle,
   Shield,
   FormInput,
-  Award
+  Award,
+  Image
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,6 +34,7 @@ import SettingsManager from '@/components/dashboard/SettingsManager';
 import MessagesManager from '@/components/dashboard/MessagesManager';
 import ContactFormFieldsManager from '@/components/dashboard/ContactFormFieldsManager';
 import SuccessStoriesManager from '@/components/dashboard/SuccessStoriesManager';
+import ImageManager from '@/components/dashboard/ImageManager';
 
 /**
  * Dashboard Component
@@ -104,6 +106,7 @@ const Dashboard = () => {
     { id: 'success-stories', label: 'Success Stories', icon: Award },
     { id: 'services', label: 'Services', icon: FileText },
     { id: 'projects', label: 'Portfolio', icon: FolderOpen },
+    { id: 'images', label: 'Image Manager', icon: Image },
     { id: 'testimonials', label: 'Testimonials', icon: Heart },
     { id: 'about', label: 'About Content', icon: AlertCircle },
     { id: 'settings', label: 'Website Settings', icon: Settings }
@@ -299,6 +302,7 @@ const Dashboard = () => {
           {activeTab === 'success-stories' && <SuccessStoriesManager />}
           {activeTab === 'projects' && <ProjectsManager />}
           {activeTab === 'services' && <ServicesManager />}
+          {activeTab === 'images' && <ImageManager />}
           {activeTab === 'testimonials' && <TestimonialsManager />}
           {activeTab === 'about' && <AboutContentManager />}
 

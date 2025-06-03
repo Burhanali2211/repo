@@ -9,12 +9,13 @@
 
 // Define allowed image sources with proper CORS support
 const TRUSTED_IMAGE_DOMAINS = [
-  'images.unsplash.com',
-  'unsplash.com',
   'cloudinary.com',
   'res.cloudinary.com',
   'cdn.pixabay.com',
-  'pixabay.com'
+  'pixabay.com',
+  // Supabase storage domains
+  'supabase.co',
+  'supabase.com'
 ];
 
 /**
@@ -39,38 +40,24 @@ export const getProxiedImageUrl = (url: string): string => {
 
   try {
     const parsedUrl = new URL(url);
-    
-    // For Unsplash images, add proper parameters to fix OpaqueResponseBlocking
-    if (parsedUrl.hostname.includes('unsplash.com')) {
-      // Add CORS-friendly parameters
-      const params = new URLSearchParams(parsedUrl.search);
-      
-      // Ensure these parameters are set
-      if (!params.has('w')) params.set('w', '1000');
-      if (!params.has('auto')) params.set('auto', 'format');
-      if (!params.has('fit')) params.set('fit', 'crop');
-      
-      // Add cross-origin parameters
-      params.set('crop', 'entropy');
-      params.set('cs', 'tinysrgb');
-      params.set('fm', 'jpg');
-      
-      // Rebuild the URL with the updated parameters
-      parsedUrl.search = params.toString();
-      return parsedUrl.toString();
-    }
-    
+
     // For Cloudinary, ensure proper delivery
     if (parsedUrl.hostname.includes('cloudinary.com')) {
       // Add auto-format and quality params for Cloudinary
       const params = new URLSearchParams(parsedUrl.search);
       if (!params.has('f_auto')) params.set('f_auto', 'true');
       if (!params.has('q_auto')) params.set('q_auto', 'good');
-      
+
       parsedUrl.search = params.toString();
       return parsedUrl.toString();
     }
-    
+
+    // For Supabase storage, ensure proper caching
+    if (parsedUrl.hostname.includes('supabase.co') || parsedUrl.hostname.includes('supabase.com')) {
+      // Supabase storage URLs are already optimized, just return as-is
+      return url;
+    }
+
     // Return original URL for other sources
     return url;
   } catch (e) {
@@ -96,12 +83,12 @@ export type ImageProxyProps = {
  */
 export const useProxiedImage = (originalUrl: string): string => {
   if (!originalUrl) return '';
-  
+
   // Only proxy if it's a trusted external source
   if (isTrustedImageSource(originalUrl)) {
     return getProxiedImageUrl(originalUrl);
   }
-  
+
   return originalUrl;
 };
 

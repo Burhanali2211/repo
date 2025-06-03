@@ -5,7 +5,7 @@ const team = [
   {
     name: 'Sarah Johnson',
     role: 'CEO & Founder',
-    image: 'https://unsplash.com/photos/beautiful-smiling-asian-businesswoman-standing-with-arms-crossed-in-office-looking-out-of-the-window-jlznomVUeZk',
+    image: 'https://ui-avatars.com/api/?name=Sarah+Johnson&background=8B5CF6&color=fff&size=300',
     bio: '10+ years in digital strategy with expertise in scaling tech companies.',
     social: {
       linkedin: '#',
@@ -15,7 +15,7 @@ const team = [
   {
     name: 'Alex Chen',
     role: 'Lead Developer',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face',
+    image: 'https://ui-avatars.com/api/?name=Alex+Chen&background=3B82F6&color=fff&size=300',
     bio: 'Full-stack developer passionate about creating scalable web applications.',
     social: {
       linkedin: '#',
@@ -25,7 +25,7 @@ const team = [
   {
     name: 'Maya Patel',
     role: 'Design Director',
-    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face',
+    image: 'https://ui-avatars.com/api/?name=Maya+Patel&background=F59E0B&color=fff&size=300',
     bio: 'Award-winning designer with a focus on user experience and brand identity.',
     social: {
       linkedin: '#',
@@ -35,7 +35,7 @@ const team = [
   {
     name: 'David Rodriguez',
     role: 'Marketing Strategist',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face',
+    image: 'https://ui-avatars.com/api/?name=David+Rodriguez&background=10B981&color=fff&size=300',
     bio: 'Digital marketing expert helping brands achieve measurable growth.',
     social: {
       linkedin: '#',
