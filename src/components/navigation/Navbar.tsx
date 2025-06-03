@@ -5,6 +5,7 @@ import { MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ui/theme-toggle';
 import Logo from '@/components/ui/logo';
+import { createPortal } from 'react-dom';
 
 // Type definitions for better type safety
 interface NavItem {
@@ -18,29 +19,128 @@ interface NavItem {
   }>;
 }
 
+// Dropdown Portal Component
+const DropdownPortal = ({
+  children,
+  isOpen,
+  triggerRef
+}: {
+  children: React.ReactNode;
+  isOpen: boolean;
+  triggerRef: React.RefObject<HTMLButtonElement>;
+}) => {
+  const [position, setPosition] = React.useState({ top: 0, left: 0 });
+
+  const updatePosition = React.useCallback(() => {
+    if (isOpen && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      const dropdownWidth = 288; // w-72 = 18rem = 288px
+      const viewportWidth = window.innerWidth;
+
+      // Calculate left position, ensuring dropdown doesn't go off-screen
+      let left = rect.left;
+      if (left + dropdownWidth > viewportWidth - 16) { // 16px margin
+        left = viewportWidth - dropdownWidth - 16;
+      }
+      if (left < 16) { // 16px margin
+        left = 16;
+      }
+
+      setPosition({
+        top: rect.bottom + 8, // 8px gap
+        left: left
+      });
+    }
+  }, [isOpen, triggerRef]);
+
+  React.useEffect(() => {
+    updatePosition();
+  }, [updatePosition]);
+
+  React.useEffect(() => {
+    if (isOpen) {
+      const handleResize = () => updatePosition();
+      const handleScroll = () => updatePosition();
+
+      window.addEventListener('resize', handleResize);
+      window.addEventListener('scroll', handleScroll, { passive: true });
+
+      return () => {
+        window.removeEventListener('resize', handleResize);
+        window.removeEventListener('scroll', handleScroll);
+      };
+    }
+  }, [isOpen, updatePosition]);
+
+  if (!isOpen) return null;
+
+  return createPortal(
+    <div
+      style={{
+        position: 'fixed',
+        top: position.top,
+        left: position.left,
+        zIndex: 9999,
+      }}
+    >
+      {children}
+    </div>,
+    document.body
+  );
+};
+
 // Memoized Navigation Item Component for better performance
 const NavigationItem = React.memo(({
   link,
   isActive,
   activeDropdown,
-  toggleDropdown
+  toggleDropdown,
+  setActiveDropdown
 }: {
   link: NavItem;
   isActive: (path: string) => boolean;
   activeDropdown: string | null;
   toggleDropdown: (e: React.MouseEvent, id: string) => void;
+  setActiveDropdown: (value: string | null) => void;
 }) => {
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
+
   if (link.dropdown) {
     return (
-      <div className="flex items-center">
+      <div
+        className="relative flex items-center"
+        data-dropdown={link.id}
+        onMouseEnter={() => {
+          // Only enable hover on desktop
+          if (window.innerWidth >= 1024) {
+            setActiveDropdown(link.id!);
+          }
+        }}
+        onMouseLeave={() => {
+          // Only enable hover on desktop
+          if (window.innerWidth >= 1024) {
+            setActiveDropdown(null);
+          }
+        }}
+      >
         <motion.button
+          ref={triggerRef}
           onClick={(e: React.MouseEvent) => toggleDropdown(e, link.id!)}
+          onKeyDown={(e: React.KeyboardEvent) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              toggleDropdown(e as any, link.id!);
+            }
+            if (e.key === 'Escape') {
+              setActiveDropdown(null);
+            }
+          }}
           className={`
             relative text-sm lg:text-base font-semibold px-3 py-2 rounded-lg
             transition-all duration-200 ease-out flex items-center
             hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50
             dark:hover:from-purple-900/20 dark:hover:to-blue-900/20
-            hover:shadow-sm
+            hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2
             ${activeDropdown === link.id
               ? 'text-purple-600 dark:text-purple-400 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20'
               : 'text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400'
@@ -51,6 +151,8 @@ const NavigationItem = React.memo(({
           transition={{ duration: 0.15, ease: [0.25, 1, 0.5, 1] }}
           aria-expanded={activeDropdown === link.id}
           aria-haspopup="true"
+          aria-label={`${link.label} menu`}
+          id={`${link.id}-trigger`}
         >
           <span className="relative z-10">{link.label}</span>
           <motion.svg
@@ -60,41 +162,60 @@ const NavigationItem = React.memo(({
             fill="currentColor"
             animate={{ rotate: activeDropdown === link.id ? 180 : 0 }}
             transition={{ duration: 0.3 }}
+            aria-hidden="true"
           >
             <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
           </motion.svg>
         </motion.button>
 
-        <AnimatePresence>
-          {activeDropdown === link.id && (
-            <motion.div
-              initial={{ opacity: 0, y: 15, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 15, scale: 0.95 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              className="absolute top-full left-0 mt-3 w-72 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-white/20 dark:border-gray-700/50 rounded-2xl shadow-2xl shadow-purple-500/10 dark:shadow-purple-400/20 z-50 overflow-hidden"
-              onClick={(e: React.MouseEvent) => e.stopPropagation()}
-            >
-              <div className="p-2">
-                {link.items?.map((item: { path: string; label: string }, idx: number) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.05 }}
-                  >
-                    <Link
-                      to={item.path}
-                      className="block px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 dark:hover:from-purple-900/20 dark:hover:to-blue-900/20 hover:text-purple-600 dark:hover:text-purple-400 rounded-xl transition-all duration-200 hover:scale-[1.02] hover:shadow-sm"
+        <DropdownPortal
+          isOpen={activeDropdown === link.id}
+          triggerRef={triggerRef}
+        >
+          <AnimatePresence>
+            {activeDropdown === link.id && (
+              <motion.div
+                initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 15, scale: 0.95 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="dropdown-menu w-72 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-white/20 dark:border-gray-700/50 rounded-2xl shadow-2xl shadow-purple-500/10 dark:shadow-purple-400/20 overflow-hidden"
+                onClick={(e: React.MouseEvent) => e.stopPropagation()}
+                role="menu"
+                aria-labelledby={`${link.id}-trigger`}
+                style={{
+                  transform: 'translateZ(0)',
+                  willChange: 'transform, opacity'
+                }}
+              >
+                <div className="p-2">
+                  {link.items?.map((item: { path: string; label: string }, idx: number) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.05 }}
                     >
-                      {item.label}
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                      <Link
+                        to={item.path}
+                        className="block px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 dark:hover:from-purple-900/20 dark:hover:to-blue-900/20 hover:text-purple-600 dark:hover:text-purple-400 rounded-xl transition-all duration-200 hover:scale-[1.02] hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                        role="menuitem"
+                        onClick={() => setActiveDropdown(null)}
+                        onKeyDown={(e: React.KeyboardEvent) => {
+                          if (e.key === 'Escape') {
+                            setActiveDropdown(null);
+                          }
+                        }}
+                      >
+                        {item.label}
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </DropdownPortal>
       </div>
     );
   }
@@ -201,13 +322,27 @@ export const Navbar = () => {
 
   // Close dropdowns when clicking outside
   React.useEffect(() => {
-    const handleClickOutside = () => {
-      setActiveDropdown(null);
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      // Check if click is outside dropdown and trigger
+      if (activeDropdown && !target.closest(`[data-dropdown="${activeDropdown}"]`)) {
+        setActiveDropdown(null);
+      }
+    };
+
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && activeDropdown) {
+        setActiveDropdown(null);
+      }
     };
 
     if (activeDropdown) {
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
+      document.addEventListener('click', handleClickOutside, true);
+      document.addEventListener('keydown', handleEscapeKey);
+      return () => {
+        document.removeEventListener('click', handleClickOutside, true);
+        document.removeEventListener('keydown', handleEscapeKey);
+      };
     }
     return undefined;
   }, [activeDropdown]);
@@ -318,6 +453,7 @@ export const Navbar = () => {
                     isActive={isActive}
                     activeDropdown={activeDropdown}
                     toggleDropdown={toggleDropdown}
+                    setActiveDropdown={setActiveDropdown}
                   />
                 </div>
               ))}
@@ -434,15 +570,18 @@ export const Navbar = () => {
                       transition={{ delay: index * 0.05, duration: 0.2, ease: [0.25, 1, 0.5, 1] }}
                     >
                       {link.dropdown ? (
-                        <div className="space-y-3">
+                        <div className="space-y-3" data-dropdown={link.id}>
                           <motion.button
                             onClick={(e: React.MouseEvent) => toggleDropdown(e, link.id!)}
-                            className={`flex justify-between items-center w-full py-3 px-4 text-base font-semibold transition-all duration-200 rounded-xl hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 dark:hover:from-purple-900/20 dark:hover:to-blue-900/20 ${activeDropdown === link.id
+                            className={`flex justify-between items-center w-full py-3 px-4 text-base font-semibold transition-all duration-200 rounded-xl hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 dark:hover:from-purple-900/20 dark:hover:to-blue-900/20 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${activeDropdown === link.id
                               ? 'text-purple-600 dark:text-purple-400 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20'
                               : 'text-gray-700 dark:text-gray-300'
                               }`}
                             whileTap={{ scale: 0.995 }}
                             transition={{ duration: 0.15, ease: [0.25, 1, 0.5, 1] }}
+                            aria-expanded={activeDropdown === link.id}
+                            aria-haspopup="true"
+                            aria-label={`${link.label} menu`}
                           >
                             <span>{link.label}</span>
                             <motion.svg
@@ -475,7 +614,11 @@ export const Navbar = () => {
                                   >
                                     <Link
                                       to={item.path}
-                                      className="block py-3 px-4 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-200 rounded-lg hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 dark:hover:from-purple-900/20 dark:hover:to-blue-900/20"
+                                      className="block py-3 px-4 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-all duration-200 rounded-lg hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 dark:hover:from-purple-900/20 dark:hover:to-blue-900/20 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                                      onClick={() => {
+                                        setActiveDropdown(null);
+                                        setIsMenuOpen(false);
+                                      }}
                                     >
                                       {item.label}
                                     </Link>

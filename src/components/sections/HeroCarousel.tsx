@@ -170,7 +170,7 @@ const HeroCarousel: React.FC = () => {
   const IconComponent = iconMap[currentItem.icon_name as keyof typeof iconMap];
 
   return (
-    <div className="relative w-full h-80 md:h-96 rounded-3xl overflow-hidden shadow-2xl border border-white/30 backdrop-blur-sm group hover:shadow-purple-500/25 transition-all duration-500">
+    <div className="relative w-full h-72 sm:h-80 md:h-96 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/30 backdrop-blur-sm group hover:shadow-purple-500/25 transition-all duration-500">
       {/* Enhanced Background with gradient using website colors */}
       <div
         className="absolute inset-0 bg-gradient-to-br transition-all duration-1000 ease-in-out group-hover:scale-105"
@@ -183,7 +183,7 @@ const HeroCarousel: React.FC = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-black/40 to-black/60 group-hover:from-black/30 group-hover:to-black/50 transition-all duration-500" />
 
       {/* Enhanced Content */}
-      <div className="relative z-10 h-full flex items-center justify-between p-8 md:p-10">
+      <div className="relative z-10 h-full flex flex-col sm:flex-row items-center justify-between p-4 sm:p-6 md:p-8 lg:p-10">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
@@ -191,33 +191,33 @@ const HeroCarousel: React.FC = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="flex-1 text-white"
+            className="flex-1 text-white text-center sm:text-left"
           >
-            <div className="flex items-center gap-5 mb-6">
-              <div className="relative w-16 h-16 rounded-3xl bg-white/30 backdrop-blur-md flex items-center justify-center group-hover:bg-white/45 transition-all duration-500 shadow-xl group-hover:shadow-2xl group-hover:scale-110 group-hover:rotate-3 overflow-hidden">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-5 mb-4 sm:mb-6">
+              <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-white/30 backdrop-blur-md flex items-center justify-center group-hover:bg-white/45 transition-all duration-500 shadow-xl group-hover:shadow-2xl group-hover:scale-110 group-hover:rotate-3 overflow-hidden flex-shrink-0">
                 {/* Enhanced icon glow effects */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="absolute inset-0 bg-white/10 blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
 
                 {/* Enhanced icon with better styling */}
                 {IconComponent && (
-                  <IconComponent className="relative z-10 w-8 h-8 text-white drop-shadow-lg group-hover:scale-110 transition-all duration-500" />
+                  <IconComponent className="relative z-10 w-6 h-6 sm:w-8 sm:h-8 text-white drop-shadow-lg group-hover:scale-110 transition-all duration-500" />
                 )}
               </div>
-              <div>
-                <h3 className="text-2xl md:text-3xl font-bold mb-1 group-hover:text-white/95 transition-colors">{currentItem.title}</h3>
-                <p className="text-lg opacity-90 group-hover:opacity-100 transition-opacity">{currentItem.subtitle}</p>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 group-hover:text-white/95 transition-colors text-mobile-safe">{currentItem.title}</h3>
+                <p className="text-base sm:text-lg opacity-90 group-hover:opacity-100 transition-opacity text-mobile-safe">{currentItem.subtitle}</p>
               </div>
             </div>
 
-            <p className="text-base md:text-lg opacity-85 mb-6 max-w-2xl leading-relaxed group-hover:opacity-95 transition-opacity">
+            <p className="text-sm sm:text-base md:text-lg opacity-85 mb-4 sm:mb-6 max-w-2xl leading-relaxed group-hover:opacity-95 transition-opacity text-mobile-safe">
               {currentItem.description}
             </p>
 
             <Button
               variant="secondary"
-              size="lg"
-              className="bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm transition-all duration-300 shadow-lg hover:shadow-xl px-6 py-3 text-base font-semibold rounded-xl group-hover:scale-105"
+              size="sm"
+              className="bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm transition-all duration-300 shadow-lg hover:shadow-xl px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-semibold rounded-lg sm:rounded-xl group-hover:scale-105 w-full sm:w-auto"
               onClick={() => window.location.href = currentItem.link_url}
             >
               {currentItem.link_text}
@@ -226,24 +226,24 @@ const HeroCarousel: React.FC = () => {
         </AnimatePresence>
 
         {/* Enhanced Navigation Controls */}
-        <div className="flex flex-col items-center gap-4 ml-8">
+        <div className="flex sm:flex-col items-center justify-center sm:justify-start gap-3 sm:gap-4 mt-4 sm:mt-0 sm:ml-4 md:ml-8">
           {/* Previous/Next Buttons */}
-          <div className="flex gap-2">
+          <div className="flex sm:flex-col gap-2">
             <Button
               variant="ghost"
               size="icon"
-              className="w-10 h-10 rounded-full bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
               onClick={goToPrevious}
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="w-10 h-10 rounded-full bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
               onClick={goToNext}
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
           </div>
 
@@ -251,14 +251,14 @@ const HeroCarousel: React.FC = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="w-10 h-10 rounded-full bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
             onClick={togglePlayPause}
           >
-            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+            {isPlaying ? <Pause className="w-3 h-3 sm:w-4 sm:h-4" /> : <Play className="w-3 h-3 sm:w-4 sm:h-4" />}
           </Button>
 
           {/* Enhanced Dot Indicators */}
-          <div className="flex flex-col gap-2">
+          <div className="flex sm:flex-col gap-2">
             {items.map((_, index) => (
               <button
                 key={index}

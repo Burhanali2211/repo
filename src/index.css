@@ -754,6 +754,90 @@
     }
   }
 
+  /* ===== ACCORDION SCROLLBAR PREVENTION ===== */
+
+  /* Prevent scrollbars during accordion animations */
+  [data-radix-accordion-content] {
+    overflow: hidden !important;
+    will-change: height;
+    transform: translateZ(0);
+  }
+
+  /* Ensure accordion containers don't show scrollbars */
+  [data-radix-accordion-root] {
+    overflow: hidden;
+  }
+
+  /* Optimize accordion animations for smooth performance */
+  [data-state="open"][data-radix-accordion-content],
+  [data-state="closed"][data-radix-accordion-content] {
+    overflow: hidden !important;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+
+  /* FAQ section specific scrollbar prevention */
+  .faq-container {
+    overflow: hidden;
+    contain: layout style paint;
+  }
+
+  .faq-container [data-radix-accordion-item] {
+    overflow: hidden;
+    contain: layout;
+  }
+
+  /* ===== NAVIGATION DROPDOWN IMPROVEMENTS ===== */
+
+  /* Ensure dropdown positioning is stable */
+  [data-dropdown] {
+    position: relative;
+  }
+
+  /* Improve dropdown z-index stacking */
+  [data-dropdown] .dropdown-menu {
+    position: absolute;
+    z-index: 9999;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  /* Smooth dropdown animations */
+  .dropdown-enter {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+
+  .dropdown-enter-active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition: opacity 300ms ease-out, transform 300ms ease-out;
+  }
+
+  .dropdown-exit {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .dropdown-exit-active {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+    transition: opacity 300ms ease-out, transform 300ms ease-out;
+  }
+
+  /* Dropdown portal improvements */
+  .dropdown-menu {
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Ensure dropdown is always on top */
+  .dropdown-menu {
+    position: relative;
+    z-index: 1;
+  }
+
   /* ===== MOBILE OVERFLOW PREVENTION ===== */
 
   /* Prevent content from exceeding viewport width */
@@ -813,6 +897,87 @@
   @media (min-width: 1024px) {
     .section-mobile-safe {
       padding: 4rem 2rem;
+    }
+  }
+
+  /* ===== ENHANCED MOBILE HERO SECTION FIXES ===== */
+
+  /* Mobile hero section improvements */
+  @media (max-width: 640px) {
+    .hero-mobile-center {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-mobile-spacing {
+      padding-top: 4rem;
+      padding-bottom: 3rem;
+      min-height: calc(100vh - 8rem);
+    }
+
+    .hero-mobile-text {
+      font-size: 1.875rem;
+      /* 30px */
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .hero-mobile-subtitle {
+      font-size: 1.125rem;
+      /* 18px */
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-mobile-buttons {
+      width: 100%;
+      max-width: 20rem;
+      margin: 0 auto;
+    }
+
+    .hero-mobile-carousel {
+      margin-top: 2rem;
+      max-width: 100%;
+    }
+  }
+
+  /* Extra small mobile devices */
+  @media (max-width: 375px) {
+    .hero-mobile-text {
+      font-size: 1.75rem;
+      /* 28px */
+    }
+
+    .hero-mobile-subtitle {
+      font-size: 1rem;
+      /* 16px */
+    }
+
+    .container-safe {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+  }
+
+  /* Mobile carousel improvements */
+  @media (max-width: 640px) {
+    .carousel-mobile-stack {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .carousel-mobile-content {
+      padding: 1rem;
+    }
+
+    .carousel-mobile-controls {
+      flex-direction: row;
+      justify-content: center;
+      margin-top: 1rem;
+      margin-left: 0;
     }
   }
 }

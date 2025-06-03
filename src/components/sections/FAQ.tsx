@@ -61,8 +61,8 @@ const FAQ = () => {
           <div className="h-1.5 w-24 bg-gradient-to-r from-violet-500 via-emerald-500 to-purple-500 mx-auto rounded-full"></div>
         </motion.header>
 
-        <div className="max-w-4xl mx-auto">
-          <Accordion type="single" collapsible className="space-y-6">
+        <div className="max-w-4xl mx-auto overflow-hidden faq-container">
+          <Accordion type="single" collapsible className="space-y-6 overflow-hidden">
             {faqs.map((faq, index) => (
               <motion.div
                 key={index}
@@ -74,7 +74,8 @@ const FAQ = () => {
                 <AccordionItem
                   value={`item-${index}`}
                   className="bg-gray-100 dark:bg-white/10 backdrop-blur-sm rounded-xl shadow-md dark:shadow-none
-                           hover:bg-gray-200 dark:hover:bg-white/20 transition-all duration-250 px-6 py-2 group relative overflow-hidden"
+                           hover:bg-gray-200 dark:hover:bg-white/20 transition-all duration-250 px-6 py-2 group relative overflow-hidden
+                           will-change-[height] transform-gpu"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <div className="relative z-10">

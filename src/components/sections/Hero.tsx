@@ -37,35 +37,32 @@ const Hero = () => {
       </div>
 
       {/* Main hero content */}
-      <div className="relative z-10 container-safe mx-auto px-3 sm:px-4 md:px-6 lg:px-8 pt-20 sm:pt-24 lg:pt-32 pb-16 sm:pb-20 lg:pb-24 mobile-safe">
+      <div className="relative z-10 container-safe mx-auto px-4 sm:px-6 md:px-8 lg:px-8 pt-16 sm:pt-20 md:pt-24 lg:pt-32 pb-12 sm:pb-16 md:pb-20 lg:pb-24 mobile-safe">
         <div className="max-w-7xl mx-auto">
 
-
-
           {/* Main Hero Grid */}
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center min-h-[calc(100vh-16rem)]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-center min-h-[calc(100vh-12rem)] sm:min-h-[calc(100vh-14rem)] lg:min-h-[calc(100vh-16rem)]">
 
             {/* Left Column - Main Content */}
-            <div className="lg:col-span-7 space-y-8">
+            <div className="lg:col-span-7 space-y-6 sm:space-y-8 text-center lg:text-left">
 
               {/* Main Headlines */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="space-y-6"
+                className="space-y-4 sm:space-y-6"
               >
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
-                  <span className="text-gray-900 dark:text-white">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-mobile-safe">
+                  <span className="text-gray-900 dark:text-white block">
                     {settings?.site_tagline || 'Simplifying Technology'}
                   </span>
-                  <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 dark:from-blue-400 dark:via-purple-400 dark:to-green-400">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 dark:from-blue-400 dark:via-purple-400 dark:to-green-400 block mt-2">
                     for a Better Tomorrow
                   </span>
                 </h1>
 
-                <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl">
+                <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl mx-auto lg:mx-0 text-mobile-safe">
                   {settings?.site_description || 'Making technology accessible, sustainable, and meaningful for businesses worldwide. From IoT to digital transformation, we\'re your creative tech partner.'}
                 </p>
               </motion.div>
@@ -77,16 +74,16 @@ const Hero = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.7 }}
-                className="flex flex-col sm:flex-row gap-4"
+                className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start"
               >
-                <Link to="/contact">
+                <Link to="/contact" className="w-full sm:w-auto">
                   <Button
                     size="lg"
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-purple-500/25 transition-all duration-300 rounded-xl group w-full sm:w-auto"
+                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-xl hover:shadow-purple-500/25 transition-all duration-300 rounded-xl group w-full"
                   >
-                    <span className="flex items-center">
+                    <span className="flex items-center justify-center">
                       Get Started Today
-                      <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                      <ChevronRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
                     </span>
                   </Button>
                 </Link>
@@ -95,10 +92,10 @@ const Hero = () => {
                   onClick={() => scrollToSection("#services")}
                   variant="outline"
                   size="lg"
-                  className="border-2 border-gray-300 dark:border-white/30 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 hover:border-gray-400 dark:hover:border-white/50 px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300 group backdrop-blur-sm"
+                  className="border-2 border-gray-300 dark:border-white/30 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 hover:border-gray-400 dark:hover:border-white/50 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl transition-all duration-300 group backdrop-blur-sm w-full sm:w-auto"
                 >
-                  <span className="flex items-center">
-                    <ChevronRight className="mr-2 h-5 w-5" />
+                  <span className="flex items-center justify-center">
+                    <ChevronRight className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                     Explore Services
                   </span>
                 </Button>
@@ -109,32 +106,31 @@ const Hero = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.9 }}
-                className="flex items-center justify-center sm:justify-start space-x-6 text-sm text-gray-600 dark:text-gray-300"
+                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-6 text-sm text-gray-600 dark:text-gray-300"
               >
                 <div className="flex items-center space-x-2">
-                  <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
-                  <span>Free consultation</span>
+                  <Check className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" />
+                  <span className="whitespace-nowrap">Free consultation</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
-                  <span>No setup fees</span>
+                  <Check className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" />
+                  <span className="whitespace-nowrap">No setup fees</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
-                  <span>Sustainable solutions</span>
+                  <Check className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" />
+                  <span className="whitespace-nowrap">Sustainable solutions</span>
                 </div>
               </motion.div>
             </div>
 
-
             {/* Right Column - Enhanced Hero Carousel */}
-            <div className="lg:col-span-5 flex items-center justify-center">
+            <div className="lg:col-span-5 flex items-center justify-center mt-8 lg:mt-0">
               {/* Hero Carousel */}
               <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="w-full"
+                className="w-full max-w-lg lg:max-w-none"
               >
                 <HeroCarousel />
               </motion.div>
