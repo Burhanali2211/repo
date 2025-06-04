@@ -160,7 +160,7 @@ const Services = React.memo(() => {
   return (
     <section
       id="services"
-      className="w-full py-8"
+      className="w-full services-section"
       aria-labelledby="services-heading"
     >
       <AnimatedSection threshold={0.1}>
@@ -169,21 +169,12 @@ const Services = React.memo(() => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          className="max-w-7xl mx-auto services-container"
         >
-          {/* Engaging Section Tagline */}
-          <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Discover Solutions Tailored for You
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Explore our comprehensive range of services designed to transform your business and drive success
-            </p>
-          </div>
 
-          {/* Responsive Grid Layout - 3 cols desktop/tablet, 1 col mobile with 15px gaps */}
+          {/* Responsive Grid Layout - Fixed overflow and better proportions */}
           <div
-            className="services-grid"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full overflow-hidden"
             role="list"
             aria-label="Our services"
           >
@@ -197,24 +188,23 @@ const Services = React.memo(() => {
                 <motion.div
                   key={service.id}
                   variants={cardVariants}
-                  className="group relative service-card-mobile"
+                  className="group relative"
                   onHoverStart={() => setHoveredIndex(index)}
                   onHoverEnd={() => setHoveredIndex(null)}
                   role="listitem"
                   aria-label={`${service.title} service`}
                 >
-                  {/* Redesigned Service Card with Uniform Dimensions and 20px Padding */}
+                  {/* Optimized Service Card with Better Proportions */}
                   <div
                     className={`
-                      relative bg-white dark:bg-gray-900 rounded-xl h-full
+                      relative bg-white dark:bg-gray-900 rounded-xl w-full
                       border border-gray-200 dark:border-gray-700
                       shadow-sm hover:shadow-lg dark:hover:shadow-xl
                       transition-all duration-300 ease-out
                       hover:-translate-y-1 hover:scale-[1.02]
-                      flex flex-col
-                      ${isHovered ? 'ring-1 ring-purple-500/20' : ''}
+                      flex flex-col p-6 service-card-optimized
+                      ${isHovered ? 'ring-1 ring-purple-500/20 shadow-purple-500/5' : ''}
                     `}
-                    style={{ padding: '20px' }}
                   >
                     {/* Gradient Background Overlay */}
                     <div className={`
@@ -223,44 +213,38 @@ const Services = React.memo(() => {
                       transition-opacity duration-500
                     `} />
 
-                    {/* Card Content with Improved Structure */}
+                    {/* Card Content with Optimized Spacing */}
                     <div className="relative z-10 h-full flex flex-col text-center">
                       {/* Icon Section */}
                       <div className="flex justify-center mb-4">
                         <div className={`
-                          w-12 h-12 rounded-lg flex items-center justify-center
+                          w-14 h-14 rounded-lg flex items-center justify-center
                           bg-gradient-to-br ${colors.icon}
                           shadow-md group-hover:shadow-lg
                           transform transition-all duration-300 group-hover:scale-105
                         `}>
-                          <IconComponent className="w-6 h-6 text-white" />
+                          <IconComponent className="w-7 h-7 text-white" />
                         </div>
                       </div>
 
-                      {/* Title and Description with Exact Typography Requirements */}
-                      <div className="flex-1 mb-6">
-                        <h3
-                          className="font-bold mb-3 leading-tight text-gray-900 dark:text-white transition-colors duration-300"
-                          style={{ fontSize: '18px' }}
-                        >
+                      {/* Title and Description with Compact Spacing */}
+                      <div className="flex-1 mb-4">
+                        <h3 className="text-lg font-bold mb-3 leading-tight text-gray-900 dark:text-white transition-colors duration-300">
                           {service.title}
                         </h3>
 
-                        <p
-                          className="text-gray-600 dark:text-gray-300 leading-relaxed transition-colors duration-300"
-                          style={{ fontSize: '14px' }}
-                        >
+                        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed transition-colors duration-300 line-clamp-3">
                           {service.description}
                         </p>
                       </div>
 
-                      {/* Mobile-First CTA Button - Minimum 48px height for touch accessibility */}
+                      {/* Compact CTA Button */}
                       <div className="mt-auto">
                         <Link
                           to={service.slug ? `/services/${service.slug}` : service.link || `/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`}
                           className={`
                             group/cta inline-flex items-center justify-center w-full
-                            px-4 py-3 min-h-[48px] rounded-xl text-sm font-semibold
+                            px-4 py-3 min-h-[48px] rounded-lg text-sm font-semibold
                             bg-gradient-to-r ${colors.icon}
                             text-white shadow-md hover:shadow-lg
                             transform transition-all duration-300

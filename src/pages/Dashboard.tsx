@@ -14,7 +14,8 @@ import {
   Shield,
   FormInput,
   Award,
-  Image
+  Image,
+  Brain
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,6 +36,7 @@ import MessagesManager from '@/components/dashboard/MessagesManager';
 import ContactFormFieldsManager from '@/components/dashboard/ContactFormFieldsManager';
 import SuccessStoriesManager from '@/components/dashboard/SuccessStoriesManager';
 import ImageManager from '@/components/dashboard/ImageManager';
+import AISettingsManager from '@/components/dashboard/AISettingsManager';
 
 /**
  * Dashboard Component
@@ -109,6 +111,7 @@ const Dashboard = () => {
     { id: 'images', label: 'Image Manager', icon: Image },
     { id: 'testimonials', label: 'Testimonials', icon: Heart },
     { id: 'about', label: 'About Content', icon: AlertCircle },
+    { id: 'ai-settings', label: 'AI Integration', icon: Brain },
     { id: 'settings', label: 'Website Settings', icon: Settings }
   ];
 
@@ -305,6 +308,9 @@ const Dashboard = () => {
           {activeTab === 'images' && <ImageManager />}
           {activeTab === 'testimonials' && <TestimonialsManager />}
           {activeTab === 'about' && <AboutContentManager />}
+
+          {/* AI Integration Tab */}
+          {activeTab === 'ai-settings' && <AISettingsManager />}
 
           {/* Settings Tab */}
           {activeTab === 'settings' && <SettingsManager />}

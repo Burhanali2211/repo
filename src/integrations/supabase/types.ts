@@ -9,6 +9,57 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      ai_settings: {
+        Row: {
+          id: string
+          created_at: string
+          updated_at: string
+          ai_enabled: boolean
+          ai_provider: string
+          ai_model: string | null
+          ai_api_key_encrypted: string | null
+          ai_features_enabled: Json | null
+          ai_analytics_enabled: boolean
+          ai_recommendations_enabled: boolean
+          ai_queries_enabled: boolean
+          ai_alerts_enabled: boolean
+          ai_visualization_enabled: boolean
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          ai_enabled?: boolean
+          ai_provider?: string
+          ai_model?: string | null
+          ai_api_key_encrypted?: string | null
+          ai_features_enabled?: Json | null
+          ai_analytics_enabled?: boolean
+          ai_recommendations_enabled?: boolean
+          ai_queries_enabled?: boolean
+          ai_alerts_enabled?: boolean
+          ai_visualization_enabled?: boolean
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          ai_enabled?: boolean
+          ai_provider?: string
+          ai_model?: string | null
+          ai_api_key_encrypted?: string | null
+          ai_features_enabled?: Json | null
+          ai_analytics_enabled?: boolean
+          ai_recommendations_enabled?: boolean
+          ai_queries_enabled?: boolean
+          ai_alerts_enabled?: boolean
+          ai_visualization_enabled?: boolean
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           id: string

@@ -133,6 +133,15 @@ export const Award = createLazyIcon('Award');
 export const Zap = createLazyIcon('Zap');
 export const Sparkles = createLazyIcon('Sparkles');
 
+// Layout and view icons
+export const Grid3X3 = createLazyIcon('Grid3X3');
+export const List = createLazyIcon('List');
+export const Filter = createLazyIcon('Filter');
+export const Eye = createLazyIcon('Eye');
+export const Heart = createLazyIcon('Heart');
+export const Bookmark = createLazyIcon('Bookmark');
+export const MoreHorizontal = createLazyIcon('MoreHorizontal');
+
 /**
  * Icon component that loads icons dynamically
  */
@@ -173,5 +182,6 @@ export default {
   ArrowRight, ArrowLeft, ArrowUp, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, ExternalLink,
   Menu, X, Search, Star, Check, CheckCircle, Plus, Minus,
   Globe, Code, Palette, TrendingUp, Megaphone, Shield, Cloud, Smartphone,
-  Building2, Users, GraduationCap, Leaf, Wrench, Award, Zap, Sparkles
+  Building2, Users, GraduationCap, Leaf, Wrench, Award, Zap, Sparkles,
+  Grid3X3, List, Filter, Eye, Heart, Bookmark, MoreHorizontal
 };

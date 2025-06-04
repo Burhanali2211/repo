@@ -34,7 +34,6 @@ const Contact = () => {
   const { settings } = useWebsiteSettings();
   const [responseTime, setResponseTime] = useState('< 2 hours');
   const [activeClients, setActiveClients] = useState(47);
-  const [projectsCompleted, setProjectsCompleted] = useState(156);
   const [successStories, setSuccessStories] = useState<SuccessStory[]>([]);
 
   // Load success stories
@@ -58,13 +57,7 @@ const Contact = () => {
     }
   }, [settings]);
 
-  // Animated counters for engagement
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveClients(prev => prev + Math.floor(Math.random() * 3) - 1);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+
 
   const trustSignals = [
     { icon: CheckCircle, text: "100% Project Success Rate", color: "text-green-500" },
@@ -150,27 +143,7 @@ const Contact = () => {
               </div>
             </div>
 
-            {/* Live Stats */}
-            <div className="grid-responsive-1-2-3 gap-responsive-sm max-w-4xl mx-auto">
-              <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-center">
-                <CardContent className="card-responsive">
-                  <div className="text-responsive-2xl font-bold text-yellow-300 mb-2">{projectsCompleted}+</div>
-                  <div className="text-white/80 text-responsive-sm">Projects Completed</div>
-                </CardContent>
-              </Card>
-              <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-center">
-                <CardContent className="card-responsive">
-                  <div className="text-responsive-2xl font-bold text-green-300 mb-2">{responseTime}</div>
-                  <div className="text-white/80 text-responsive-sm">Average Response Time</div>
-                </CardContent>
-              </Card>
-              <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-center">
-                <CardContent className="card-responsive">
-                  <div className="text-responsive-2xl font-bold text-blue-300 mb-2">100%</div>
-                  <div className="text-white/80 text-responsive-sm">Client Satisfaction</div>
-                </CardContent>
-              </Card>
-            </div>
+
           </div>
 
           {/* Enhanced gradient transition */}
