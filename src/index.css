@@ -663,6 +663,74 @@
     @apply py-12 sm:py-16 lg:py-20 xl:py-24;
   }
 
+  /* Enhanced carousel responsive utilities */
+  .carousel-container {
+    @apply relative w-full;
+    aspect-ratio: 16/9;
+  }
+
+  @media (min-width: 640px) {
+    .carousel-container {
+      aspect-ratio: 20/9;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .carousel-container {
+      aspect-ratio: 24/9;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .carousel-container {
+      aspect-ratio: 28/9;
+    }
+  }
+
+  /* Touch-friendly interactive elements */
+  .touch-target {
+    @apply min-w-[44px] min-h-[44px] flex items-center justify-center;
+  }
+
+  /* Responsive text scaling for better readability */
+  .text-responsive-xs {
+    @apply text-xs sm:text-sm md:text-base;
+  }
+
+  .text-responsive-sm {
+    @apply text-sm sm:text-base md:text-lg;
+  }
+
+  .text-responsive-md {
+    @apply text-base sm:text-lg md:text-xl lg:text-2xl;
+  }
+
+  .text-responsive-lg {
+    @apply text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl;
+  }
+
+  /* Enhanced mobile-first approach for carousel cards */
+  .carousel-card {
+    @apply rounded-xl sm:rounded-2xl md:rounded-3xl;
+    @apply p-3 sm:p-4 md:p-6 lg:p-8;
+    @apply shadow-lg sm:shadow-xl md:shadow-2xl;
+  }
+
+  /* Better spacing for mobile devices */
+  .mobile-spacing {
+    @apply space-y-2 sm:space-y-3 md:space-y-4;
+  }
+
+  /* Improved button responsiveness */
+  .btn-carousel {
+    @apply px-3 py-2 text-xs;
+    @apply sm:px-4 sm:py-2.5 sm:text-sm;
+    @apply md:px-6 md:py-3 md:text-base;
+    @apply rounded-lg sm:rounded-xl;
+    @apply min-w-[100px] sm:min-w-[120px];
+    @apply touch-manipulation;
+  }
+
   /* Mobile navigation improvements */
   .mobile-nav-item {
     @apply block w-full text-left py-3 px-4 text-lg transition-colors;
@@ -736,6 +804,42 @@
     .high-dpi-optimized {
       image-rendering: -webkit-optimize-contrast;
       image-rendering: crisp-edges;
+    }
+  }
+
+  /* Services Section Mobile-First Optimizations */
+  .services-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 0 5%;
+  }
+
+  @media (min-width: 768px) {
+    .services-grid {
+      grid-template-columns: repeat(2, 1fr);
+      padding: 0;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .services-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* Ensure service cards have optimal mobile touch targets */
+  .service-card-mobile {
+    width: 90%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  @media (min-width: 640px) {
+    .service-card-mobile {
+      width: 100%;
+      max-width: none;
+      margin: 0;
     }
   }
 

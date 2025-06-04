@@ -74,6 +74,8 @@ const HeroCarousel: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   // Fetch carousel items from Supabase
   useEffect(() => {
@@ -154,10 +156,36 @@ const HeroCarousel: React.FC = () => {
     setIsPlaying(!isPlaying);
   };
 
+  // Touch gesture handling for mobile swipe
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      goToNext();
+    } else if (isRightSwipe) {
+      goToPrevious();
+    }
+  };
+
   if (isLoading) {
     return (
-      <div className="w-full h-64 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-2xl animate-pulse flex items-center justify-center">
-        <div className="text-gray-500 dark:text-gray-400">Loading...</div>
+      <div className="relative w-full aspect-[16/9] sm:aspect-[20/9] md:aspect-[24/9] lg:aspect-[28/9] min-h-[280px] max-h-[400px] bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-xl sm:rounded-2xl md:rounded-3xl animate-pulse flex items-center justify-center">
+        <div className="text-gray-500 dark:text-gray-400 text-sm sm:text-base">Loading...</div>
       </div>
     );
   }
@@ -170,7 +198,12 @@ const HeroCarousel: React.FC = () => {
   const IconComponent = iconMap[currentItem.icon_name as keyof typeof iconMap];
 
   return (
-    <div className="relative w-full h-72 sm:h-80 md:h-96 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/30 backdrop-blur-sm group hover:shadow-purple-500/25 transition-all duration-500">
+    <div
+      className="relative w-full aspect-[16/9] sm:aspect-[20/9] md:aspect-[24/9] lg:aspect-[28/9] min-h-[280px] max-h-[400px] rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl border border-white/20 backdrop-blur-sm group hover:shadow-purple-500/25 transition-all duration-500 cursor-pointer select-none"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
       {/* Enhanced Background with gradient using website colors */}
       <div
         className="absolute inset-0 bg-gradient-to-br transition-all duration-1000 ease-in-out group-hover:scale-105"
@@ -183,7 +216,7 @@ const HeroCarousel: React.FC = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-black/40 to-black/60 group-hover:from-black/30 group-hover:to-black/50 transition-all duration-500" />
 
       {/* Enhanced Content */}
-      <div className="relative z-10 h-full flex flex-col sm:flex-row items-center justify-between p-4 sm:p-6 md:p-8 lg:p-10">
+      <div className="relative z-10 h-full flex flex-col justify-between p-3 sm:p-4 md:p-6 lg:p-8">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
@@ -191,84 +224,90 @@ const HeroCarousel: React.FC = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="flex-1 text-white text-center sm:text-left"
+            className="flex-1 text-white text-center sm:text-left flex flex-col justify-center"
           >
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-5 mb-4 sm:mb-6">
-              <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-white/30 backdrop-blur-md flex items-center justify-center group-hover:bg-white/45 transition-all duration-500 shadow-xl group-hover:shadow-2xl group-hover:scale-110 group-hover:rotate-3 overflow-hidden flex-shrink-0">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4 md:gap-5 mb-3 sm:mb-4 md:mb-6">
+              <div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-xl sm:rounded-2xl md:rounded-3xl bg-white/30 backdrop-blur-md flex items-center justify-center group-hover:bg-white/45 transition-all duration-500 shadow-xl group-hover:shadow-2xl group-hover:scale-110 group-hover:rotate-3 overflow-hidden flex-shrink-0">
                 {/* Enhanced icon glow effects */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="absolute inset-0 bg-white/10 blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
 
                 {/* Enhanced icon with better styling */}
                 {IconComponent && (
-                  <IconComponent className="relative z-10 w-6 h-6 sm:w-8 sm:h-8 text-white drop-shadow-lg group-hover:scale-110 transition-all duration-500" />
+                  <div className="relative z-10 w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-white drop-shadow-lg group-hover:scale-110 transition-all duration-500">
+                    {IconComponent()}
+                  </div>
                 )}
               </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 group-hover:text-white/95 transition-colors text-mobile-safe">{currentItem.title}</h3>
-                <p className="text-base sm:text-lg opacity-90 group-hover:opacity-100 transition-opacity text-mobile-safe">{currentItem.subtitle}</p>
+              <div className="flex-1 min-w-0 text-center sm:text-left">
+                <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-1 group-hover:text-white/95 transition-colors leading-tight">{currentItem.title}</h3>
+                <p className="text-sm sm:text-base md:text-lg opacity-90 group-hover:opacity-100 transition-opacity leading-tight">{currentItem.subtitle}</p>
               </div>
             </div>
 
-            <p className="text-sm sm:text-base md:text-lg opacity-85 mb-4 sm:mb-6 max-w-2xl leading-relaxed group-hover:opacity-95 transition-opacity text-mobile-safe">
+            <p className="text-xs sm:text-sm md:text-base lg:text-lg opacity-85 mb-3 sm:mb-4 md:mb-6 max-w-2xl leading-relaxed group-hover:opacity-95 transition-opacity text-center sm:text-left">
               {currentItem.description}
             </p>
 
-            <Button
-              variant="secondary"
-              size="sm"
-              className="bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm transition-all duration-300 shadow-lg hover:shadow-xl px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-semibold rounded-lg sm:rounded-xl group-hover:scale-105 w-full sm:w-auto"
-              onClick={() => window.location.href = currentItem.link_url}
-            >
-              {currentItem.link_text}
-            </Button>
+            <div className="flex justify-center sm:justify-start">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm transition-all duration-300 shadow-lg hover:shadow-xl px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 text-xs sm:text-sm md:text-base font-semibold rounded-lg sm:rounded-xl group-hover:scale-105 min-w-[100px] sm:min-w-[120px] touch-manipulation"
+                onClick={() => window.location.href = currentItem.link_url}
+              >
+                {currentItem.link_text}
+              </Button>
+            </div>
           </motion.div>
         </AnimatePresence>
 
-        {/* Enhanced Navigation Controls */}
-        <div className="flex sm:flex-col items-center justify-center sm:justify-start gap-3 sm:gap-4 mt-4 sm:mt-0 sm:ml-4 md:ml-8">
-          {/* Previous/Next Buttons */}
-          <div className="flex sm:flex-col gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
-              onClick={goToPrevious}
-            >
-              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
-              onClick={goToNext}
-            >
-              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
-            </Button>
-          </div>
-
-          {/* Play/Pause Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
-            onClick={togglePlayPause}
-          >
-            {isPlaying ? <Pause className="w-3 h-3 sm:w-4 sm:h-4" /> : <Play className="w-3 h-3 sm:w-4 sm:h-4" />}
-          </Button>
-
+        {/* Enhanced Navigation Controls - Repositioned for better mobile experience */}
+        <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 md:bottom-6 md:right-6 flex items-center gap-2 sm:gap-3">
           {/* Enhanced Dot Indicators */}
-          <div className="flex sm:flex-col gap-2">
+          <div className="flex gap-1.5 sm:gap-2">
             {items.map((_, index) => (
               <button
                 key={index}
-                className={`w-2 h-2 rounded-full transition-all duration-300 shadow-sm ${index === currentIndex
-                  ? 'bg-white scale-150 shadow-white/50'
-                  : 'bg-white/60 hover:bg-white/80 hover:scale-125'
+                className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all duration-300 shadow-sm touch-manipulation ${index === currentIndex
+                  ? 'bg-white scale-125 sm:scale-150 shadow-white/50'
+                  : 'bg-white/60 hover:bg-white/80 hover:scale-110 sm:hover:scale-125'
                   }`}
                 onClick={() => goToSlide(index)}
+                aria-label={`Go to slide ${index + 1}`}
               />
             ))}
+          </div>
+
+          {/* Navigation Buttons */}
+          <div className="flex gap-1 sm:gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 touch-manipulation"
+              onClick={goToPrevious}
+              aria-label="Previous slide"
+            >
+              <ChevronLeft className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 touch-manipulation"
+              onClick={goToNext}
+              aria-label="Next slide"
+            >
+              <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-white/25 hover:bg-white/40 text-white border-white/40 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 touch-manipulation"
+              onClick={togglePlayPause}
+              aria-label={isPlaying ? "Pause slideshow" : "Play slideshow"}
+            >
+              {isPlaying ? <Pause className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" /> : <Play className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4" />}
+            </Button>
           </div>
         </div>
       </div>

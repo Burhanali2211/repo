@@ -84,6 +84,9 @@ const DigitalTransformationPage = createLazyRoute(() => import("./pages/services
 // Dynamic Service Detail Page
 const ServiceDetailPage = createLazyRoute(() => import("./pages/ServiceDetail"), "Service Details");
 
+// Services Demo Page
+const ServicesDemoPage = createLazyRoute(() => import("./pages/ServicesDemo"), "Services Demo");
+
 // No longer needed - Dashboard now handles its own routing
 
 // Safe lazy load animation and common components for better performance
@@ -217,6 +220,7 @@ const App = () => {
                                         <Route path="/" element={<HomePage />} />
                                         <Route path="/about" element={<AboutPage />} />
                                         <Route path="/services" element={<ServicesPage />} />
+                                        <Route path="/services-demo" element={<ServicesDemoPage />} />
                                         <Route path="/services/web-development" element={<WebDevelopmentPage />} />
                                         <Route path="/services/seo" element={<SEOPage />} />
                                         <Route path="/services/digital-marketing" element={<DigitalMarketingPage />} />

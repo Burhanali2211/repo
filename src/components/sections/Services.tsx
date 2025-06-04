@@ -3,14 +3,13 @@ import React, { useState, useMemo } from 'react';
 import {
   Search, Palette, TrendingUp, Code, Megaphone, Shield, ArrowRight, Globe,
   Cloud, Smartphone, Leaf, GraduationCap, Building2, Users, Wrench,
-  Star, Zap, Award, CheckCircle
+  Star, Zap, Award, CheckCircle, ExternalLink, Sparkles
 } from '@/lib/icons';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useServices } from '@/hooks/useServices';
 import AnimatedSection from '@/components/AnimatedSection';
-import FloatingElement from '@/components/animations/FloatingElement';
 
 // Icon mapping for services
 const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
@@ -42,80 +41,87 @@ export const getIconComponent = (iconName: string | null) => {
   return iconMap[iconName];
 };
 
-// Gradient mapping for services
-const gradientMap: { [key: string]: string } = {
-  'agriculture': 'from-green-600 to-emerald-600',
-  'school': 'from-blue-600 to-cyan-600',
-  'business': 'from-purple-600 to-indigo-600',
-  'student': 'from-amber-600 to-orange-600',
-  'technical': 'from-pink-600 to-rose-600',
-  'digital': 'from-sky-600 to-blue-600',
-  'web': 'from-purple-600 to-blue-600',
-  'marketing': 'from-green-600 to-teal-600',
-  'design': 'from-pink-600 to-purple-600',
-  'seo': 'from-yellow-600 to-orange-600',
-  'cloud': 'from-blue-600 to-indigo-600',
-  'app': 'from-red-600 to-pink-600'
+// Modern gradient system with cohesive color palette
+const modernGradients = [
+  'from-violet-500 via-purple-500 to-indigo-600',
+  'from-blue-500 via-cyan-500 to-teal-600',
+  'from-emerald-500 via-green-500 to-lime-600',
+  'from-amber-500 via-orange-500 to-red-600',
+  'from-pink-500 via-rose-500 to-red-600',
+  'from-indigo-500 via-blue-500 to-cyan-600',
+  'from-teal-500 via-emerald-500 to-green-600',
+  'from-orange-500 via-amber-500 to-yellow-600'
+];
+
+// Service category colors for consistent theming
+const serviceColors = {
+  'agriculture': { bg: 'from-emerald-50 to-green-50', border: 'border-emerald-200', text: 'text-emerald-700', icon: 'from-emerald-500 to-green-600' },
+  'education': { bg: 'from-blue-50 to-cyan-50', border: 'border-blue-200', text: 'text-blue-700', icon: 'from-blue-500 to-cyan-600' },
+  'business': { bg: 'from-purple-50 to-indigo-50', border: 'border-purple-200', text: 'text-purple-700', icon: 'from-purple-500 to-indigo-600' },
+  'technical': { bg: 'from-pink-50 to-rose-50', border: 'border-pink-200', text: 'text-pink-700', icon: 'from-pink-500 to-rose-600' },
+  'digital': { bg: 'from-sky-50 to-blue-50', border: 'border-sky-200', text: 'text-sky-700', icon: 'from-sky-500 to-blue-600' },
+  'default': { bg: 'from-gray-50 to-slate-50', border: 'border-gray-200', text: 'text-gray-700', icon: 'from-gray-500 to-slate-600' }
 };
 
 const Services = React.memo(() => {
   const { services, loading, error } = useServices();
-  const [activeService, setActiveService] = useState<number | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  const handleServiceHover = (index: number) => {
-    setActiveService(index);
+  // Helper function to determine service category for theming
+  const getServiceCategory = (title: string, description: string): keyof typeof serviceColors => {
+    const text = `${title} ${description}`.toLowerCase();
+    if (text.includes('agriculture') || text.includes('farm')) return 'agriculture';
+    if (text.includes('school') || text.includes('education') || text.includes('student')) return 'education';
+    if (text.includes('business') || text.includes('management') || text.includes('enterprise')) return 'business';
+    if (text.includes('technical') || text.includes('design') || text.includes('development')) return 'technical';
+    if (text.includes('digital') || text.includes('web') || text.includes('app') || text.includes('cloud')) return 'digital';
+    return 'default';
   };
 
-  const handleServiceLeave = () => {
-    setActiveService(null);
-  };
-
-  // Memoize duplicated services for performance
-  const duplicatedServices = useMemo(() => {
-    if (!services || services.length === 0) return [];
-    return [...services, ...services];
-  }, [services]);
-
-  // Helper function to get icon component
-  const getIconComponent = (iconName: string | null) => {
-    if (!iconName || !iconMap[iconName]) {
-      return Star; // Default icon
-    }
-    return iconMap[iconName];
-  };
-
-  // Helper function to get gradient class
-  const getGradientClass = (slug: string) => {
-    const key = Object.keys(gradientMap).find(k => slug.includes(k));
-    return gradientMap[key || 'digital'] || 'from-purple-600 to-blue-600';
-  };
-
+  // Animation variants for modern, subtle effects
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2
+        staggerChildren: 0.15,
+        delayChildren: 0.1
       }
     }
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+  const cardVariants = {
+    hidden: {
+      opacity: 0,
+      y: 30,
+      scale: 0.95
+    },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5 }
+      scale: 1,
+      transition: {
+        duration: 0.6,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
     }
   };
 
-  // Loading state
+  // Loading state with modern skeleton
   if (loading) {
     return (
-      <section id="services" className="w-full relative overflow-hidden">
-        <div className="flex justify-center items-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-600"></div>
+      <section className="w-full py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto px-4">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+              <div className="animate-pulse">
+                <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-xl mb-4"></div>
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-3 w-3/4"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     );
@@ -124,9 +130,13 @@ const Services = React.memo(() => {
   // Error state
   if (error) {
     return (
-      <section id="services" className="w-full relative overflow-hidden">
-        <div className="text-center py-20">
-          <p className="text-red-500 dark:text-red-400">Error loading services: {error}</p>
+      <section className="w-full py-8">
+        <div className="text-center py-12 max-w-md mx-auto">
+          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Star className="w-8 h-8 text-red-500" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Unable to load services</h3>
+          <p className="text-gray-600 dark:text-gray-400">{error}</p>
         </div>
       </section>
     );
@@ -135,9 +145,13 @@ const Services = React.memo(() => {
   // No services state
   if (!services || services.length === 0) {
     return (
-      <section id="services" className="w-full relative overflow-hidden">
-        <div className="text-center py-20">
-          <p className="text-gray-500 dark:text-gray-400">No services available at the moment.</p>
+      <section className="w-full py-8">
+        <div className="text-center py-12 max-w-md mx-auto">
+          <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Sparkles className="w-8 h-8 text-gray-400" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">No services available</h3>
+          <p className="text-gray-600 dark:text-gray-400">Check back soon for our latest offerings.</p>
         </div>
       </section>
     );
@@ -146,197 +160,190 @@ const Services = React.memo(() => {
   return (
     <section
       id="services"
-      className="w-full overflow-hidden py-8"
+      className="w-full py-8"
       aria-labelledby="services-heading"
     >
-      <AnimatedSection threshold={0.2}>
+      <AnimatedSection threshold={0.1}>
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="w-full max-w-7xl mx-auto"
+          viewport={{ once: true, margin: "-50px" }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
         >
-          {/* Continuous Horizontal Carousel */}
-          <div className="relative" role="region" aria-label="Our services carousel">
+          {/* Engaging Section Tagline */}
+          <div className="text-center mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              Discover Solutions Tailored for You
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              Explore our comprehensive range of services designed to transform your business and drive success
+            </p>
+          </div>
 
-            <motion.div
-              className="flex gap-6 min-w-max"
-              role="list"
-              aria-label="Our services"
-              animate={{
-                x: [0, -(320 + 24) * services.length] // Move by responsive width: average card width (320px) + gap (24px)
-              }}
-              transition={{
-                x: {
-                  duration: 40, // Adjusted for responsive card sizes
-                  ease: "linear",
-                  repeat: Infinity,
-                  repeatType: "loop"
-                }
-              }}
-            >
-              {duplicatedServices.map((service, index) => {
-                const IconComponent = getIconComponent(service.iconName);
-                const gradientClass = service.gradient || 'from-purple-600 to-blue-600';
-                const isActive = activeService === index;
+          {/* Responsive Grid Layout - 3 cols desktop/tablet, 1 col mobile with 15px gaps */}
+          <div
+            className="services-grid"
+            role="list"
+            aria-label="Our services"
+          >
+            {services.map((service, index) => {
+              const IconComponent = getIconComponent(service.iconName);
+              const category = getServiceCategory(service.title, service.description);
+              const colors = serviceColors[category];
+              const isHovered = hoveredIndex === index;
 
-                return (
-                  <motion.div
-                    key={`${service.id}-${index}`}
-                    variants={itemVariants}
-                    className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-white/5 dark:to-white/10 backdrop-blur-sm hover:from-white hover:to-gray-50 dark:hover:from-white/15 dark:hover:to-white/25 rounded-2xl p-4 sm:p-6 flex flex-col transition-all duration-500 group relative overflow-hidden shadow-lg hover:shadow-2xl dark:shadow-none w-[280px] sm:w-[320px] lg:w-[380px] h-[280px] sm:h-[300px] flex-shrink-0 border border-gray-200/50 dark:border-white/10 hover:border-purple-500/50 dark:hover:border-purple-400/50 mobile-safe"
-                    whileHover={{ y: -12, scale: 1.03 }}
-                    onHoverStart={() => handleServiceHover(index)}
-                    onHoverEnd={handleServiceLeave}
-                    role="listitem"
-                    aria-label={`${service.title} service`}
+              return (
+                <motion.div
+                  key={service.id}
+                  variants={cardVariants}
+                  className="group relative service-card-mobile"
+                  onHoverStart={() => setHoveredIndex(index)}
+                  onHoverEnd={() => setHoveredIndex(null)}
+                  role="listitem"
+                  aria-label={`${service.title} service`}
+                >
+                  {/* Redesigned Service Card with Uniform Dimensions and 20px Padding */}
+                  <div
+                    className={`
+                      relative bg-white dark:bg-gray-900 rounded-xl h-full
+                      border border-gray-200 dark:border-gray-700
+                      shadow-sm hover:shadow-lg dark:hover:shadow-xl
+                      transition-all duration-300 ease-out
+                      hover:-translate-y-1 hover:scale-[1.02]
+                      flex flex-col
+                      ${isHovered ? 'ring-1 ring-purple-500/20' : ''}
+                    `}
+                    style={{ padding: '20px' }}
                   >
-                    {/* Enhanced gradient overlay with psychological appeal */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/15 via-blue-500/10 to-indigo-500/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-white/20 dark:to-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    {/* Gradient Background Overlay */}
+                    <div className={`
+                      absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100
+                      bg-gradient-to-br ${colors.bg} dark:from-gray-800/50 dark:to-gray-700/50
+                      transition-opacity duration-500
+                    `} />
 
-                    {/* Floating sparkle effects */}
-                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                      <FloatingElement amplitude={1} frequency={0.005} duration={3}>
-                        <Star className="h-3 w-3 text-yellow-400 fill-current" />
-                      </FloatingElement>
-                    </div>
-
-                    <div className="relative z-10 h-full flex flex-col">
-                      {/* Header with enhanced icon and psychological elements */}
-                      <div className="flex items-center justify-between mb-4">
-                        <div className={`relative w-18 h-18 rounded-3xl flex items-center justify-center bg-gradient-to-br ${gradientClass} transform transition-all duration-500 group-hover:scale-125 group-hover:rotate-6 shadow-xl group-hover:shadow-2xl overflow-hidden`}>
-                          {/* Enhanced multi-layer glow effects */}
-                          <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                          <div className="absolute inset-0 bg-white/20 blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-500"></div>
-                          <div className="absolute -inset-2 bg-gradient-to-br from-purple-400/20 to-blue-400/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full"></div>
-
-                          <FloatingElement amplitude={3} frequency={0.002} duration={6}>
-                            <IconComponent className="relative z-10 h-9 w-9 text-white drop-shadow-lg group-hover:scale-110 transition-transform duration-500" />
-                          </FloatingElement>
-                        </div>
-
-                        {/* Enhanced quality indicators with psychological appeal */}
-                        <div className="flex flex-col items-end space-y-1">
-                          <div className="flex items-center space-x-1">
-                            <FloatingElement amplitude={2} frequency={0.003} phase={0.5} duration={4}>
-                              <Award className="h-4 w-4 text-yellow-500 opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
-                            </FloatingElement>
-                            <FloatingElement amplitude={2} frequency={0.003} phase={1} duration={5}>
-                              <CheckCircle className="h-4 w-4 text-green-500 opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
-                            </FloatingElement>
-                          </div>
-                          {/* Trust badge */}
-                          <div className="text-xs text-gray-500 dark:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-2 py-1 rounded-full">
-                              Verified
-                            </span>
-                          </div>
+                    {/* Card Content with Improved Structure */}
+                    <div className="relative z-10 h-full flex flex-col text-center">
+                      {/* Icon Section */}
+                      <div className="flex justify-center mb-4">
+                        <div className={`
+                          w-12 h-12 rounded-lg flex items-center justify-center
+                          bg-gradient-to-br ${colors.icon}
+                          shadow-md group-hover:shadow-lg
+                          transform transition-all duration-300 group-hover:scale-105
+                        `}>
+                          <IconComponent className="w-6 h-6 text-white" />
                         </div>
                       </div>
 
-                      {/* Content with enhanced typography */}
-                      <div className="flex-1 flex flex-col">
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300 leading-tight">
+                      {/* Title and Description with Exact Typography Requirements */}
+                      <div className="flex-1 mb-6">
+                        <h3
+                          className="font-bold mb-3 leading-tight text-gray-900 dark:text-white transition-colors duration-300"
+                          style={{ fontSize: '18px' }}
+                        >
                           {service.title}
                         </h3>
 
-                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-4 flex-grow group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-300">
+                        <p
+                          className="text-gray-600 dark:text-gray-300 leading-relaxed transition-colors duration-300"
+                          style={{ fontSize: '14px' }}
+                        >
                           {service.description}
                         </p>
+                      </div>
 
-                        {/* Benefits highlight */}
-                        <div className="mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <div className="flex items-center text-xs text-green-600 dark:text-green-400">
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            <span>Fast Implementation • Proven Results</span>
-                          </div>
-                        </div>
-
-                        {/* Enhanced CTA with psychological elements */}
-                        <div className="flex items-center justify-between mt-auto">
-                          <Link
-                            to={service.slug ? `/services/${service.slug}` : service.link || `/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`}
-                            className="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-purple-600/15 to-blue-600/15 hover:from-purple-600/25 hover:to-blue-600/25 text-purple-700 dark:text-purple-300 hover:text-purple-900 dark:hover:text-purple-100 rounded-xl text-sm font-semibold transition-all duration-300 group/cta border border-purple-200/50 dark:border-purple-500/30 hover:border-purple-400/70 dark:hover:border-purple-400/70 shadow-sm hover:shadow-md"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <span>Learn More</span>
-                            <ArrowRight className="h-4 w-4 ml-2 transform group-hover/cta:translate-x-1 transition-transform duration-300" />
-                          </Link>
-
-                          {/* Enhanced urgency indicator */}
-                          <div className="flex flex-col items-end opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="flex items-center text-xs text-orange-600 dark:text-orange-400 mb-1">
-                              <Zap className="h-3 w-3 mr-1 animate-pulse" />
-                              <span className="font-medium">Popular</span>
-                            </div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">
-                              <span>Starting at $99</span>
-                            </div>
-                          </div>
-                        </div>
+                      {/* Mobile-First CTA Button - Minimum 48px height for touch accessibility */}
+                      <div className="mt-auto">
+                        <Link
+                          to={service.slug ? `/services/${service.slug}` : service.link || `/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`}
+                          className={`
+                            group/cta inline-flex items-center justify-center w-full
+                            px-4 py-3 min-h-[48px] rounded-xl text-sm font-semibold
+                            bg-gradient-to-r ${colors.icon}
+                            text-white shadow-md hover:shadow-lg
+                            transform transition-all duration-300
+                            hover:scale-[1.02] hover:-translate-y-0.5
+                            focus:outline-none focus:ring-2 focus:ring-purple-500/50
+                            touch-manipulation
+                          `}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <span>Explore Service</span>
+                          <ArrowRight className="w-4 h-4 ml-2 transform group-hover/cta:translate-x-1 transition-transform duration-300" />
+                        </Link>
                       </div>
                     </div>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
 
-          {/* Enhanced View All Services Button with Psychological Elements */}
-          <AnimatedSection delay={300} threshold={0.1}>
-            <div className="mt-12 text-center">
-              {/* Primary CTA with enhanced psychological appeal */}
-              <div className="mb-6">
+          {/* Modern Call-to-Action Section */}
+          <AnimatedSection delay={0.3} threshold={0.1}>
+            <div className="mt-16 text-center">
+              {/* Main CTA */}
+              <div className="mb-8">
                 <Link to="/services">
-                  <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-10 py-4 rounded-xl text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 group relative overflow-hidden transform hover:scale-105">
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-400/20 to-blue-400/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <Button className="
+                    group relative px-8 py-4 bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600
+                    hover:from-violet-700 hover:via-purple-700 hover:to-indigo-700
+                    text-white font-semibold text-lg rounded-2xl
+                    shadow-lg hover:shadow-2xl hover:shadow-purple-500/25
+                    transform transition-all duration-300 hover:scale-105 hover:-translate-y-1
+                    focus:outline-none focus:ring-2 focus:ring-purple-500/50
+                    overflow-hidden
+                  ">
+                    {/* Button Glow Effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
                     <div className="relative z-10 flex items-center">
-                      <span className="mr-3">Discover Your Perfect Solution</span>
-                      <FloatingElement amplitude={2} frequency={0.004} duration={3}>
-                        <ArrowRight className="h-6 w-6 group-hover:translate-x-2 transition-transform duration-300" />
-                      </FloatingElement>
+                      <span className="mr-3">View All Services</span>
+                      <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
                     </div>
                   </Button>
                 </Link>
               </div>
 
-              {/* Secondary psychological elements */}
-              <div className="space-y-4">
-                {/* Trust indicators with enhanced design */}
-                <div className="flex flex-wrap justify-center items-center gap-6 text-sm">
-                  <div className="flex items-center text-gray-600 dark:text-gray-400">
-                    <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
-                    <span className="font-medium">500+ Happy Clients</span>
+              {/* Trust Indicators */}
+              <div className="flex flex-wrap justify-center items-center gap-8 mb-6">
+                <div className="flex items-center text-gray-600 dark:text-gray-400 group">
+                  <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
+                    <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
                   </div>
-                  <div className="flex items-center text-gray-600 dark:text-gray-400">
-                    <Star className="h-4 w-4 mr-2 text-yellow-500 fill-current" />
-                    <span className="font-medium">4.9/5 Rating</span>
-                  </div>
-                  <div className="flex items-center text-gray-600 dark:text-gray-400">
-                    <Zap className="h-4 w-4 mr-2 text-orange-500" />
-                    <span className="font-medium">24h Response</span>
-                  </div>
+                  <span className="font-medium">500+ Happy Clients</span>
                 </div>
+                <div className="flex items-center text-gray-600 dark:text-gray-400 group">
+                  <div className="w-8 h-8 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
+                    <Star className="w-4 h-4 text-yellow-600 dark:text-yellow-400 fill-current" />
+                  </div>
+                  <span className="font-medium">4.9/5 Rating</span>
+                </div>
+                <div className="flex items-center text-gray-600 dark:text-gray-400 group">
+                  <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300">
+                    <Zap className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+                  </div>
+                  <span className="font-medium">24/7 Support</span>
+                </div>
+              </div>
 
-                {/* Social proof testimonial snippet */}
-                <div className="max-w-2xl mx-auto">
-                  <blockquote className="text-gray-600 dark:text-gray-300 italic text-base">
-                    "EasyIo.tech transformed our business operations. Their solutions are truly
-                    <span className="font-semibold text-purple-600 dark:text-purple-400"> simple yet powerful</span>."
-                  </blockquote>
-                  <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    — Sarah Johnson, CEO at TechCorp
-                  </div>
+              {/* Social Proof */}
+              <div className="max-w-2xl mx-auto mb-6">
+                <blockquote className="text-gray-600 dark:text-gray-300 text-lg italic leading-relaxed">
+                  "EasyIo.tech transformed our business operations. Their solutions are truly
+                  <span className="font-semibold text-purple-600 dark:text-purple-400"> simple yet powerful</span>."
+                </blockquote>
+                <div className="mt-3 text-sm text-gray-500 dark:text-gray-400 font-medium">
+                  — Sarah Johnson, CEO at TechCorp
                 </div>
+              </div>
 
-                {/* Urgency element */}
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 text-red-700 dark:text-red-300 px-4 py-2 rounded-full text-sm font-medium border border-red-200/50 dark:border-red-500/30">
-                  <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                  <span>Free consultation ends soon - Book yours today!</span>
-                </div>
+              {/* Call-to-Action Badge */}
+              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 text-emerald-700 dark:text-emerald-300 px-6 py-3 rounded-full text-sm font-medium border border-emerald-200/50 dark:border-emerald-500/30 shadow-sm">
+                <Sparkles className="w-4 h-4" />
+                <span>Free consultation available - Get started today!</span>
               </div>
             </div>
           </AnimatedSection>

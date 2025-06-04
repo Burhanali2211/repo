@@ -16,8 +16,84 @@ export interface Service {
   order_index?: number;
 }
 
+// Default services to display when database is empty or unavailable
+const defaultServices: Service[] = [
+  {
+    id: 'default-1',
+    title: 'Sustainable Agriculture Technology',
+    slug: 'agriculture-technology',
+    description: 'Smart farming systems and eco-friendly agricultural solutions that revolutionize modern farming practices.',
+    iconName: 'Leaf',
+    link: '/services/agriculture-technology',
+    color: 'bg-green-500',
+    gradient: 'from-emerald-500 to-green-600',
+    featured: true,
+    order_index: 1
+  },
+  {
+    id: 'default-2',
+    title: 'School Management Systems',
+    slug: 'school-management',
+    description: 'Comprehensive educational technology solutions for modern schools and educational institutions.',
+    iconName: 'GraduationCap',
+    link: '/services/school-management',
+    color: 'bg-blue-500',
+    gradient: 'from-blue-500 to-cyan-600',
+    featured: true,
+    order_index: 2
+  },
+  {
+    id: 'default-3',
+    title: 'Business Solutions',
+    slug: 'business-solutions',
+    description: 'Custom business software and process optimization to streamline your operations and boost productivity.',
+    iconName: 'Building2',
+    link: '/services/business-solutions',
+    color: 'bg-purple-500',
+    gradient: 'from-purple-500 to-indigo-600',
+    featured: true,
+    order_index: 3
+  },
+  {
+    id: 'default-4',
+    title: 'Digital Transformation',
+    slug: 'digital-transformation',
+    description: 'Complete digital transformation services to modernize your business and stay competitive.',
+    iconName: 'Globe',
+    link: '/services/digital-transformation',
+    color: 'bg-sky-500',
+    gradient: 'from-sky-500 to-blue-600',
+    featured: true,
+    order_index: 4
+  },
+  {
+    id: 'default-5',
+    title: 'Technical Services',
+    slug: 'technical-services',
+    description: 'Professional prototyping and technical design services including 3D printing and PCB design.',
+    iconName: 'Wrench',
+    link: '/services/technical-services',
+    color: 'bg-pink-500',
+    gradient: 'from-pink-500 to-rose-600',
+    featured: true,
+    order_index: 5
+  },
+  {
+    id: 'default-6',
+    title: 'Cloud Services',
+    slug: 'cloud-services',
+    description: 'Scalable cloud infrastructure and services to power your applications and ensure reliability.',
+    iconName: 'Cloud',
+    link: '/services/cloud-services',
+    color: 'bg-indigo-500',
+    gradient: 'from-indigo-500 to-blue-600',
+    featured: true,
+    order_index: 6
+  }
+];
+
 export const useServices = () => {
-  const [services, setServices] = useState<Service[]>([]);
+  const [services, setServices] = useState<Service[]>(defaultServices);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,30 +108,41 @@ export const useServices = () => {
         .select('*');
 
       if (fetchError) {
-        console.error('Error fetching services:', fetchError);
-        setError(fetchError.message);
+        console.warn('Error fetching services from database:', fetchError);
+        console.log('Using default services as fallback');
+        setServices(defaultServices);
+        setError(null); // Don't show error, just use defaults
         return;
       }
 
-      const mappedServices = (data || []).map(service => ({
-        id: service.id,
-        title: service.title,
-        slug: service.slug,
-        description: service.description,
-        icon: service.icon,
-        iconName: service.icon, // Map icon to iconName for compatibility
-        image: service.image,
-        link: `/services/${service.slug}`, // Generate link from slug
-        color: 'bg-purple-500', // Default color
-        gradient: 'from-purple-600 to-blue-600', // Default gradient
-        featured: service.featured || false,
-        order_index: service.order_index || 0
-      }));
+      // If we have data from the database, use it
+      if (data && data.length > 0) {
+        const mappedServices = data.map(service => ({
+          id: service.id,
+          title: service.title,
+          slug: service.slug,
+          description: service.description,
+          icon: service.icon,
+          iconName: service.icon || service.iconName, // Map icon to iconName for compatibility
+          image: service.image,
+          link: `/services/${service.slug}`, // Generate link from slug
+          color: service.color || 'bg-purple-500', // Default color
+          gradient: service.gradient || 'from-purple-600 to-blue-600', // Default gradient
+          featured: service.featured || false,
+          order_index: service.order_index || 0
+        }));
 
-      setServices(mappedServices);
+        setServices(mappedServices);
+      } else {
+        // If no data from database, use default services
+        console.log('No services found in database, using default services');
+        setServices(defaultServices);
+      }
     } catch (error) {
-      console.error('Exception in fetchServices:', error);
-      setError('Failed to fetch services');
+      console.warn('Exception in fetchServices:', error);
+      console.log('Using default services as fallback');
+      setServices(defaultServices);
+      setError(null); // Don't show error, just use defaults
     } finally {
       setLoading(false);
     }

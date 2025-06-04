@@ -99,6 +99,7 @@ export const ChevronLeft = createLazyIcon('ChevronLeft');
 export const ChevronRight = createLazyIcon('ChevronRight');
 export const ChevronDown = createLazyIcon('ChevronDown');
 export const ChevronUp = createLazyIcon('ChevronUp');
+export const ExternalLink = createLazyIcon('ExternalLink');
 
 // Common UI icons
 export const Menu = createLazyIcon('Menu');
@@ -130,6 +131,7 @@ export const Wrench = createLazyIcon('Wrench');
 // Quality indicators
 export const Award = createLazyIcon('Award');
 export const Zap = createLazyIcon('Zap');
+export const Sparkles = createLazyIcon('Sparkles');
 
 /**
  * Icon component that loads icons dynamically
@@ -168,8 +170,8 @@ export default {
   preloadCommonIcons,
   clearIconCache,
   // Export all pre-defined icons
-  ArrowRight, ArrowLeft, ArrowUp, ChevronLeft, ChevronRight, ChevronDown, ChevronUp,
+  ArrowRight, ArrowLeft, ArrowUp, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, ExternalLink,
   Menu, X, Search, Star, Check, CheckCircle, Plus, Minus,
   Globe, Code, Palette, TrendingUp, Megaphone, Shield, Cloud, Smartphone,
-  Building2, Users, GraduationCap, Leaf, Wrench, Award, Zap
+  Building2, Users, GraduationCap, Leaf, Wrench, Award, Zap, Sparkles
 };
