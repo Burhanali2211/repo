@@ -16,6 +16,10 @@ import { runPerformanceTests } from "@/lib/performance/tests";
 // Import React Query directly to avoid lazy loading conflicts
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+// Import stagewise toolbar for development
+import { StagewiseToolbar } from "@stagewise/toolbar-react";
+import ReactPlugin from "@stagewise-plugins/react";
+
 
 import { AuthProvider } from "./contexts/AuthContext";
 import { AdminAuthProvider } from "./contexts/AdminAuthContext";
@@ -283,6 +287,15 @@ const App = () => {
                                 <PerformanceDashboard
                                   isVisible={showPerformanceDashboard}
                                   onToggle={() => setShowPerformanceDashboard(!showPerformanceDashboard)}
+                                />
+                              )}
+
+                              {/* Stagewise Toolbar - Development only */}
+                              {process.env.NODE_ENV === 'development' && (
+                                <StagewiseToolbar
+                                  config={{
+                                    plugins: [ReactPlugin]
+                                  }}
                                 />
                               )}
                             </DataProvider>

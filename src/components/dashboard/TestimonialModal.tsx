@@ -3,7 +3,7 @@ import { X, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useTestimonials, Testimonial } from '@/hooks/useTestimonials';
+import { useTestimonials, type Testimonial } from '@/lib/supabase/hooks/useTestimonials';
 
 interface TestimonialModalProps {
   testimonial: Testimonial | null;
@@ -12,7 +12,7 @@ interface TestimonialModalProps {
 }
 
 const TestimonialModal = ({ testimonial, isOpen, onClose }: TestimonialModalProps) => {
-  const { createTestimonial, updateTestimonial } = useTestimonials();
+  const { createItem: createTestimonial, updateItem: updateTestimonial } = useTestimonials();
   const [formData, setFormData] = useState({
     name: '',
     role: '',

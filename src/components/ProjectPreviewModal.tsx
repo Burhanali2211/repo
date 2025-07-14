@@ -103,7 +103,7 @@ const ProjectPreviewModal: React.FC<ProjectPreviewModalProps> = ({
                   Technologies Used
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {project.technologies.map((tech, index) => (
+                  {Array.isArray(project.technologies) && project.technologies.map((tech, index) => (
                     <Badge
                       key={index}
                       variant="secondary"

@@ -57,29 +57,46 @@ export const useProjects = () => {
         return;
       }
 
-      const mappedProjects = (data || []).map(project => ({
-        id: project.id,
-        title: project.title,
-        slug: project.slug,
-        description: project.description,
-        category: project.category,
-        image: project.image,
-        technologies: project.technologies || [],
-        client_name: project.client_name,
-        testimonial_text: project.testimonial_text,
-        featured: project.featured,
-        order_index: project.order_index,
-        year: project.year || new Date().getFullYear(),
-        results: project.results,
-        project_link: project.project_link,
-        status: project.status || 'published',
-        gallery_images: project.gallery_images || [],
-        project_duration: project.project_duration,
-        budget_range: project.budget_range,
-        team_size: project.team_size,
-        created_at: project.created_at,
-        updated_at: project.updated_at
-      }));
+      const mappedProjects = (data || []).map(project => {
+        // Ensure technologies is always an array
+        let technologies: string[] = [];
+        if (Array.isArray(project.technologies)) {
+          technologies = project.technologies;
+        } else if (project.technologies && typeof project.technologies === 'string') {
+          // Handle case where technologies might be a JSON string
+          try {
+            const parsed = JSON.parse(project.technologies);
+            technologies = Array.isArray(parsed) ? parsed : [];
+          } catch {
+            // If parsing fails, treat as a single technology
+            technologies = [project.technologies];
+          }
+        }
+
+        return {
+          id: project.id,
+          title: project.title,
+          slug: project.slug,
+          description: project.description,
+          category: project.category,
+          image: project.image,
+          technologies,
+          client_name: project.client_name,
+          testimonial_text: project.testimonial_text,
+          featured: project.featured,
+          order_index: project.order_index,
+          year: project.year || new Date().getFullYear(),
+          results: project.results,
+          project_link: project.project_link,
+          status: project.status || 'published',
+          gallery_images: project.gallery_images || [],
+          project_duration: project.project_duration,
+          budget_range: project.budget_range,
+          team_size: project.team_size,
+          created_at: project.created_at,
+          updated_at: project.updated_at
+        };
+      });
 
       setProjects(mappedProjects);
     } catch (error) {

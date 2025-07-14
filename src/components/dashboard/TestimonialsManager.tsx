@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { Plus, Edit, Trash2, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useTestimonials } from '@/hooks/useTestimonials';
+import { useTestimonials } from '@/lib/supabase/hooks/useTestimonials';
 import TestimonialModal from '@/components/dashboard/TestimonialModal';
 
 const TestimonialsManager = () => {
-  const { testimonials, loading, deleteTestimonial } = useTestimonials();
+  const { data: testimonials, isLoading: loading, deleteItem: deleteTestimonial } = useTestimonials();
   const [selectedTestimonial, setSelectedTestimonial] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredTestimonials = testimonials.filter(testimonial => {
+  const filteredTestimonials = (testimonials || []).filter(testimonial => {
     // Add safety checks for all properties
     const nameMatch = testimonial?.name ? testimonial.name.toLowerCase().includes(searchTerm.toLowerCase()) : false;
     const companyMatch = testimonial?.company ? testimonial.company.toLowerCase().includes(searchTerm.toLowerCase()) : false;

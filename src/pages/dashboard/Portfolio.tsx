@@ -131,7 +131,7 @@ const PortfolioManagement = () => {
     const matchesSearch =
       project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.technologies.some(tech => tech.toLowerCase().includes(searchTerm.toLowerCase()));
+      (Array.isArray(project.technologies) && project.technologies.some(tech => tech.toLowerCase().includes(searchTerm.toLowerCase())));
 
     const matchesCategory = categoryFilter === 'All' || project.category === categoryFilter;
 
@@ -223,7 +223,7 @@ const PortfolioManagement = () => {
       category: project.category,
       image: project.image,
       description: project.description,
-      technologiesInput: project.technologies.join(', '),
+      technologiesInput: Array.isArray(project.technologies) ? project.technologies.join(', ') : '',
       year: project.year,
       results: project.results,
       link: project.link,
@@ -503,12 +503,12 @@ const PortfolioManagement = () => {
               <p className="text-gray-600 text-sm mb-4 line-clamp-2">{project.description}</p>
 
               <div className="flex flex-wrap gap-2 mb-3">
-                {project.technologies.slice(0, 3).map((tech, index) => (
+                {Array.isArray(project.technologies) && project.technologies.slice(0, 3).map((tech, index) => (
                   <Badge key={index} variant="outline" className="bg-gray-100">
                     {tech}
                   </Badge>
                 ))}
-                {project.technologies.length > 3 && (
+                {Array.isArray(project.technologies) && project.technologies.length > 3 && (
                   <Badge variant="outline" className="bg-gray-100">
                     +{project.technologies.length - 3} more
                   </Badge>
@@ -588,7 +588,7 @@ const PortfolioManagement = () => {
               <div className="mb-4">
                 <h4 className="text-sm font-semibold text-gray-500 mb-2">Technologies</h4>
                 <div className="flex flex-wrap gap-2">
-                  {currentProject.technologies.map((tech, index) => (
+                  {Array.isArray(currentProject.technologies) && currentProject.technologies.map((tech, index) => (
                     <Badge key={index} variant="outline">{tech}</Badge>
                   ))}
                 </div>

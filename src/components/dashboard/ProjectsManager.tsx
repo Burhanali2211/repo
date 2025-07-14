@@ -4,13 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useProjects } from '@/hooks/useProjects';
+import { usePortfolio } from '@/lib/supabase/hooks/usePortfolio';
 import ProjectModal from '@/components/dashboard/ProjectModal';
 import ImageWithFallback from '@/components/ui/image-with-fallback';
 import { motion } from 'framer-motion';
 
 const ProjectsManager = () => {
-  const { projects, loading, deleteProject } = useProjects();
+  const { data: projects, isLoading: loading, deleteItem: deleteProject } = usePortfolio();
   const [selectedProject, setSelectedProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -18,9 +18,9 @@ const ProjectsManager = () => {
   const [categoryFilter, setCategoryFilter] = useState('all');
 
   // Get unique categories from projects
-  const categories = Array.from(new Set(projects.map(p => p.category).filter(Boolean)));
+  const categories = Array.from(new Set((projects || []).map(p => p.category).filter(Boolean)));
 
-  const filteredProjects = projects.filter(project => {
+  const filteredProjects = (projects || []).filter(project => {
     const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       project.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
       project.description.toLowerCase().includes(searchTerm.toLowerCase());

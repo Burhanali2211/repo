@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSupabaseData } from './useSupabaseData';
 import {
+  getPublicProjects,
   getAllProjects,
   createProject,
   updateProject,
@@ -24,12 +25,46 @@ export type Project = {
   link: string;
 };
 
-// No default projects - load from database only
-const defaultProjects: Project[] = [];
+// Default projects data as fallback
+const defaultProjects: Project[] = [
+  {
+    id: 'default-1',
+    title: 'Smart Farm Management System',
+    category: 'IoT Solutions',
+    image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800&h=600&fit=crop',
+    description: 'Comprehensive IoT solution for modern agriculture with real-time monitoring and automated irrigation.',
+    technologies: ['React', 'Node.js', 'IoT Sensors', 'MongoDB'],
+    year: 2024,
+    results: 'Increased crop yield by 40% and reduced water usage by 30%',
+    link: '/our-work/smart-farm'
+  },
+  {
+    id: 'default-2',
+    title: 'School Management Portal',
+    category: 'Web Development',
+    image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&h=600&fit=crop',
+    description: 'Complete school management system with student tracking, fee management, and parent portal.',
+    technologies: ['React', 'Express.js', 'PostgreSQL', 'Stripe'],
+    year: 2024,
+    results: 'Streamlined operations for 500+ students and improved parent engagement by 60%',
+    link: '/our-work/school-portal'
+  },
+  {
+    id: 'default-3',
+    title: 'E-Commerce Platform',
+    category: 'E-Commerce',
+    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop',
+    description: 'Modern e-commerce platform with advanced analytics and inventory management.',
+    technologies: ['Next.js', 'Supabase', 'Stripe', 'Tailwind CSS'],
+    year: 2024,
+    results: 'Processed $100K+ in sales within first month of launch',
+    link: '/our-work/ecommerce-platform'
+  }
+];
 
 // Create type-safe wrappers for the portfolio service functions
 const fetchProjects = async (): Promise<{ data: Project[]; error: PostgrestError | null }> => {
-  const response = await getAllProjects();
+  const response = await getPublicProjects();
   return {
     data: response.data as Project[] || [],
     error: response.error

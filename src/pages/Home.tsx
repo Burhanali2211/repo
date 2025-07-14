@@ -6,6 +6,7 @@ import ComprehensiveSEO from '@/components/SEO/ComprehensiveSEO';
 import { Button } from '@/components/ui/button';
 import { safeLazySection, safeLazyIcon } from '@/lib/utils/safe-lazy-loading';
 
+
 // Safe lazy load ALL heavy components for better initial performance
 const Hero = safeLazySection(() => import('@/components/sections/Hero'), 'Hero');
 

@@ -4,17 +4,19 @@ import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 import AnimatedSection from '@/components/AnimatedSection';
 import FloatingElement from '@/components/FloatingElement';
 import { Button } from '@/components/ui/button';
-import { useTestimonials } from '@/hooks/useTestimonials';
+import { useTestimonials } from '@/lib/supabase/hooks/useTestimonials';
 
 const Testimonials = () => {
-  const { testimonials, loading, error } = useTestimonials();
+  const { data: testimonials, isLoading: loading } = useTestimonials();
   const [activeIndex, setActiveIndex] = useState(0);
 
   const handlePrevious = () => {
+    if (!testimonials || testimonials.length === 0) return;
     setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
   };
 
   const handleNext = () => {
+    if (!testimonials || testimonials.length === 0) return;
     setActiveIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
   };
 
@@ -35,18 +37,7 @@ const Testimonials = () => {
     );
   }
 
-  // Error state
-  if (error) {
-    return (
-      <section className="py-20 bg-white dark:bg-black text-gray-900 dark:text-white relative overflow-hidden">
-        <div className="container mx-auto px-6">
-          <div className="text-center py-20">
-            <p className="text-red-500 dark:text-red-400">Error loading testimonials: {error}</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
+
 
   // No testimonials state
   if (!testimonials || testimonials.length === 0) {

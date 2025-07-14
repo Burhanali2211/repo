@@ -81,18 +81,18 @@ const TestimonialsManagement = () => {
 
           setTestimonials(mappedTestimonials);
         } else {
-          // Fallback to initial testimonials if no data
-          setTestimonials(defaultTestimonials);
+          // No testimonials found
+          setTestimonials([]);
         }
       } catch (error) {
         console.error('Error loading testimonials:', error);
         toast({
           title: "Error loading testimonials",
-          description: "There was a problem loading your testimonials. Using local data instead.",
+          description: "There was a problem loading your testimonials from the database.",
           variant: "destructive"
         });
-        // Fallback to initial data
-        setTestimonials(defaultTestimonials);
+        // Set empty array on error
+        setTestimonials([]);
       } finally {
         setIsLoading(false);
       }

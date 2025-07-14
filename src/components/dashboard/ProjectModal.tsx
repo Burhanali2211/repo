@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { useProjects, Project } from '@/hooks/useProjects';
+import { usePortfolio, type Project } from '@/lib/supabase/hooks/usePortfolio';
 import { useToast } from '@/components/ui/use-toast';
 
 interface ProjectModalProps {

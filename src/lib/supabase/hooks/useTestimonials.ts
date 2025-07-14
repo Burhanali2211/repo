@@ -1,5 +1,6 @@
 import { useSupabaseData } from './useSupabaseData';
 import {
+  getPublicTestimonials,
   getAllTestimonials,
   createTestimonial,
   updateTestimonial,
@@ -31,15 +32,46 @@ const testimonialMapper = (item: SupabaseTestimonial): Testimonial => ({
   featured: item.featured || false
 });
 
-// No default testimonials - load from database only
-const defaultTestimonials: Testimonial[] = [];
+// Default testimonials data as fallback
+const defaultTestimonials: Testimonial[] = [
+  {
+    id: 'default-1',
+    name: 'Sarah Johnson',
+    role: 'CEO',
+    company: 'TechStart Inc.',
+    image: 'https://ui-avatars.com/api/?name=Sarah+Johnson&background=6366f1&color=fff',
+    content: 'EasyIo.tech transformed our business with their innovative IoT solutions. Their team delivered exceptional results that exceeded our expectations.',
+    rating: 5,
+    featured: true
+  },
+  {
+    id: 'default-2',
+    name: 'Michael Chen',
+    role: 'Principal',
+    company: 'Greenfield Academy',
+    image: 'https://ui-avatars.com/api/?name=Michael+Chen&background=10b981&color=fff',
+    content: 'The school management system they developed has streamlined our operations completely. Student tracking and administration has never been easier.',
+    rating: 5,
+    featured: true
+  },
+  {
+    id: 'default-3',
+    name: 'Emily Rodriguez',
+    role: 'Farm Owner',
+    company: 'Rodriguez Organic Farms',
+    image: 'https://ui-avatars.com/api/?name=Emily+Rodriguez&background=f59e0b&color=fff',
+    content: 'Their sustainable agriculture technology helped us increase crop yield by 40% while reducing water usage. Truly innovative solutions!',
+    rating: 5,
+    featured: true
+  }
+];
 
 // Create a hook for working with testimonials
 export const useTestimonials = () => {
   // Use the generic Supabase data hook with testimonial-specific config
   return useSupabaseData<Testimonial>({
     initialData: defaultTestimonials,
-    fetchFunction: getAllTestimonials,
+    fetchFunction: getPublicTestimonials,
     createFunction: (testimonial) => {
       // Convert UI testimonial format to Supabase format
       const supabaseData = {

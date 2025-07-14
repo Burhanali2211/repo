@@ -8,7 +8,7 @@ import {
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { useServices } from '@/hooks/useServices';
+import { useServices } from '@/lib/supabase/hooks/useServices';
 import AnimatedSection from '@/components/AnimatedSection';
 
 // Icon mapping for services
@@ -64,7 +64,7 @@ const serviceColors = {
 };
 
 const Services = React.memo(() => {
-  const { services, loading, error } = useServices();
+  const { data: services, isLoading: loading } = useServices();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   // Helper function to determine service category for theming
@@ -127,20 +127,7 @@ const Services = React.memo(() => {
     );
   }
 
-  // Error state
-  if (error) {
-    return (
-      <section className="w-full py-8">
-        <div className="text-center py-12 max-w-md mx-auto">
-          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Star className="w-8 h-8 text-red-500" />
-          </div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Unable to load services</h3>
-          <p className="text-gray-600 dark:text-gray-400">{error}</p>
-        </div>
-      </section>
-    );
-  }
+
 
   // No services state
   if (!services || services.length === 0) {

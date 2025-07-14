@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Eye, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { usePortfolio } from '@/lib/supabase/hooks/usePortfolio';
+import { usePortfolio, type Project } from '@/lib/supabase/hooks/usePortfolio';
 import ImageWithFallback from '@/components/ui/image-with-fallback';
 import ProjectPreviewModal from '@/components/ProjectPreviewModal';
 
@@ -42,17 +42,34 @@ const Portfolio = () => {
   };
 
   // Transform Supabase data to match component expectations
-  const transformSupabaseProject = (project: Project): UnifiedProject => ({
-    id: project.id,
-    title: project.title,
-    category: project.category,
-    image: project.image || `https://via.placeholder.com/800x600/6366f1/ffffff?text=${encodeURIComponent(project.title)}`,
-    description: project.description,
-    technologies: project.technologies || [],
-    year: project.year,
-    results: project.results || 'Successful project completion',
-    link: project.project_link || `/our-work/${project.slug || project.id}`
-  });
+  const transformSupabaseProject = (project: Project): UnifiedProject => {
+    // Ensure technologies is always an array
+    let technologies: string[] = [];
+    if (Array.isArray(project.technologies)) {
+      technologies = project.technologies;
+    } else if (project.technologies && typeof project.technologies === 'string') {
+      // Handle case where technologies might be a JSON string
+      try {
+        const parsed = JSON.parse(project.technologies);
+        technologies = Array.isArray(parsed) ? parsed : [];
+      } catch {
+        // If parsing fails, treat as a single technology
+        technologies = [project.technologies];
+      }
+    }
+
+    return {
+      id: project.id,
+      title: project.title,
+      category: project.category,
+      image: project.image || `https://via.placeholder.com/800x600/6366f1/ffffff?text=${encodeURIComponent(project.title)}`,
+      description: project.description,
+      technologies,
+      year: project.year,
+      results: project.results || 'Successful project completion',
+      link: project.project_link || `/our-work/${project.slug || project.id}`
+    };
+  };
 
   // Use only projects from database - no fallback data
   const displayProjects: UnifiedProject[] = projectsFromDB
@@ -187,7 +204,7 @@ const Portfolio = () => {
 
                   {/* Technologies */}
                   <div className="flex flex-wrap gap-2">
-                    {project.technologies.slice(0, 3).map((tech, index) => (
+                    {Array.isArray(project.technologies) && project.technologies.slice(0, 3).map((tech, index) => (
                       <span
                         key={index}
                         className="text-xs px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full border border-gray-200 dark:border-gray-600 group-hover:bg-gradient-to-r group-hover:from-purple-100 group-hover:to-blue-100 dark:group-hover:from-purple-900/30 dark:group-hover:to-blue-900/30 group-hover:border-purple-200 dark:group-hover:border-purple-600 transition-all duration-300"
@@ -195,7 +212,7 @@ const Portfolio = () => {
                         {tech}
                       </span>
                     ))}
-                    {project.technologies.length > 3 && (
+                    {Array.isArray(project.technologies) && project.technologies.length > 3 && (
                       <span className="text-xs px-2.5 py-1 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full border border-gray-200 dark:border-gray-600">
                         +{project.technologies.length - 3} more
                       </span>

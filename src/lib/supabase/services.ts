@@ -28,6 +28,16 @@ export type Testimonial = {
 };
 
 /**
+ * Get all testimonials from Supabase (Public - no authentication required)
+ */
+export const getPublicTestimonials = async () => {
+  return supabase
+    .from('testimonials')
+    .select('*')
+    .order('order_index', { ascending: true });
+};
+
+/**
  * Get all testimonials from Supabase
  */
 export const getAllTestimonials = async () => {
@@ -126,6 +136,21 @@ export type ExtendedService = Service & {
 };
 
 
+
+/**
+ * Get all services from Supabase (Public - no authentication required)
+ */
+export const getPublicServices = async () => {
+  try {
+    return supabase
+      .from('services')
+      .select('*')
+      .order('order_index', { ascending: true });
+  } catch (error) {
+    console.error('Error in getPublicServices:', error);
+    throw error;
+  }
+};
 
 /**
  * Get all services from Supabase
@@ -309,6 +334,21 @@ export type Project = {
   created_at?: string;
   updated_at?: string;
   user_id?: string;
+};
+
+/**
+ * Get all projects from Supabase (Public - no authentication required)
+ */
+export const getPublicProjects = async () => {
+  try {
+    return supabase
+      .from('projects')
+      .select('*')
+      .order('order_index', { ascending: true });
+  } catch (error) {
+    console.error('Error in getPublicProjects:', error);
+    throw error;
+  }
 };
 
 /**

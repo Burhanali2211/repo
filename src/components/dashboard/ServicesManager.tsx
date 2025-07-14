@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { Plus, Edit, Trash2, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useServices } from '@/hooks/useServices';
+import { useServices } from '@/lib/supabase/hooks/useServices';
 import ServiceModal from '@/components/dashboard/ServiceModal';
 
 const ServicesManager = () => {
-  const { services, loading, deleteService } = useServices();
+  const { data: services, isLoading: loading, deleteItem: deleteService } = useServices();
   const [selectedService, setSelectedService] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredServices = services.filter(service =>
+  const filteredServices = (services || []).filter(service =>
     service.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     service.description.toLowerCase().includes(searchTerm.toLowerCase())
   );

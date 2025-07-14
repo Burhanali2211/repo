@@ -5,7 +5,7 @@ import RefreshCwIcon from 'lucide-react/dist/esm/icons/refresh-cw';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useServices, Service } from '@/hooks/useServices';
+import { useServices, type Service } from '@/lib/supabase/hooks/useServices';
 import { useToast } from '@/components/ui/use-toast';
 
 interface ServiceModalProps {

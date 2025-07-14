@@ -4,7 +4,7 @@ import { Search, Filter, Grid, List, Eye, ExternalLink, Calendar, Award, Code, U
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { useProjects, type Project } from '@/hooks/useProjects';
+import { usePortfolio, type Project } from '@/lib/supabase/hooks/usePortfolio';
 import ImageWithFallback from '@/components/ui/image-with-fallback';
 import AnimatedSection from '@/components/AnimatedSection';
 import FloatingElement from '@/components/FloatingElement';
@@ -123,7 +123,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, isOpen, onClose })
                     Technologies Used
                   </h3>
                   <div className="flex flex-wrap gap-2">
-                    {project.technologies?.map((tech: string, index: number) => (
+                    {Array.isArray(project.technologies) && project.technologies.map((tech: string, index: number) => (
                       <Badge
                         key={index}
                         variant="secondary"
@@ -215,7 +215,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({ project, isOpen, onClose })
 };
 
 const OurWork = () => {
-  const { projects, loading } = useProjects();
+  const { data: projects, isLoading: loading } = usePortfolio();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -223,7 +223,7 @@ const OurWork = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   // Filter projects based on search and category
-  const filteredProjects = projects.filter(project => {
+  const filteredProjects = (projects || []).filter(project => {
     const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       project.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'All' || project.category === selectedCategory;
@@ -232,7 +232,7 @@ const OurWork = () => {
   });
 
   // Get unique categories
-  const categories = ['All', ...Array.from(new Set(projects.map(p => p.category)))];
+  const categories = ['All', ...Array.from(new Set((projects || []).map(p => p.category)))];
 
   const handleProjectClick = (project: Project) => {
     setSelectedProject(project);
@@ -413,7 +413,7 @@ const OurWork = () => {
 
                       {/* Technologies */}
                       <div className="flex flex-wrap gap-2 mb-4">
-                        {project.technologies?.slice(0, 3).map((tech: string, techIndex: number) => (
+                        {Array.isArray(project.technologies) && project.technologies.slice(0, 3).map((tech: string, techIndex: number) => (
                           <Badge
                             key={techIndex}
                             variant="secondary"
@@ -422,7 +422,7 @@ const OurWork = () => {
                             {tech}
                           </Badge>
                         ))}
-                        {project.technologies?.length > 3 && (
+                        {Array.isArray(project.technologies) && project.technologies.length > 3 && (
                           <Badge variant="secondary" className="text-xs bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
                             +{project.technologies.length - 3} more
                           </Badge>
