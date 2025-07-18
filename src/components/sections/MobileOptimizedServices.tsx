@@ -24,32 +24,61 @@ const mobileCategories = {
   creative: { label: 'Creative', emoji: '🎨', count: 0 }
 };
 
-// Mobile-optimized color system
+// Mobile-optimized contextual color system
 const mobileColors = {
+  agriculture: {
+    cardBg: 'bg-emerald-50/40 dark:bg-emerald-950/20',
+    border: 'border-emerald-200/40',
+    iconBg: 'bg-emerald-100/60 dark:bg-emerald-900/30',
+    iconColor: 'text-emerald-600 dark:text-emerald-400',
+    hoverBg: 'group-hover:bg-emerald-50/60 dark:group-hover:bg-emerald-950/30',
+    hoverIcon: 'group-hover:bg-emerald-200/70 dark:group-hover:bg-emerald-800/40',
+    ctaColor: 'text-emerald-600 dark:text-emerald-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-300'
+  },
+  education: {
+    cardBg: 'bg-blue-50/40 dark:bg-blue-950/20',
+    border: 'border-blue-200/40',
+    iconBg: 'bg-blue-100/60 dark:bg-blue-900/30',
+    iconColor: 'text-blue-600 dark:text-blue-400',
+    hoverBg: 'group-hover:bg-blue-50/60 dark:group-hover:bg-blue-950/30',
+    hoverIcon: 'group-hover:bg-blue-200/70 dark:group-hover:bg-blue-800/40',
+    ctaColor: 'text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300'
+  },
   business: {
-    bg: 'bg-gradient-to-br from-purple-500 to-indigo-600',
-    light: 'bg-purple-50 text-purple-700',
-    border: 'border-purple-200'
+    cardBg: 'bg-purple-50/40 dark:bg-purple-950/20',
+    border: 'border-purple-200/40',
+    iconBg: 'bg-purple-100/60 dark:bg-purple-900/30',
+    iconColor: 'text-purple-600 dark:text-purple-400',
+    hoverBg: 'group-hover:bg-purple-50/60 dark:group-hover:bg-purple-950/30',
+    hoverIcon: 'group-hover:bg-purple-200/70 dark:group-hover:bg-purple-800/40',
+    ctaColor: 'text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300'
   },
-  tech: {
-    bg: 'bg-gradient-to-br from-blue-500 to-cyan-600',
-    light: 'bg-blue-50 text-blue-700',
-    border: 'border-blue-200'
+  technical: {
+    cardBg: 'bg-rose-50/40 dark:bg-rose-950/20',
+    border: 'border-rose-200/40',
+    iconBg: 'bg-rose-100/60 dark:bg-rose-900/30',
+    iconColor: 'text-rose-600 dark:text-rose-400',
+    hoverBg: 'group-hover:bg-rose-50/60 dark:group-hover:bg-rose-950/30',
+    hoverIcon: 'group-hover:bg-rose-200/70 dark:group-hover:bg-rose-800/40',
+    ctaColor: 'text-rose-600 dark:text-rose-400 group-hover:text-rose-700 dark:group-hover:text-rose-300'
   },
-  creative: {
-    bg: 'bg-gradient-to-br from-pink-500 to-rose-600',
-    light: 'bg-pink-50 text-pink-700',
-    border: 'border-pink-200'
-  },
-  popular: {
-    bg: 'bg-gradient-to-br from-amber-500 to-orange-600',
-    light: 'bg-amber-50 text-amber-700',
-    border: 'border-amber-200'
+  digital: {
+    cardBg: 'bg-cyan-50/40 dark:bg-cyan-950/20',
+    border: 'border-cyan-200/40',
+    iconBg: 'bg-cyan-100/60 dark:bg-cyan-900/30',
+    iconColor: 'text-cyan-600 dark:text-cyan-400',
+    hoverBg: 'group-hover:bg-cyan-50/60 dark:group-hover:bg-cyan-950/30',
+    hoverIcon: 'group-hover:bg-cyan-200/70 dark:group-hover:bg-cyan-800/40',
+    ctaColor: 'text-cyan-600 dark:text-cyan-400 group-hover:text-cyan-700 dark:group-hover:text-cyan-300'
   },
   default: {
-    bg: 'bg-gradient-to-br from-gray-500 to-slate-600',
-    light: 'bg-gray-50 text-gray-700',
-    border: 'border-gray-200'
+    cardBg: 'bg-slate-50/40 dark:bg-slate-950/20',
+    border: 'border-slate-200/40',
+    iconBg: 'bg-slate-100/60 dark:bg-slate-900/30',
+    iconColor: 'text-slate-600 dark:text-slate-400',
+    hoverBg: 'group-hover:bg-slate-50/60 dark:group-hover:bg-slate-950/30',
+    hoverIcon: 'group-hover:bg-slate-200/70 dark:group-hover:bg-slate-800/40',
+    ctaColor: 'text-slate-600 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300'
   }
 };
 
@@ -64,10 +93,12 @@ const MobileOptimizedServices = React.memo(() => {
   // Helper function to categorize services for mobile
   const getMobileCategory = (title: string, description: string) => {
     const text = `${title} ${description}`.toLowerCase();
+    if (text.includes('agriculture') || text.includes('farm')) return 'agriculture';
+    if (text.includes('school') || text.includes('education') || text.includes('student')) return 'education';
     if (text.includes('business') || text.includes('management') || text.includes('enterprise')) return 'business';
-    if (text.includes('technical') || text.includes('development') || text.includes('cloud') || text.includes('app')) return 'tech';
-    if (text.includes('design') || text.includes('brand') || text.includes('creative')) return 'creative';
-    return 'popular'; // Default to popular for featured services
+    if (text.includes('technical') || text.includes('design') || text.includes('development')) return 'technical';
+    if (text.includes('digital') || text.includes('web') || text.includes('app') || text.includes('cloud')) return 'digital';
+    return 'default';
   };
 
   // Filter services with mobile-optimized logic
@@ -331,14 +362,14 @@ const MobileServiceCard: React.FC<MobileServiceCardProps> = ({
       variants={mobileCardVariants}
       initial="hidden"
       animate="visible"
-      className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
+      className={`relative h-full p-4 rounded-2xl bg-grid-pattern bg-clip-padding backdrop-filter backdrop-blur-xl shadow-sm border transition-all duration-200 overflow-hidden ${colors.cardBg} ${colors.border} ${colors.hoverBg} hover:shadow-md group-hover:scale-[1.01]`}
     >
-      {/* Main Card Content */}
-      <div className="p-4">
-        <div className="flex items-start gap-3">
+      <div className={`absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200`}></div>
+      <div className="relative z-10 flex flex-col h-full">
+        <div className="flex items-start gap-3 mb-4">
           {/* Icon */}
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${colors.bg} flex-shrink-0`}>
-            <IconComponent className="w-6 h-6 text-white" />
+          <div className={`w-11 h-11 rounded-lg flex items-center justify-center transition-all duration-200 flex-shrink-0 ${colors.iconBg} ${colors.hoverIcon}`}>
+            <IconComponent className={`w-6 h-6 transition-all duration-200 ${colors.iconColor} group-hover:scale-105`} />
           </div>
 
           {/* Content */}
@@ -357,24 +388,24 @@ const MobileServiceCard: React.FC<MobileServiceCardProps> = ({
               </Button>
             </div>
 
-            <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-2 mb-3">
+            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
               {service.description}
             </p>
 
             {/* Quick Action */}
             <div className="flex items-center justify-between">
-              <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${colors.light}`}>
+              <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400">
                 <CheckCircle className="w-3 h-3" />
                 <span>Available</span>
               </div>
 
-              <Link
-                to={service.slug ? `/services/${service.slug}` : service.link || `/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`}
-                className="text-purple-600 hover:text-purple-700 text-sm font-medium flex items-center gap-1"
-              >
-                <span>View</span>
-                <ArrowRight className="w-3 h-3" />
-              </Link>
+              <div className={`flex items-center transition-colors duration-200 ${colors.ctaColor}`}>
+                <span className="text-sm font-medium mr-1">Learn more</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3 group-hover:translate-x-0.5 transition-transform duration-200">
+                  <path d="M5 12h14"></path>
+                  <path d="m12 5 7 7-7 7"></path>
+                </svg>
+              </div>
             </div>
           </div>
         </div>

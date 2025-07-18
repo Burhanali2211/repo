@@ -61,49 +61,61 @@ export const getIconComponent = (iconName: string | null) => {
 
 
 
-// Enhanced service category colors with grid backgrounds
+// Enhanced contextual service colors with minimalistic design
 const serviceColors = {
   'agriculture': {
-    bg: 'from-emerald-50/80 to-green-50/80',
-    border: 'border-emerald-200/50',
-    text: 'text-emerald-700',
-    icon: 'from-emerald-500 to-green-600',
-    grid: 'from-emerald-500/5 to-green-500/5'
+    cardBg: 'bg-emerald-50/40 dark:bg-emerald-950/20',
+    border: 'border-emerald-200/40',
+    iconBg: 'bg-emerald-100/60 dark:bg-emerald-900/30',
+    iconColor: 'text-emerald-600 dark:text-emerald-400',
+    hoverBg: 'group-hover:bg-emerald-50/60 dark:group-hover:bg-emerald-950/30',
+    hoverIcon: 'group-hover:bg-emerald-200/70 dark:group-hover:bg-emerald-800/40',
+    ctaColor: 'text-emerald-600 dark:text-emerald-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-300'
   },
   'education': {
-    bg: 'from-blue-50/80 to-cyan-50/80',
-    border: 'border-blue-200/50',
-    text: 'text-blue-700',
-    icon: 'from-blue-500 to-cyan-600',
-    grid: 'from-blue-500/5 to-cyan-500/5'
+    cardBg: 'bg-blue-50/40 dark:bg-blue-950/20',
+    border: 'border-blue-200/40',
+    iconBg: 'bg-blue-100/60 dark:bg-blue-900/30',
+    iconColor: 'text-blue-600 dark:text-blue-400',
+    hoverBg: 'group-hover:bg-blue-50/60 dark:group-hover:bg-blue-950/30',
+    hoverIcon: 'group-hover:bg-blue-200/70 dark:group-hover:bg-blue-800/40',
+    ctaColor: 'text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300'
   },
   'business': {
-    bg: 'from-purple-50/80 to-indigo-50/80',
-    border: 'border-purple-200/50',
-    text: 'text-purple-700',
-    icon: 'from-purple-500 to-indigo-600',
-    grid: 'from-purple-500/5 to-indigo-500/5'
+    cardBg: 'bg-purple-50/40 dark:bg-purple-950/20',
+    border: 'border-purple-200/40',
+    iconBg: 'bg-purple-100/60 dark:bg-purple-900/30',
+    iconColor: 'text-purple-600 dark:text-purple-400',
+    hoverBg: 'group-hover:bg-purple-50/60 dark:group-hover:bg-purple-950/30',
+    hoverIcon: 'group-hover:bg-purple-200/70 dark:group-hover:bg-purple-800/40',
+    ctaColor: 'text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300'
   },
   'technical': {
-    bg: 'from-pink-50/80 to-rose-50/80',
-    border: 'border-pink-200/50',
-    text: 'text-pink-700',
-    icon: 'from-pink-500 to-rose-600',
-    grid: 'from-pink-500/5 to-rose-500/5'
+    cardBg: 'bg-rose-50/40 dark:bg-rose-950/20',
+    border: 'border-rose-200/40',
+    iconBg: 'bg-rose-100/60 dark:bg-rose-900/30',
+    iconColor: 'text-rose-600 dark:text-rose-400',
+    hoverBg: 'group-hover:bg-rose-50/60 dark:group-hover:bg-rose-950/30',
+    hoverIcon: 'group-hover:bg-rose-200/70 dark:group-hover:bg-rose-800/40',
+    ctaColor: 'text-rose-600 dark:text-rose-400 group-hover:text-rose-700 dark:group-hover:text-rose-300'
   },
   'digital': {
-    bg: 'from-sky-50/80 to-blue-50/80',
-    border: 'border-sky-200/50',
-    text: 'text-sky-700',
-    icon: 'from-sky-500 to-blue-600',
-    grid: 'from-sky-500/5 to-blue-500/5'
+    cardBg: 'bg-cyan-50/40 dark:bg-cyan-950/20',
+    border: 'border-cyan-200/40',
+    iconBg: 'bg-cyan-100/60 dark:bg-cyan-900/30',
+    iconColor: 'text-cyan-600 dark:text-cyan-400',
+    hoverBg: 'group-hover:bg-cyan-50/60 dark:group-hover:bg-cyan-950/30',
+    hoverIcon: 'group-hover:bg-cyan-200/70 dark:group-hover:bg-cyan-800/40',
+    ctaColor: 'text-cyan-600 dark:text-cyan-400 group-hover:text-cyan-700 dark:group-hover:text-cyan-300'
   },
   'default': {
-    bg: 'from-gray-50/80 to-slate-50/80',
-    border: 'border-gray-200/50',
-    text: 'text-gray-700',
-    icon: 'from-gray-500 to-slate-600',
-    grid: 'from-gray-500/5 to-slate-500/5'
+    cardBg: 'bg-slate-50/40 dark:bg-slate-950/20',
+    border: 'border-slate-200/40',
+    iconBg: 'bg-slate-100/60 dark:bg-slate-900/30',
+    iconColor: 'text-slate-600 dark:text-slate-400',
+    hoverBg: 'group-hover:bg-slate-50/60 dark:group-hover:bg-slate-950/30',
+    hoverIcon: 'group-hover:bg-slate-200/70 dark:group-hover:bg-slate-800/40',
+    ctaColor: 'text-slate-600 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300'
   }
 };
 
@@ -239,85 +251,33 @@ const Services = React.memo(() => {
                   aria-labelledby={`service-title-${index}`}
                   aria-describedby={`service-desc-${index}`}
                 >
-                  {/* Enhanced Service Card with Professional Design */}
-                  <div
-                    className={`
-                      relative bg-white dark:bg-gray-900 rounded-xl w-full h-full
-                      border ${colors.border} dark:border-gray-700/50
-                      shadow-sm hover:shadow-lg dark:hover:shadow-xl
-                      transition-all duration-400 ease-out
-                      hover:-translate-y-1 hover:scale-[1.02]
-                      flex flex-col p-6 service-card-enhanced overflow-hidden
-                      ${isHovered ? `ring-1 ${colors.border} shadow-md` : ''}
-                    `}
-                  >
-                    {/* Subtle Grid Background Pattern */}
-                    <div
-                      className={`
-                        absolute inset-0 opacity-20 group-hover:opacity-35
-                        bg-gradient-to-br ${colors.grid}
-                        transition-opacity duration-400
-                      `}
-                      style={{
-                        backgroundImage: `
-                          linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px),
-                          linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px)
-                        `,
-                        backgroundSize: '16px 16px'
-                      }}
-                    />
-
-                    {/* Subtle Color Overlay */}
-                    <div className={`
-                      absolute inset-0 rounded-xl opacity-0 group-hover:opacity-15
-                      bg-gradient-to-br ${colors.bg} dark:from-gray-800/20 dark:to-gray-700/20
-                      transition-opacity duration-400
-                    `} />
-
-                    {/* Card Content */}
-                    <div className="relative z-10 h-full flex flex-col text-center">
-                      {/* Enhanced Icon Section */}
-                      <div className="flex justify-center mb-5">
-                        <div className={`
-                          w-14 h-14 rounded-xl flex items-center justify-center
-                          bg-gradient-to-br ${colors.icon}
-                          shadow-md group-hover:shadow-lg
-                          transform transition-all duration-400 group-hover:scale-105 group-hover:rotate-2
-                          ring-2 ring-white/30 dark:ring-gray-800/30
-                        `}>
-                          <IconComponent className="w-7 h-7 text-white" />
+                  {/* Contextual Service Card with Minimalistic Hover */}
+                  <div className={`relative h-full p-5 rounded-2xl bg-grid-pattern bg-clip-padding backdrop-filter backdrop-blur-xl shadow-sm border transition-all duration-200 ${colors.cardBg} ${colors.border} ${colors.hoverBg} hover:shadow-md group-hover:scale-[1.01]`}>
+                    <div className={`absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200`}></div>
+                    <div className="relative z-10 flex flex-col h-full">
+                      <div className="mb-4">
+                        <div className={`w-11 h-11 rounded-lg flex items-center justify-center transition-all duration-200 ${colors.iconBg} ${colors.hoverIcon}`}>
+                          <IconComponent className={`w-6 h-6 transition-all duration-200 ${colors.iconColor} group-hover:scale-105`} />
                         </div>
                       </div>
-
-                      {/* Title and Description */}
-                      <div className="flex-1 flex flex-col justify-between">
-                        <div>
-                          <h3
-                            id={`service-title-${index}`}
-                            className="text-lg font-semibold mb-3 leading-snug text-gray-900 dark:text-white transition-colors duration-300 group-hover:text-gray-800 dark:group-hover:text-gray-100"
-                          >
-                            {service.title}
-                          </h3>
-
-                          <p
-                            id={`service-desc-${index}`}
-                            className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed transition-colors duration-300 line-clamp-3 group-hover:text-gray-700 dark:group-hover:text-gray-200"
-                          >
-                            {service.description}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Service Category Badge */}
-                      <div className="mt-4">
-                        <span className={`
-                          inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
-                          ${colors.text} bg-gradient-to-r ${colors.bg}
-                          border ${colors.border}
-                          transition-all duration-300 group-hover:scale-105
-                        `}>
-                          {category.charAt(0).toUpperCase() + category.slice(1)}
-                        </span>
+                      <h3
+                        id={`service-title-${index}`}
+                        className="text-lg font-semibold mb-2 text-gray-900 dark:text-white"
+                      >
+                        {service.title}
+                      </h3>
+                      <p
+                        id={`service-desc-${index}`}
+                        className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2 flex-grow"
+                      >
+                        {service.description}
+                      </p>
+                      <div className={`flex items-center transition-colors duration-200 mt-auto ${colors.ctaColor}`}>
+                        <span className="text-sm font-medium mr-2">Learn more</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200">
+                          <path d="M5 12h14"></path>
+                          <path d="m12 5 7 7-7 7"></path>
+                        </svg>
                       </div>
                     </div>
                   </div>

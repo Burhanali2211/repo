@@ -92,24 +92,47 @@ const CloudServices = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {services.map((service, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-gray-50 dark:bg-gray-800 p-8 rounded-2xl hover:shadow-lg transition-shadow"
-              >
-                <div className="flex items-center mb-4">
-                  <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-xl mr-4">
-                    <service.icon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+            {services.map((service, index) => {
+              // Cloud services are typically digital/technical, so use cyan colors
+              const colors = {
+                cardBg: 'bg-cyan-50/40 dark:bg-cyan-950/20',
+                border: 'border-cyan-200/40',
+                iconBg: 'bg-cyan-100/60 dark:bg-cyan-900/30',
+                iconColor: 'text-cyan-600 dark:text-cyan-400',
+                hoverBg: 'group-hover:bg-cyan-50/60 dark:group-hover:bg-cyan-950/30',
+                hoverIcon: 'group-hover:bg-cyan-200/70 dark:group-hover:bg-cyan-800/40',
+                ctaColor: 'text-cyan-600 dark:text-cyan-400 group-hover:text-cyan-700 dark:group-hover:text-cyan-300'
+              };
+
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className={`group relative h-full p-7 rounded-2xl bg-grid-pattern bg-clip-padding backdrop-filter backdrop-blur-xl shadow-sm border transition-all duration-200 ${colors.cardBg} ${colors.border} ${colors.hoverBg} hover:shadow-md group-hover:scale-[1.01]`}
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200`}></div>
+                  <div className="relative z-10 flex flex-col h-full">
+                    <div className="mb-4">
+                      <div className={`w-11 h-11 rounded-lg flex items-center justify-center transition-all duration-200 ${colors.iconBg} ${colors.hoverIcon}`}>
+                        <service.icon className={`w-6 h-6 transition-all duration-200 ${colors.iconColor} group-hover:scale-105`} />
+                      </div>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{service.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-400 mb-4 flex-grow">{service.description}</p>
+                    <div className={`flex items-center transition-colors duration-200 mt-auto ${colors.ctaColor}`}>
+                      <span className="text-sm font-medium mr-2">Learn more</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200">
+                        <path d="M5 12h14"></path>
+                        <path d="m12 5 7 7-7 7"></path>
+                      </svg>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">{service.title}</h3>
-                </div>
-                <p className="text-gray-600 dark:text-gray-300">{service.description}</p>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
