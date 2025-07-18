@@ -133,6 +133,16 @@ export const Award = createLazyIcon('Award');
 export const Zap = createLazyIcon('Zap');
 export const Sparkles = createLazyIcon('Sparkles');
 
+// Technology and development icons
+export const Monitor = createLazyIcon('Monitor');
+export const Database = createLazyIcon('Database');
+export const Cpu = createLazyIcon('Cpu');
+export const Layers = createLazyIcon('Layers');
+export const Briefcase = createLazyIcon('Briefcase');
+export const PenTool = createLazyIcon('PenTool');
+export const BarChart3 = createLazyIcon('BarChart3');
+export const Lightbulb = createLazyIcon('Lightbulb');
+
 // Layout and view icons
 export const Grid3X3 = createLazyIcon('Grid3X3');
 export const List = createLazyIcon('List');
@@ -158,7 +168,9 @@ Icon.displayName = 'Icon';
 export function preloadCommonIcons() {
   const commonIcons = [
     'ArrowRight', 'ArrowLeft', 'ChevronDown', 'Menu', 'X', 'Search',
-    'Star', 'Check', 'CheckCircle', 'Globe', 'Code', 'Palette'
+    'Star', 'Check', 'CheckCircle', 'Globe', 'Code', 'Palette',
+    'TrendingUp', 'Shield', 'Cloud', 'Smartphone', 'Building2', 'Users',
+    'BarChart3', 'Monitor', 'Database', 'Lightbulb'
   ];
 
   commonIcons.forEach(iconName => {
@@ -183,5 +195,6 @@ export default {
   Menu, X, Search, Star, Check, CheckCircle, Plus, Minus,
   Globe, Code, Palette, TrendingUp, Megaphone, Shield, Cloud, Smartphone,
   Building2, Users, GraduationCap, Leaf, Wrench, Award, Zap, Sparkles,
-  Grid3X3, List, Filter, Eye, Heart, Bookmark, MoreHorizontal
+  Grid3X3, List, Filter, Eye, Heart, Bookmark, MoreHorizontal,
+  Monitor, Database, Cpu, Layers, Briefcase, PenTool, BarChart3, Lightbulb
 };

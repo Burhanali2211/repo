@@ -348,21 +348,45 @@
     overflow-x: hidden;
   }
 
-  /* Optimized service card heights for better proportions */
-  .service-card-optimized {
-    height: 280px;
+  /* Enhanced service card heights for better proportions */
+  .service-card-enhanced {
+    min-height: 260px;
+    max-height: 280px;
   }
 
   @media (min-width: 640px) {
-    .service-card-optimized {
-      height: 300px;
+    .service-card-enhanced {
+      min-height: 280px;
+      max-height: 300px;
     }
   }
 
   @media (min-width: 1024px) {
-    .service-card-optimized {
-      height: 320px;
+    .service-card-enhanced {
+      min-height: 300px;
+      max-height: 320px;
     }
+  }
+
+  /* Professional grid pattern for service cards */
+  .service-card-enhanced::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+      linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px),
+      linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px);
+    background-size: 16px 16px;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .service-card-enhanced:hover::before {
+    opacity: 0.5;
   }
 
   /* Gradient transition utilities for seamless section flow */

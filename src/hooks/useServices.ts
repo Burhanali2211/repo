@@ -103,29 +103,32 @@ export const useServices = () => {
       setLoading(true);
       setError(null);
 
+      // Simple database query without timeout for now
       const { data, error: fetchError } = await supabase
         .from('services')
         .select('*');
+      console.log('Supabase response:', { data, error: fetchError });
 
       if (fetchError) {
         console.warn('Error fetching services from database:', fetchError);
-        console.log('Using default services as fallback');
-        setServices(defaultServices);
+        console.log('Keeping default services as fallback');
+        // Don't change services, keep the default ones
         setError(null); // Don't show error, just use defaults
         return;
       }
 
       // If we have data from the database, use it
       if (data && data.length > 0) {
+        console.log('Found services in database:', data.length);
         const mappedServices = data.map(service => ({
           id: service.id,
           title: service.title,
           slug: service.slug,
           description: service.description,
           icon: service.icon,
-          iconName: service.icon || service.iconName, // Map icon to iconName for compatibility
+          iconName: service.icon || service.iconName || 'Code', // Map icon to iconName for compatibility
           image: service.image,
-          link: `/services/${service.slug}`, // Generate link from slug
+          link: service.slug ? `/services/${service.slug}` : `/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`, // Generate link from slug or title
           color: service.color || 'bg-purple-500', // Default color
           gradient: service.gradient || 'from-purple-600 to-blue-600', // Default gradient
           featured: service.featured || false,
@@ -140,8 +143,12 @@ export const useServices = () => {
       }
     } catch (error) {
       console.warn('Exception in fetchServices:', error);
-      console.log('Using default services as fallback');
-      setServices(defaultServices);
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.log('Database connection timed out, keeping default services');
+      } else {
+        console.log('Database error, keeping default services');
+      }
+      // Don't change services, keep the default ones that were set in useState
       setError(null); // Don't show error, just use defaults
     } finally {
       setLoading(false);
@@ -149,7 +156,21 @@ export const useServices = () => {
   };
 
   useEffect(() => {
-    fetchServices();
+    // Set a maximum loading time of 3 seconds
+    const maxLoadingTimeout = setTimeout(() => {
+      if (loading) {
+        console.log('Max loading time reached, showing default services');
+        setLoading(false);
+      }
+    }, 3000);
+
+    fetchServices().finally(() => {
+      clearTimeout(maxLoadingTimeout);
+    });
+
+    return () => {
+      clearTimeout(maxLoadingTimeout);
+    };
   }, []);
 
   const createService = async (serviceData: Omit<Service, 'id'>) => {
